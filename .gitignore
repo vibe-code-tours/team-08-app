@@ -3,30 +3,27 @@
 .env.*
 !.env.example
 
-# Node
-node_modules/
+# Logs
+logs
+*.log
 npm-debug.log*
+yarn-debug.log*
 yarn-error.log*
-.pnpm-store/
-dist/
-build/
-.next/
-.turbo/
-coverage/
+pnpm-debug.log*
+lerna-debug.log*
 
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-*.egg-info/
+node_modules
+dist
+dist-ssr
+*.local
 
-# OS / editor
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-Thumbs.db
-.idea/
-.vscode/
-*.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
