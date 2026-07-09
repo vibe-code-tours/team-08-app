@@ -12,6 +12,11 @@ updates:
     commit-message:
       prefix: "chore(deps)"
     groups:
+      # vitest and @vitest/ui share a peer dependency and must bump together.
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
       # One grouped PR for minor/patch bumps — less noise for beginners.
       minor-and-patch:
         update-types: ["minor", "patch"]
