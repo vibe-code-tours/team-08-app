@@ -1,13 +1,6 @@
-<!--
-  Vibe Code Tours — Project Starter
-  A ready-to-build repo with CI, security scanning, and team practices baked in.
-  Click "Use this template" → "Create a new repository" to start your project.
-  Then replace THIS README with your project's own (keep the Quickstart working).
--->
+# Finger Roulette — Truth or Dare
 
-# {{PROJECT_NAME}}
-
-> One line: what you're building, and for which real user.
+> A mobile-first PWA party game: everyone places a finger on the screen, the app randomly picks a player, and they choose Truth or Dare.
 
 ![ci](../../actions/workflows/ci.yml/badge.svg) ![security](../../actions/workflows/security.yml/badge.svg)
 
@@ -18,31 +11,39 @@
 ## Quickstart
 
 ```bash
-git clone <your-repo-url> && cd <repo>
+git clone https://github.com/vibe-code-tours/team-08-app.git && cd team-08-app
 cp .env.example .env        # fill in real values LOCALLY — never commit .env
-# then, for your stack:
-npm install && npm run dev  # Node    (or)
-# pip install -r requirements.txt && python -m app   # Python
+npm install && npm run dev
 ```
-
-Keep this Quickstart working — it's how a new teammate onboards in 2 minutes.
 
 ## Stack
 
-<!-- Languages, frameworks, hosting/deploy target, AI/LLM provider. -->
+- **Frontend:** Vite + React + TypeScript
+- **PWA:** `vite-plugin-pwa` (installable, offline-capable)
+- **Testing:** Vitest
+- **Lint:** ESLint
+- **Deploy:** Netlify (PR previews on every pull request)
 
 ## Project structure
 
-| Path | What |
-|---|---|
-| `src/` (or `app/`) | application code |
-| `tests/` | tests |
-| `docs/` | ARCHITECTURE.md + decision records |
-| `.github/` | CI, security, PR/issue templates |
+| Path                         | What                                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `src/screens/`               | one file per game screen — Start → Setup → Touch Selection → Selected Player → Truth/Dare → Card Reveal → Result |
+| `src/state/`                 | `GameContext.tsx` — game state, settings, active touches                                                         |
+| `src/data/cards.ts`          | static Truth/Dare card data, filtered by pack/difficulty                                                         |
+| `src/hooks/useMultiTouch.ts` | multi-touch tracking (keyed by `touch.identifier`)                                                               |
+| `src/types/`                 | `Card`, `GameState`, `GameSettings`, `PlayerTouch`                                                               |
+| `docs/`                      | `multitouch-spike-result.md`, `ARCHITECTURE.md`, decision records                                                |
+| `.github/`                   | CI, security, PR/issue templates                                                                                 |
 
 ## Team
 
-<!-- Members + this week's roles (Anchor / Reviewer). Link your board. -->
+| Name      | Role this week |
+| --------- | -------------- |
+| _fill in_ | Anchor         |
+| _fill in_ | Reviewer       |
+
+Board: _link your GitHub Project here_
 
 ---
 
@@ -50,15 +51,15 @@ Keep this Quickstart working — it's how a new teammate onboards in 2 minutes.
 
 This repo was created from the **Vibe Code Tours project starter**. It ships with:
 
-| File | Gives you |
-|---|---|
-| `.github/workflows/ci.yml` | lint · typecheck · test · build on every PR (stays green until you add each script) |
-| `.github/workflows/security.yml` | gitleaks (leaked keys) + semgrep (SAST) — advisory, report-only |
-| `.github/dependabot.yml` | weekly PRs for vulnerable / outdated dependencies |
-| `.env.example` | secret hygiene — copy to `.env`, never commit real keys |
-| `.github/pull_request_template.md` · `ISSUE_TEMPLATE/` · `CODEOWNERS` | small reviewed PRs, one-owner issues |
-| `docs/ARCHITECTURE.md` · `docs/decisions/` | a 1-page overview + lightweight ADRs |
-| `working-agreement.md` | how your team works (GitHub Flow + rotating roles) |
+| File                                                                  | Gives you                                                                           |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `.github/workflows/ci.yml`                                            | lint · typecheck · test · build on every PR (stays green until you add each script) |
+| `.github/workflows/security.yml`                                      | gitleaks (leaked keys) + semgrep (SAST) — advisory, report-only                     |
+| `.github/dependabot.yml`                                              | weekly PRs for vulnerable / outdated dependencies                                   |
+| `.env.example`                                                        | secret hygiene — copy to `.env`, never commit real keys                             |
+| `.github/pull_request_template.md` · `ISSUE_TEMPLATE/` · `CODEOWNERS` | small reviewed PRs, one-owner issues                                                |
+| `docs/ARCHITECTURE.md` · `docs/decisions/`                            | a 1-page overview + lightweight ADRs                                                |
+| `working-agreement.md`                                                | how your team works (GitHub Flow + rotating roles)                                  |
 
 **First thing to do:** follow [`SETUP.md`](./SETUP.md) — a ~1-hour checklist to turn it all on.
 
