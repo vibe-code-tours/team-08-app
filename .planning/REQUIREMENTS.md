@@ -1,7 +1,7 @@
-# Requirements: Truth or Dare — Finger Roulette
+# Requirements: Truth or Dare -- Finger Roulette
 
 **Defined:** 2026-07-09
-**Core Value:** The roulette selection moment — fingers on screen, spinning light, dramatic slowdown, winner revealed — must feel electric and fun.
+**Core Value:** The roulette selection moment -- fingers on screen, spinning light, dramatic slowdown, winner revealed -- must feel electric and fun.
 
 ## v1 Requirements
 
@@ -9,7 +9,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Multi-Touch & Selection
 
-- [ ] **MTCH-01**: App detects 2–10 fingers placed on screen simultaneously
+- [ ] **MTCH-01**: App detects 2-10 fingers placed on screen simultaneously
 - [ ] **MTCH-02**: Each finger gets a unique colored indicator/dot
 - [ ] **MTCH-03**: Roulette spinning light animation selects one player randomly
 - [ ] **MTCH-04**: Roulette gradually slows down before stopping on winner
@@ -31,13 +31,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Content
 
-- [ ] **CONT-01**: Starter card set with 50–100+ cards across packs and difficulties
+- [ ] **CONT-01**: Starter card set with 50-100+ cards across packs and difficulties
 - [ ] **CONT-02**: Light color accent differentiation per card pack
 
 ### UX & Polish
 
 - [ ] **UX-01**: Splash screen with neon "TRUTH or DARE" title
-- [ ] **UX-02**: Simple onboarding walkthrough (2–3 slides for first-time users)
+- [ ] **UX-02**: Simple onboarding walkthrough (2-3 slides for first-time users)
 - [ ] **UX-03**: Player self-voting screen (Fail / Pass / Excellent)
 - [ ] **UX-04**: Celebration result screen for pass
 - [ ] **UX-05**: Funny failure result screen for fail
@@ -73,12 +73,12 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Feature | Reason |
 |---------|--------|
-| Backend / server | Fully client-side MVP — no auth, no database |
+| Backend / server | Fully client-side MVP -- no auth, no database |
 | User accounts / authentication | Local party game, no login needed |
 | Online multiplayer | Same-device share-the-phone model for v1 |
 | Redux / Zustand | React Context + useReducer sufficient for game state |
 | UI component libraries | Custom neon design system, build from scratch |
-| Dark mode toggle | Always dark — neon theme is the only mode |
+| Dark mode toggle | Always dark -- neon theme is the only mode |
 | Custom question creation UI | Cards are static TypeScript data in v1 |
 | Native mobile apps | PWA cross-platform reach, no app store friction |
 
@@ -88,39 +88,39 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MTCH-01 | — | Pending |
-| MTCH-02 | — | Pending |
-| MTCH-03 | — | Pending |
-| MTCH-04 | — | Pending |
-| MTCH-05 | — | Pending |
-| FLOW-01 | — | Pending |
-| FLOW-02 | — | Pending |
-| FLOW-03 | — | Pending |
-| FLOW-04 | — | Pending |
-| FLOW-05 | — | Pending |
-| CONF-01 | — | Pending |
-| CONF-02 | — | Pending |
-| CONF-03 | — | Pending |
-| CONT-01 | — | Pending |
-| CONT-02 | — | Pending |
-| UX-01 | — | Pending |
-| UX-02 | — | Pending |
-| UX-03 | — | Pending |
-| UX-04 | — | Pending |
-| UX-05 | — | Pending |
-| UX-06 | — | Pending |
-| UX-07 | — | Pending |
-| UX-08 | — | Pending |
-| PLAT-01 | — | Pending |
-| PLAT-02 | — | Pending |
-| PLAT-03 | — | Pending |
-| PLAT-04 | — | Pending |
+| MTCH-01 | Phase 2 | Pending |
+| MTCH-02 | Phase 2 | Pending |
+| MTCH-03 | Phase 2 | Pending |
+| MTCH-04 | Phase 2 | Pending |
+| MTCH-05 | Phase 2 | Pending |
+| FLOW-01 | Phase 2 | Pending |
+| FLOW-02 | Phase 2 | Pending |
+| FLOW-03 | Phase 2 | Pending |
+| FLOW-04 | Phase 2 | Pending |
+| FLOW-05 | Phase 2 | Pending |
+| CONF-01 | Phase 3 | Pending |
+| CONF-02 | Phase 3 | Pending |
+| CONF-03 | Phase 3 | Pending |
+| CONT-01 | Phase 3 | Pending |
+| CONT-02 | Phase 4 | Pending |
+| UX-01 | Phase 4 | Pending |
+| UX-02 | Phase 4 | Pending |
+| UX-03 | Phase 2 | Pending |
+| UX-04 | Phase 2 | Pending |
+| UX-05 | Phase 2 | Pending |
+| UX-06 | Phase 2 | Pending |
+| UX-07 | Phase 4 | Pending |
+| UX-08 | Phase 4 | Pending |
+| PLAT-01 | Phase 1 | Pending |
+| PLAT-02 | Phase 1 | Pending |
+| PLAT-03 | Phase 2 | Pending |
+| PLAT-04 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 27 total
-- Mapped to phases: 0
-- Unmapped: 27 ⚠️
+- Mapped to phases: 27
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-07-09*
-*Last updated: 2026-07-09 after initial definition*
+*Last updated: 2026-07-09 after roadmap creation*
