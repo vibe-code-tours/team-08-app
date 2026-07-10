@@ -55,6 +55,13 @@ status: partial
 **Reason:** This fix requires regenerating a raster PNG asset (inset the lightning-bolt glyph to fit within the maskable-icon safe-zone circle) or producing a new dedicated `pwa-512x512-maskable.png`. No image-editing/rasterization tools (`convert`, `magick`, `rsvg-convert`, `inkscape`) are available in this environment, and the repo does not contain a vector source for the app's lightning-bolt glyph itself (`public/icons.svg` only contains unrelated social-media icons) from which a corrected asset could be regenerated programmatically. This is a design-asset task, not a code change, and needs to be done with an actual image editor or the maskable.app tool as the review suggests, then committed separately.
 **Original issue:** The maskable icon spec requires meaningful glyph content to fit inside the inner ~80% safe-zone circle. Visual inspection shows the lightning-bolt glyph's points extend close to/past the image edges in `pwa-512x512.png`, and `vite.config.ts` declares this same asset with `purpose: 'maskable'`, so Android will crop it and produce a visibly broken home-screen icon.
 
+**Re-tested 2026-07-11 (manual fix attempt):** User manually added `public/pwa-512x512-maskable.png` and repointed `vite.config.ts`'s `purpose: 'maskable'` manifest entry to it (the exact structural fix this review suggested). Measured against the maskable safe-zone circle (radius = 40% of canvas width, centered), the new asset **still does not resolve the issue**:
+
+- **Still clipped:** the glyph's top-left point, top-right point, right point, and bottom tip all extend outside the 80% safe-zone circle — visually confirmed by overlaying the safe-zone circle on the asset. The new asset is a like-for-like copy of the original glyph shape at a different resolution, not an inset redraw.
+- **New defect introduced:** the new asset is **240×240px**, but `vite.config.ts` declares it as `sizes: '512x512'` in the manifest. `npm run build` does not fail on this (vite-plugin-pwa doesn't validate raster dimensions against declared manifest sizes), so this size mismatch will ship silently — Android will upscale a 240px source to fill a 512px declared slot, degrading icon sharpness on top of the clipping.
+
+**Status: still open.** The safe-zone violation is unresolved and a dimension-mismatch defect was added. Needs an actual redraw with the glyph inset to fit the safe-zone circle, exported at the full 512×512px declared in the manifest (e.g. via maskable.app, which previews the live safe-zone overlay while editing).
+
 ---
 
 _Fixed: 2026-07-11T01:30:00Z_

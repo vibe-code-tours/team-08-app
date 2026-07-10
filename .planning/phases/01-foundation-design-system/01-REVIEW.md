@@ -126,6 +126,7 @@ icons: [
   { src: 'pwa-512x512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
 ]
 ```
+**Status: still open as of 2026-07-11.** A manual fix attempt added a dedicated `pwa-512x512-maskable.png` (the structural fix suggested above) but the new asset still violates the safe zone and is the wrong pixel size (240×240 vs. the declared 512×512). See `01-REVIEW-FIX.md` WR-05 for the retest details.
 
 ## Info
 
