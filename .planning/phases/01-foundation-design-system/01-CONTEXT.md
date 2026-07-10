@@ -28,7 +28,7 @@ Building actual gameplay (roulette, card flip, truth/dare content, settings UI) 
 ### GameContext v1 Scope
 - **D-04:** Lock `GamePhase` to exactly the 7 phases already named in `CLAUDE.md` / `.planning/codebase/ARCHITECTURE.md`: `start`, `setup`, `touchSelection`, `selectedPlayer`, `truthDareChoice`, `cardReveal`, `nextRound`.
 - **D-05:** Reducer actions cover: start game, select player, choose truth/dare, pick card, vote, next round. The Random coin-flip sub-choice (REQUIREMENTS.md FLOW-02) and dedicated pass/fail/celebration result screens (UX-03/04/05) are NOT modeled as separate `GamePhase` values in Phase 1 — Phase 2 extends the union type and reducer when it builds those screens.
-- **D-06:** Deliberate narrow-scope choice: the type contract should be extendable later rather than Phase 1 trying to predict every future field Phase 2 will need.
+- **D-06 [informational]:** Deliberate narrow-scope choice: the type contract should be extendable later rather than Phase 1 trying to predict every future field Phase 2 will need. Rationale for D-05's narrow reducer scope — not an independently actionable item.
 
 ### Screen Stub Strategy
 - **D-07:** Create all 7 placeholder screen components now in `src/screens/` (`StartScreen.tsx`, `SetupScreen.tsx`, `TouchSelectionScreen.tsx`, `SelectedPlayerScreen.tsx`, `TruthDareChoiceScreen.tsx`, `CardRevealScreen.tsx`, `NextRoundScreen.tsx`), each a minimal functional component (e.g., renders its own phase name), wired into the router.
