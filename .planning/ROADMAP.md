@@ -27,12 +27,12 @@ The game builds in four phases: first the design system and game state skeleton,
   4. Game settings and state persist in local storage so they survive page reloads
   5. App.tsx routes to the correct screen component based on the current game phase from GameContext
 
-**Plans**: 2 plans
+**Plans**: 1/2 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Tailwind v4 @theme neon token contract, type barrel, and GameContext (reducer + GameSettings localStorage persistence)
+- [x] 01-01-PLAN.md — Tailwind v4 @theme neon token contract, type barrel, and GameContext (reducer + GameSettings localStorage persistence)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4. Phases 2, 3, and 4 can execut
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Design System | 0/2 | Not started | - |
+| 1. Foundation & Design System | 1/2 | In Progress|  |
 | 2. Core Game Loop | 0/3 | Not started | - |
 | 3. Content, Settings & Platform | 0/2 | Not started | - |
 | 4. Premium Polish | 0/2 | Not started | - |

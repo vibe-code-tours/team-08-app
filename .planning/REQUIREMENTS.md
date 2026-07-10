@@ -50,7 +50,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **PLAT-01**: PWA is installable with manifest and service worker
 - [ ] **PLAT-02**: Game settings persist in local storage
 - [ ] **PLAT-03**: Works on Android and iOS Safari (mobile-first)
-- [ ] **PLAT-04**: Fully client-side, no backend required
+- [x] **PLAT-04**: Fully client-side, no backend required
 
 ## v2 Requirements
 
@@ -114,9 +114,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAT-01 | Phase 1 | Pending |
 | PLAT-02 | Phase 1 | Pending |
 | PLAT-03 | Phase 2 | Pending |
-| PLAT-04 | Phase 1 | Pending |
+| PLAT-04 | Phase 1 | Complete |
 
 **Coverage:**
+
 - v1 requirements: 27 total
 - Mapped to phases: 27
 - Unmapped: 0
