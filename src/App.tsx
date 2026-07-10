@@ -25,8 +25,13 @@ export function ActiveScreen() {
       return <CardRevealScreen />
     case 'nextRound':
       return <NextRoundScreen />
-    default:
-      return null // exhaustive per noFallthroughCasesInSwitch -- TS narrows state.phase to never here
+    default: {
+      // Compile-time exhaustiveness check: if a new GamePhase is added to
+      // src/types/index.ts without a matching case above, this assignment
+      // fails to typecheck (state.phase would no longer narrow to never).
+      const _exhaustiveCheck: never = state.phase
+      return _exhaustiveCheck
+    }
   }
 }
 
