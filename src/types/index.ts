@@ -40,6 +40,8 @@ export interface GameState {
   players: PlayerTouch[]
   activePlayer: PlayerTouch | null
   selectedCard: Card | null
+  chosenType: CardType | null
+  voteResult: 'pass' | 'fail' | null
   settings: GameSettings
 }
 

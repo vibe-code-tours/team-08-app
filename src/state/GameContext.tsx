@@ -36,6 +36,8 @@ const initialState: GameState = {
   players: [],
   activePlayer: null,
   selectedCard: null,
+  chosenType: null,
+  voteResult: null,
   settings: loadSettings(),
 }
 
@@ -46,17 +48,19 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'SELECT_PLAYER':
       return { ...state, phase: 'selectedPlayer', activePlayer: action.payload }
     case 'CHOOSE_TRUTH_OR_DARE':
-      return { ...state, phase: 'cardReveal' }
+      return { ...state, phase: 'cardReveal', chosenType: action.payload }
     case 'PICK_CARD':
-      return { ...state, selectedCard: action.payload }
+      return { ...state, phase: 'cardReveal', selectedCard: action.payload }
     case 'VOTE':
-      return { ...state }
+      return { ...state, voteResult: action.payload }
     case 'NEXT_ROUND':
       return {
         ...state,
         phase: 'touchSelection',
         activePlayer: null,
         selectedCard: null,
+        chosenType: null,
+        voteResult: null,
       }
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.payload } }

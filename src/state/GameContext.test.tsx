@@ -12,6 +12,8 @@ const baseState: GameState = {
   players: [],
   activePlayer: null,
   selectedCard: null,
+  chosenType: null,
+  voteResult: null,
   settings: defaultSettings,
 }
 
