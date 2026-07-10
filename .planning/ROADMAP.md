@@ -24,11 +24,11 @@ The game builds in four phases: first the design system and game state skeleton,
   3. TypeScript type definitions exist for Card, GameState, PlayerTouch, GameSettings, and all game phases
   4. Game settings and state persist in local storage so they survive page reloads
   5. App.tsx routes to the correct screen component based on the current game phase from GameContext
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: Set up Tailwind v4 with @theme neon palette and GameContext + type skeleton
-- [ ] 01-02: Wire vite-plugin-pwa, screen router in App.tsx, and local storage persistence
+- [ ] 01-01-PLAN.md — Tailwind v4 @theme neon token contract, type barrel, and GameContext (reducer + GameSettings localStorage persistence)
+- [ ] 01-02-PLAN.md — 7 screen stubs + phase-based App.tsx router, PWA wiring (manifest/service worker/icons), and end-to-end reload-persistence proof
 
 ### Phase 2: Core Game Loop
 **Mode:** mvp
