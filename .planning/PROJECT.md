@@ -47,8 +47,10 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 - ✓ Project scaffolding (Vite + React + TypeScript) — existing
 - ✓ ESLint + Vitest configuration — existing
 - ✓ CI/CD pipeline (GitHub Actions) — existing
-- ✓ PWA plugin installed (needs wiring) — existing
+- ✓ PWA installable with manifest and service worker — Validated in Phase 1: Foundation & Design System
 - ✓ Codebase architecture documented — existing
+- ✓ Local storage persistence for settings and preferences — Validated in Phase 1: Foundation & Design System
+- ✓ Fully client-side, no backend required — Validated in Phase 1: Foundation & Design System
 
 ### Active
 
@@ -68,8 +70,6 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 - [ ] Sound effects (roulette, card flip, timer, celebrations)
 - [ ] Optional countdown timer with pressure effects
 - [ ] Next round flow (Next Round / Change Settings / Restart)
-- [ ] Local storage persistence for settings and preferences
-- [ ] Fully client-side, no backend required
 
 ### Out of Scope
 
@@ -82,7 +82,7 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 
 ## Context
 
-**Existing State:** The project has a complete Vite + React + TypeScript scaffold with ESLint, Vitest, and GitHub Actions CI. The 4 core game files exist as empty stubs (`src/types/index.ts`, `src/state/GameContext.tsx`, `src/data/cards.ts`, `src/hooks/useMultiTouch.ts`). `App.tsx` still contains the Vite starter template. `src/screens/` does not exist yet.
+**Existing State:** Phase 1 (Foundation & Design System) complete — Tailwind v4 neon `@theme` design tokens, the full TypeScript type barrel (`src/types/index.ts`), and `GameContext` (reducer + localStorage-backed `GameSettings`) are implemented and tested. `App.tsx` is a phase-based router over 7 placeholder screens (`src/screens/`), and the app is an installable PWA (manifest + service worker). `src/data/cards.ts` and `src/hooks/useMultiTouch.ts` remain empty stubs, targeted by Phase 2.
 
 **Design Reference:** A 24-screen UI kit (`public/images/Screens.png`) provides the complete visual target — from splash screen through onboarding, gameplay, and settings. The design is in Myanmar/Burmese language but the visual language (neon dark theme, glow effects, card animations, roulette) is clear.
 
@@ -129,4 +129,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-09 after initialization*
+*Last updated: 2026-07-10 after Phase 1: Foundation & Design System*
