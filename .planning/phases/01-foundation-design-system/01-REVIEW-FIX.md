@@ -1,24 +1,24 @@
 ---
 phase: 01-foundation-design-system
-fixed_at: 2026-07-11T01:30:00Z
+fixed_at: 2026-07-11T02:30:00Z
 review_path: .planning/phases/01-foundation-design-system/01-REVIEW.md
-iteration: 1
+iteration: 2
 findings_in_scope: 5
-fixed: 4
-skipped: 1
-status: partial
+fixed: 5
+skipped: 0
+status: all_fixed
 ---
 
 # Phase 1: Code Review Fix Report
 
-**Fixed at:** 2026-07-11T01:30:00Z
+**Fixed at:** 2026-07-11T02:30:00Z (WR-05 resolved in a follow-up manual pass)
 **Source review:** .planning/phases/01-foundation-design-system/01-REVIEW.md
-**Iteration:** 1
+**Iteration:** 2
 
 **Summary:**
 - Findings in scope: 5 (WR-01 through WR-05; fix_scope = critical_warning, 0 Critical findings existed)
-- Fixed: 4
-- Skipped: 1
+- Fixed: 5
+- Skipped: 0
 
 ## Fixed Issues
 
@@ -47,23 +47,24 @@ status: partial
 **Commit:** c43d3ee
 **Applied fix:** Replaced `default: return null` with a `const _exhaustiveCheck: never = state.phase; return _exhaustiveCheck` pattern, exactly as suggested in the review. Adding a new `GamePhase` variant without a matching `case` will now fail `tsc -b` instead of silently rendering a blank screen at runtime.
 
-## Skipped Issues
-
 ### WR-05: 512×512 maskable PWA icon violates the maskable safe zone — will be visibly clipped on Android
 
-**File:** `public/pwa-512x512.png`, `vite.config.ts`
-**Reason:** This fix requires regenerating a raster PNG asset (inset the lightning-bolt glyph to fit within the maskable-icon safe-zone circle) or producing a new dedicated `pwa-512x512-maskable.png`. No image-editing/rasterization tools (`convert`, `magick`, `rsvg-convert`, `inkscape`) are available in this environment, and the repo does not contain a vector source for the app's lightning-bolt glyph itself (`public/icons.svg` only contains unrelated social-media icons) from which a corrected asset could be regenerated programmatically. This is a design-asset task, not a code change, and needs to be done with an actual image editor or the maskable.app tool as the review suggests, then committed separately.
-**Original issue:** The maskable icon spec requires meaningful glyph content to fit inside the inner ~80% safe-zone circle. Visual inspection shows the lightning-bolt glyph's points extend close to/past the image edges in `pwa-512x512.png`, and `vite.config.ts` declares this same asset with `purpose: 'maskable'`, so Android will crop it and produce a visibly broken home-screen icon.
+**Files modified:** `public/pwa-512x512-maskable.png`, `vite.config.ts`
+**Reason originally skipped:** Required regenerating a raster PNG asset; no image-editing/rasterization tools were available in the automated-fix environment (`convert`, `magick`, `rsvg-convert`, `inkscape` all absent), so this was left as a design-asset task for manual follow-up.
 
-**Re-tested 2026-07-11 (manual fix attempt):** User manually added `public/pwa-512x512-maskable.png` and repointed `vite.config.ts`'s `purpose: 'maskable'` manifest entry to it (the exact structural fix this review suggested). Measured against the maskable safe-zone circle (radius = 40% of canvas width, centered), the new asset **still does not resolve the issue**:
+**Attempt 1 (2026-07-11, manual, rejected on retest):** User added `public/pwa-512x512-maskable.png` and repointed `vite.config.ts`'s `purpose: 'maskable'` entry to it. Retest found the glyph was still a like-for-like copy of the original shape (top-left, top-right, right, and bottom tips all still outside the 80% safe-zone circle) and introduced a new defect: the asset was 240×240px against a declared `sizes: '512x512'`.
 
-- **Still clipped:** the glyph's top-left point, top-right point, right point, and bottom tip all extend outside the 80% safe-zone circle — visually confirmed by overlaying the safe-zone circle on the asset. The new asset is a like-for-like copy of the original glyph shape at a different resolution, not an inset redraw.
-- **New defect introduced:** the new asset is **240×240px**, but `vite.config.ts` declares it as `sizes: '512x512'` in the manifest. `npm run build` does not fail on this (vite-plugin-pwa doesn't validate raster dimensions against declared manifest sizes), so this size mismatch will ship silently — Android will upscale a 240px source to fill a 512px declared slot, degrading icon sharpness on top of the clipping.
+**Attempt 2 (2026-07-11, manual, verified fixed):** User redrew the glyph inset to the safe zone and re-exported at the correct resolution.
 
-**Status: still open.** The safe-zone violation is unresolved and a dimension-mismatch defect was added. Needs an actual redraw with the glyph inset to fit the safe-zone circle, exported at the full 512×512px declared in the manifest (e.g. via maskable.app, which previews the live safe-zone overlay while editing).
+**Verification performed:**
+- `public/pwa-512x512-maskable.png` is now 512×512px (RGBA), matching the `sizes: '512x512'` declared in `vite.config.ts`.
+- Measured the glyph's maximum radial distance from image center against the safe-zone radius (40% of canvas width = 204.8px): max glyph extent measured at 199.5px — inside the safe zone with margin. Confirmed visually by rendering the safe-zone circle over the asset — the full glyph sits within the circle.
+- `npm run build` succeeds; `dist/manifest.webmanifest` correctly emits the maskable icon entry at `pwa-512x512-maskable.png`, `sizes: 512x512`, `purpose: maskable`, and `dist/pwa-512x512-maskable.png` is written to the build output.
+- `npx vitest run`: 10/10 passing (unaffected by this asset-only change).
+- `npx eslint src/`: clean.
 
 ---
 
-_Fixed: 2026-07-11T01:30:00Z_
-_Fixer: Claude (gsd-code-fixer)_
-_Iteration: 1_
+_Fixed: 2026-07-11T02:30:00Z_
+_Fixer: Claude (gsd-code-fixer, re-verified after user's manual fix)_
+_Iteration: 2_

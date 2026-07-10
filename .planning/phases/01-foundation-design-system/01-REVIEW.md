@@ -126,7 +126,7 @@ icons: [
   { src: 'pwa-512x512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
 ]
 ```
-**Status: still open as of 2026-07-11.** A manual fix attempt added a dedicated `pwa-512x512-maskable.png` (the structural fix suggested above) but the new asset still violates the safe zone and is the wrong pixel size (240×240 vs. the declared 512×512). See `01-REVIEW-FIX.md` WR-05 for the retest details.
+**Status: resolved 2026-07-11.** First manual attempt added a dedicated `pwa-512x512-maskable.png` but it still violated the safe zone and was the wrong pixel size (240×240 vs. the declared 512×512). A second manual attempt redrew the glyph inset to the safe zone at the correct 512×512 resolution — verified fixed (measured within the safe-zone radius, build emits the correct manifest entry). See `01-REVIEW-FIX.md` WR-05 for full retest details.
 
 ## Info
 
