@@ -4,11 +4,10 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Core Game Loop
-status: verifying
+status: "Phase 01 shipped — PR #19"
 stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-07-10T12:59:33.059Z"
-last_activity: 2026-07-10
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
+last_updated: "2026-07-10T18:36:27.872Z"
+last_activity: 2026-07-11
 progress:
   total_phases: 4
   completed_phases: 1
@@ -30,8 +29,8 @@ See: .planning/PROJECT.md (updated 2026-07-09)
 
 Phase: 2 — Core Game Loop
 Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-07-10 — Phase 01 complete, transitioned to Phase 2
+Status: Phase 01 shipped — PR #19
+Last activity: 2026-07-11
 
 Progress: [░░░░░░░░░░] 0%
 
