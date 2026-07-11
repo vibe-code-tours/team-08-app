@@ -17,6 +17,7 @@ export default function RouletteScreen() {
   const [spinning, setSpinning] = useState(false)
   const [winner, setWinner] = useState<PlayerTouch | null>(null)
   const [showResult, setShowResult] = useState(false)
+  const [eliminated, setEliminated] = useState(false)
 
   // Calculate circular positions around center
   const getCirclePositions = useCallback((count: number) => {
@@ -61,10 +62,12 @@ export default function RouletteScreen() {
         setHighlightIndex(targetIndex)
         setSpinning(false)
         setWinner(selectedWinner)
+        // Eliminate non-winners first, then show the result
+        setTimeout(() => setEliminated(true), 300)
         setTimeout(() => {
           setShowResult(true)
           dispatch({ type: 'SELECT_PLAYER', player: selectedWinner })
-        }, 1200)
+        }, 2000)
         return
       }
 
@@ -97,22 +100,55 @@ export default function RouletteScreen() {
           className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          {spinning ? 'Spinning...' : winner ? 'Selected!' : 'Ready...'}
+          {spinning ? 'Spinning...' : eliminated && winner ? 'The chosen one!' : winner ? 'Selected!' : 'Ready...'}
         </h1>
       </div>
 
       {/* Player dots in circle */}
-      {players.map((player, i) => (
-        <PlayerDot
-          key={player.identifier}
-          color={player.color}
-          x={positions[i].x}
-          y={positions[i].y}
-          label={player.label}
-          active={highlightIndex === i || !spinning}
-          size={highlightIndex === i ? 64 : 48}
-        />
-      ))}
+      {players.map((player, i) => {
+        const isWinner = winner?.identifier === player.identifier
+        const isEliminated = eliminated && !isWinner
+
+        return (
+          <motion.div
+            key={player.identifier}
+            animate={
+              isEliminated
+                ? { opacity: 0, scale: 0 }
+                : isWinner && eliminated
+                  ? { scale: 1.4 }
+                  : { opacity: 1, scale: 1 }
+            }
+            transition={
+              isEliminated
+                ? { duration: 0.4, ease: 'easeIn' }
+                : { type: 'spring', stiffness: 300, damping: 15 }
+            }
+            className="absolute"
+          >
+            <PlayerDot
+              color={player.color}
+              x={positions[i].x}
+              y={positions[i].y}
+              label={player.label}
+              active={highlightIndex === i || !spinning}
+              size={isWinner && eliminated ? 72 : highlightIndex === i ? 64 : 48}
+            />
+            {/* Crown above the winner */}
+            {isWinner && eliminated && (
+              <motion.div
+                initial={{ y: 10, opacity: 0, scale: 0 }}
+                animate={{ y: -40, opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 12, delay: 0.2 }}
+                className="absolute text-3xl pointer-events-none"
+                style={{ left: positions[i].x - 16, top: positions[i].y - 16 }}
+              >
+                👑
+              </motion.div>
+            )}
+          </motion.div>
+        )
+      })}
 
       {/* Highlight ring on current spinning dot */}
       {spinning && highlightIndex >= 0 && (

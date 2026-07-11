@@ -1,25 +1,49 @@
-import { useCallback, useRef } from 'react'
-import { AnimatePresence } from 'motion/react'
+import { useRef, useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 
+/** How long to wait (ms) after fingers stabilize before auto-starting */
+const STABLE_DELAY = 2000
+
 /**
  * Screen where all players place their fingers on the screen.
- * Once enough players are touching, a "Start Roulette" button appears.
+ * After 2+ fingers are placed and held steady for a short countdown,
+ * the roulette starts automatically — no button needed.
  */
 export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
   const containerRef = useRef<HTMLDivElement>(null)
   const { players } = useMultiTouch(containerRef, 10)
 
-  const canStart = players.length >= 2
+  const [counting, setCounting] = useState(false)
+  const countdownRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rafRef = useRef(0)
 
-  const handleStartRoulette = useCallback(() => {
-    if (players.length >= 2) {
-      dispatch({ type: 'SET_FINGERS', players })
+  // Auto-start countdown when enough fingers are down
+  useEffect(() => {
+    if (countdownRef.current) {
+      clearTimeout(countdownRef.current)
+      countdownRef.current = null
     }
-  }, [dispatch, players])
+
+    if (players.length >= 2) {
+      // Defer state update to avoid synchronous setState in effect
+      rafRef.current = requestAnimationFrame(() => setCounting(true))
+      countdownRef.current = setTimeout(() => {
+        setCounting(false)
+        dispatch({ type: 'SET_FINGERS', players })
+      }, STABLE_DELAY)
+    } else {
+      rafRef.current = requestAnimationFrame(() => setCounting(false))
+    }
+
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      if (countdownRef.current) clearTimeout(countdownRef.current)
+    }
+  }, [players, dispatch])
 
   return (
     <div
@@ -40,9 +64,58 @@ export default function FingerSelectionScreen() {
         <p className="text-sm text-white/50">
           {players.length === 0
             ? 'Waiting for players...'
-            : `${players.length} player${players.length > 1 ? 's' : ''} ready`}
+            : counting
+              ? 'Hold still…'
+              : `${players.length} player${players.length > 1 ? 's' : ''} — add more!`}
         </p>
       </div>
+
+      {/* Countdown ring — pulsing circle in the center */}
+      <AnimatePresence>
+        {counting && (
+          <motion.div
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 1.4, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none"
+          >
+            <svg width="120" height="120" className="drop-shadow-[0_0_20px_rgba(168,85,247,0.7)]">
+              {/* Background circle */}
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(168,85,247,0.15)" strokeWidth="4" />
+              {/* Progress arc — shrinks as countdown progresses */}
+              <motion.circle
+                cx="60"
+                cy="60"
+                r="52"
+                fill="none"
+                stroke="url(#countdown-gradient)"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 52}
+                initial={{ strokeDashoffset: 0 }}
+                animate={{ strokeDashoffset: 2 * Math.PI * 52 }}
+                transition={{ duration: STABLE_DELAY / 1000, ease: 'linear' }}
+                transform="rotate(-90 60 60)"
+              />
+              <defs>
+                <linearGradient id="countdown-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#a855f7" />
+                  <stop offset="100%" stopColor="#ec4899" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <motion.p
+              className="absolute inset-0 flex items-center justify-center text-xl font-bold text-white/80"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              {players.length}
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Player dots */}
       <AnimatePresence>
@@ -56,21 +129,6 @@ export default function FingerSelectionScreen() {
           />
         ))}
       </AnimatePresence>
-
-      {/* Start button */}
-      {canStart && (
-        <div className="absolute inset-x-0 bottom-16 flex justify-center z-10">
-          <button
-            onClick={handleStartRoulette}
-            className="px-8 py-4 rounded-full text-lg font-bold text-white
-              bg-gradient-to-r from-purple-600 to-pink-600
-              shadow-[0_0_24px_rgba(168,85,247,0.6)]
-              active:scale-95 transition-transform"
-          >
-            Start Roulette
-          </button>
-        </div>
-      )}
     </div>
   )
 }
