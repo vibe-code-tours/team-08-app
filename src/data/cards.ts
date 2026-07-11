@@ -273,7 +273,7 @@ export function filterCards(options: {
   return cards.filter(
     (c) =>
       (!options.pack || c.pack === options.pack) &&
-      (!options.difficulty || c.difficulty === options.difficulty) &&
+      (!options.difficulty || options.difficulty === 'all' || c.difficulty === options.difficulty) &&
       (!options.type || c.type === options.type),
   )
 }
@@ -296,7 +296,12 @@ export function randomCards(n: number, options: {
   type?: CardType
 } = {}): Card[] {
   const filtered = filterCards(options)
-  const shuffled = [...filtered].sort(() => Math.random() - 0.5)
+  // Fisher-Yates shuffle for uniform randomness
+  const shuffled = [...filtered]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
   return shuffled.slice(0, Math.min(n, shuffled.length))
 }
 

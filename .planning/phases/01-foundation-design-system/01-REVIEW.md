@@ -1,182 +1,209 @@
 ---
 phase: 01-foundation-design-system
-reviewed: 2026-07-11T00:00:00Z
+reviewed: 2026-07-12T01:05:00Z
 depth: standard
-files_reviewed: 15
+files_reviewed: 22
 files_reviewed_list:
-  - public/pwa-192x192.png
-  - public/pwa-512x512.png
+  - .claude/CLAUDE.md
+  - .gitignore
+  - CLAUDE.md
+  - docs/ARCHITECTURE.md
+  - docs/PROPOSAL.md
+  - eslint.config.js
+  - package.json
+  - public/images/TheChosenOneLogo.png
   - src/App.test.tsx
   - src/App.tsx
+  - src/components/CardBack.tsx
+  - src/components/DifficultyBadge.tsx
+  - src/components/GlassPanel.tsx
+  - src/components/NeonButton.tsx
+  - src/components/PackBadge.tsx
+  - src/components/PlayerDot.tsx
+  - src/components/TimerDisplay.tsx
+  - src/data/cards.ts
+  - src/hooks/useMultiTouch.ts
   - src/index.css
-  - src/screens/CardRevealScreen.tsx
-  - src/screens/NextRoundScreen.tsx
-  - src/screens/SelectedPlayerScreen.tsx
-  - src/screens/SetupScreen.tsx
+  - src/screens/FingerSelectionScreen.tsx
+  - src/screens/PlayerSelectedScreen.tsx
+  - src/screens/RouletteScreen.tsx
   - src/screens/StartScreen.tsx
-  - src/screens/TouchSelectionScreen.tsx
-  - src/screens/TruthDareChoiceScreen.tsx
   - src/state/GameContext.test.tsx
   - src/state/GameContext.tsx
   - src/types/index.ts
 findings:
-  critical: 0
+  critical: 2
   warning: 5
-  info: 5
-  total: 10
+  info: 4
+  total: 11
 status: issues_found
 ---
 
-# Phase 1: Code Review Report
+# Phase 01: Code Review Report
 
-**Reviewed:** 2026-07-11
+**Reviewed:** 2026-07-12T01:05:00Z
 **Depth:** standard
-**Files Reviewed:** 15
+**Files Reviewed:** 22 (of 26 listed; `.claude/CLAUDE.md`, `.gitignore`, `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/PROPOSAL.md`, `eslint.config.js`, `package.json`, `public/images/TheChosenOneLogo.png` reviewed as context/config, not flagged for source-level findings)
 **Status:** issues_found
 
 ## Summary
 
-Phase 1 delivers a Walking Skeleton: Tailwind v4 `@theme` neon design tokens, a `GameState`/`GameAction` type barrel, a `GameContext` provider + reducer with localStorage-backed settings persistence, seven placeholder screens, and PWA wiring via `vite-plugin-pwa`. `npm run lint`, `npx tsc -b`, `npx vitest run` (10/10), and `npm run build` all pass clean as of this review.
+This review supersedes the prior `01-REVIEW.md` (dated 2026-07-11), which was written against an earlier commit with a different `GamePhase` union (`cardReveal`, `touchSelection`, `SelectedPlayerScreen`, `TouchSelectionScreen`) that no longer exists on this branch. The reducer bugs flagged there (`CHOOSE_TRUTH_OR_DARE`/`PICK_CARD`/`VOTE` silently discarding payloads) have since been fixed in the current `GameContext.tsx`. This is a fresh review of the current `feat/phase1-components-and-cards` diff against `main`: shared components, multi-touch hook, card data, game state/reducer, and the finger-selection/roulette/player-selected/start screens.
 
-No Critical/security-severity issues were found in the reviewed source — this is a fully client-side app with no untrusted network input, and the localStorage read/write paths are correctly try/catch-guarded against malformed data or unavailable storage. The findings below are real logic gaps in the reducer (payload data silently discarded for two of seven actions, a third with an undocumented ordering dependency), an unreachable-but-unenforced exhaustiveness gap in the screen router, a maskable-icon spec violation that will visibly clip the app icon on Android home screens, and several test-coverage gaps worth tracking before Phase 2 builds real screens and gameplay logic on top of this state backbone.
+`npm run lint` and `npm run test` (11/11) both pass clean, and the reducer/localStorage unit tests are solid. However, two behavior-affecting bugs were found: (1) `useMultiTouch`'s `touchmove` handler mutates player position in the ref without triggering a re-render, so a dragged finger's dot visually freezes until an unrelated touch event fires elsewhere; (2) the `NEXT_ROUND` reducer action forgets to reset `voteResult`, so a stale vote from the prior round leaks into the next round's state. Several component prop APIs (`NeonButton`, `TimerDisplay`, `CardBack`) also diverge from the documented contract in `docs/PROPOSAL.md` that Phases 2–4 are expected to build against, which risks rework or silent prop mismatches downstream.
 
-Several of the reducer findings (`CHOOSE_TRUTH_OR_DARE`, `VOTE`) were explicitly scoped in 01-CONTEXT.md/01-RESEARCH.md D-05 as "Phase 2 will complete this" — they are not implementation mistakes relative to the plan's stated scope. They are nonetheless live bugs in the reducer as committed today (dispatching either action silently loses caller-supplied data with no observable state change), so per the adversarial review mandate they are reported here as Warnings against the shipped code, not waived on the basis of plan intent.
+## Critical Issues
+
+### CR-01: Dragged touch positions don't update player dots (stale position bug)
+
+**File:** `src/hooks/useMultiTouch.ts:63-75`
+**Issue:** `handleTouchMove` mutates the `PlayerTouch` object's `x`/`y` fields directly on the object stored in `touchesRef.current` (a `Map`), but never calls `syncPlayers()` (i.e. never calls `setPlayers(...)`). Since `players` (the state array consumed by `FingerSelectionScreen` and `RouletteScreen`) is only updated in `handleTouchStart`/`handleTouchEnd`, dragging a single finger around the screen will not move its rendered `PlayerDot` — the dot only "catches up" to the latest mutated position when some other touch event (a different finger touching down or lifting) happens to trigger `syncPlayers()`. With only one finger on screen, the dot never moves after the initial touchdown. This breaks the core "place your fingers" interaction: a repositioned finger appears detached from its dot, undermining the roulette selection UX this game is built around.
+**Fix:**
+```ts
+const handleTouchMove = (e: TouchEvent) => {
+  e.preventDefault()
+  const rect = el.getBoundingClientRect()
+  let changed = false
+
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    const touch = e.changedTouches[i]
+    const player = touchesRef.current.get(touch.identifier)
+    if (player) {
+      player.x = touch.clientX - rect.left
+      player.y = touch.clientY - rect.top
+      changed = true
+    }
+  }
+  if (changed) syncPlayers()
+}
+```
+Note: calling `setPlayers` on every `touchmove` re-introduces the 60fps re-render concern the hook's own docstring warns against ("Positions are stored in a ref ... because touch events fire at 60fps"). If avoiding per-frame re-renders is intentional, that tradeoff should be made explicit and `FingerSelectionScreen`/`RouletteScreen` should read live positions from `touchesRef` (e.g. via `requestAnimationFrame` polling) rather than from the `players` state snapshot, instead of silently going stale.
+
+### CR-02: `NEXT_ROUND` does not reset `voteResult`, leaking stale vote into the next round
+
+**File:** `src/state/GameContext.tsx:58-67`
+**Issue:** The `NEXT_ROUND` case resets `players`, `selectedPlayer`, `selectedCard`, and `chosenType`, but omits `voteResult`. If a round ends with `voteResult: 'pass'` or `'fail'` (set via the `VOTE` action), that value persists into the following round's initial state. Any UI that reads `voteResult` to show a pass/fail badge (Phase 2/4 scope) will display the previous round's result before a new vote has been cast in the new round.
+**Fix:**
+```ts
+case 'NEXT_ROUND':
+  return {
+    ...state,
+    phase: 'finger-selection',
+    players: [],
+    selectedPlayer: null,
+    selectedCard: null,
+    chosenType: null,
+    voteResult: null,
+  }
+```
 
 ## Warnings
 
-### WR-01: `CHOOSE_TRUTH_OR_DARE` payload is silently discarded — no state field records the choice
+### WR-01: `NeonButton` prop API diverges from the documented contract other phases will build against
 
-**File:** `src/state/GameContext.tsx:48-49`
-**Issue:** The reducer case ignores `action.payload` (a `CardType`, i.e. `'truth' | 'dare'`) entirely:
+**File:** `src/components/NeonButton.tsx:3-10`
+**Issue:** `docs/PROPOSAL.md` (line 58, documented as the shared contract for Phase 2/3/4 consumers) specifies `NeonButton` props as `variant: 'truth' | 'dare' | 'random' | 'gold'`, `onClick`, `children`, `glow?`. The implementation instead exposes a free-form `color?: string` prop and no `variant` or `glow` prop at all. Any downstream screen written against the proposal's documented API (e.g. `<NeonButton variant="dare">`) will fail to type-check, and there's no `variant`-driven preset styling (each Phase 2-4 dev would have to know and hardcode the correct hex color string instead of using a semantic variant name).
+**Fix:** Either update `docs/PROPOSAL.md`/`ARCHITECTURE.md` to reflect the actual `color`-based API (if this was an intentional simplification), or add a `variant` prop that maps to preset colors internally:
 ```ts
-case 'CHOOSE_TRUTH_OR_DARE':
-  return { ...state, phase: 'cardReveal' }
-```
-`GameState` (`src/types/index.ts:38-44`) has no field to hold which of truth/dare was chosen — only `selectedCard` exists, set later by a separate `PICK_CARD` action. By the time `phase` becomes `'cardReveal'`, the information needed to decide which card pool (truth vs dare) to draw from has already been lost unless some other channel threads it through. `GameContext.test.tsx` has zero coverage for this action, so nothing currently guards this contract.
-**Fix:**
-```ts
-// types/index.ts — add to GameState
-chosenType: CardType | null
-
-// GameContext.tsx
-case 'CHOOSE_TRUTH_OR_DARE':
-  return { ...state, phase: 'cardReveal', chosenType: action.payload }
-...
-case 'NEXT_ROUND':
-  return { ...state, phase: 'touchSelection', activePlayer: null, selectedCard: null, chosenType: null }
-```
-
-### WR-02: `VOTE` action is a complete no-op — payload received and discarded, misleading new-object-identity spread
-
-**File:** `src/state/GameContext.tsx:52-53`
-**Issue:**
-```ts
-case 'VOTE':
-  return { ...state }
-```
-The `'pass' | 'fail'` payload is never stored anywhere in `GameState`. The `{ ...state }` spread produces a new object reference every dispatch with no actual data change — this is misleading (looks like a state update, triggers re-renders in consumers, but changes nothing observable) and there is no test asserting either real behavior or an explicit deferred-no-op intent.
-**Fix:** Either store the result now for a stable contract, or make the no-op explicit and cheap:
-```ts
-case 'VOTE':
-  // TODO(phase-2): record pass/fail result — no-op until FLOW-02/UX-03-05 land
-  return state
-```
-or, to close the gap properly:
-```ts
-case 'VOTE':
-  return { ...state, voteResult: action.payload } // requires voteResult: 'pass' | 'fail' | null on GameState
-```
-
-### WR-03: `PICK_CARD` never transitions `phase` — silently relies on an undocumented dispatch-order dependency
-
-**File:** `src/state/GameContext.tsx:50-51`
-**Issue:**
-```ts
-case 'PICK_CARD':
-  return { ...state, selectedCard: action.payload }
-```
-Every other flow-advancing action (`START_GAME`, `SELECT_PLAYER`, `CHOOSE_TRUTH_OR_DARE`, `NEXT_ROUND`) also transitions `phase`; `PICK_CARD` breaks that pattern. It "works" today only because `CHOOSE_TRUTH_OR_DARE` already moved `phase` to `'cardReveal'` before `PICK_CARD` fires — an ordering dependency that is nowhere enforced, documented, or tested. If a future caller dispatches `PICK_CARD` on its own (e.g. a "redraw card" action), no phase transition occurs.
-**Fix:** Either add an explicit code comment documenting the required dispatch order, or make the action self-sufficient:
-```ts
-case 'PICK_CARD':
-  return { ...state, phase: 'cardReveal', selectedCard: action.payload }
-```
-
-### WR-04: `default: return null` in `ActiveScreen` switch is not compiler-enforced exhaustive; comment overstates the guarantee
-
-**File:** `src/App.tsx:28-29`
-**Issue:** The comment claims exhaustiveness "per noFallthroughCasesInSwitch," but that TS option only prevents case fallthrough — it does not enforce switch exhaustiveness. Exhaustiveness currently holds only because every literal of `GamePhase` has a matching `case`, narrowing `state.phase` to `never` at `default`. If a new `GamePhase` value is added to `src/types/index.ts` without a matching `case` here, TypeScript will **not** raise a compile error — `default: return null` will silently swallow the new phase and render a blank screen with no console warning, no build failure, no runtime error.
-**Fix:** Force a compile-time failure on missing cases:
-```ts
-default: {
-  const _exhaustive: never = state.phase
-  return _exhaustive
+type NeonButtonProps = {
+  children: React.ReactNode
+  onClick?: () => void
+  variant?: 'truth' | 'dare' | 'random' | 'gold'
+  glow?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  disabled?: boolean
+  className?: string
 }
 ```
 
-### WR-05: 512×512 maskable PWA icon violates the maskable safe zone — will be visibly clipped on Android
+### WR-02: `TimerDisplay` and `CardBack` prop names/shape diverge from the documented contract
 
-**File:** `public/pwa-512x512.png`, `vite.config.ts` (manifest `icons` array, `purpose: 'maskable'` entry)
-**Issue:** The maskable icon spec requires all meaningful glyph content to fit inside the inner ~80% "safe zone" circle (roughly a 409px-diameter circle centered in the 512×512 canvas) because Android applies arbitrary mask shapes (circle, squircle, rounded square) and crops everything outside that safe zone. Visual inspection of `public/pwa-512x512.png` shows the lightning-bolt glyph's top-left and top-right points extend almost to the image edges — well outside the safe zone — and the bottom point sits close to the bottom edge as well. Because the manifest declares this exact asset with `purpose: 'maskable'`, Android is told it is safe to crop it to a mask shape, which will clip the bolt's tips and produce a visibly broken home-screen icon.
-**Fix:** Regenerate `pwa-512x512.png` (and verify `pwa-192x192.png`, which is not currently used as a maskable source but should be checked too) with the glyph inset to fit within the inner 80% safe-zone circle, e.g. via a maskable-icon validator (maskable.app). Prefer separating concerns rather than reusing the same asset for both purposes:
+**File:** `src/components/TimerDisplay.tsx:3-7`, `src/components/CardBack.tsx:3-7`
+**Issue:** Per `docs/PROPOSAL.md`, `TimerDisplay` should accept `seconds`, `maxSeconds`, `active?`; the implementation uses `seconds`, `total` (no `active`). `CardBack` is documented with `onClick`, `selected?`; the implementation has `onClick`, `size?`, `className?` but no `selected?` (needed for card-grid selection highlighting in Phase 2). These are the same class of drift as WR-01 — not bugs in isolation, but a documented cross-team API contract that Phase 2-4 developers will reference and be surprised by.
+**Fix:** Reconcile prop names with `docs/PROPOSAL.md`, or update the proposal doc to match the shipped API so downstream phases aren't blindsided. At minimum, add `selected?: boolean` to `CardBack` since card-grid selection is an explicit near-term consumer.
+
+### WR-03: `RouletteScreen`'s inner elimination/result timeouts are not tracked or cleared on cleanup
+
+**File:** `src/screens/RouletteScreen.tsx:40-87`
+**Issue:** The spin effect depends on `[players, dispatch]`. `players` comes from `useGame()` (global state), set once via `SET_FINGERS` when entering `roulette` phase and not expected to change again during the spin — so this isn't currently reachable as a live bug. However, if the effect were ever re-entered mid-spin (e.g. a future reducer change spreads state and produces a new `players` array by identity for an unrelated reason) or the component unmounts mid-spin, the two inner `setTimeout` calls at lines 66 and 67-70 (elimination reveal, and the `dispatch({ type: 'SELECT_PLAYER', ... })` result timer) are not tracked or cleared by the effect's cleanup function — only `spinTimer` and the outer `tick` `timerId` are cleared. A stale winner could still be dispatched after the component no longer expects it.
+**Fix:** Track and clear the two inner `setTimeout`s in the effect cleanup:
 ```ts
-icons: [
-  { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-  { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-  { src: 'pwa-512x512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-]
+let elimTimer = 0
+let resultTimer = 0
+...
+if (step >= totalSteps) {
+  ...
+  elimTimer = window.setTimeout(() => setEliminated(true), 300)
+  resultTimer = window.setTimeout(() => {
+    setShowResult(true)
+    dispatch({ type: 'SELECT_PLAYER', player: selectedWinner })
+  }, 2000)
+  return
+}
+...
+return () => {
+  clearTimeout(spinTimer)
+  if (timerId) clearTimeout(timerId)
+  clearTimeout(elimTimer)
+  clearTimeout(resultTimer)
+}
 ```
-**Status: resolved 2026-07-11.** First manual attempt added a dedicated `pwa-512x512-maskable.png` but it still violated the safe zone and was the wrong pixel size (240×240 vs. the declared 512×512). A second manual attempt redrew the glyph inset to the safe zone at the correct 512×512 resolution — verified fixed (measured within the safe-zone radius, build emits the correct manifest entry). See `01-REVIEW-FIX.md` WR-05 for full retest details.
+
+### WR-04: `filterCards`/`randomCard`/`randomCards` silently treat `difficulty: 'all'` as a literal filter value instead of "no filter"
+
+**File:** `src/data/cards.ts:268-279`, `src/types/index.ts:14`
+**Issue:** `Difficulty` is `'easy' | 'medium' | 'hard' | 'all'`, and `defaultSettings.difficulty` in `GameContext.tsx` is `'all'`. But `filterCards` does `c.difficulty === options.difficulty`, and no card in `cards.ts` has `difficulty: 'all'` (all 192 cards use `'easy' | 'medium' | 'hard'`). If a screen passes `{ difficulty: state.settings.difficulty }` (i.e. `'all'`) straight through to `filterCards`/`randomCard`, it will match zero cards and `randomCard` will return `null` — the opposite of the intended "show cards from all difficulties" behavior implied by the `'all'` sentinel value.
+**Fix:** Either strip `'all'` before calling into `cards.ts` helpers at the call site (e.g. `filterCards({ difficulty: settings.difficulty === 'all' ? undefined : settings.difficulty })`), or teach `filterCards` to treat `'all'` as "no difficulty filter":
+```ts
+(!options.difficulty || options.difficulty === 'all' || c.difficulty === options.difficulty)
+```
+This is not yet triggered by any code in the reviewed file set (no screen calls these helpers yet), but it's a landmine for the Phase 2/3 dev who wires up the card grid using `state.settings.difficulty` directly.
+
+### WR-05: `randomCards` uses `Array.sort(() => Math.random() - 0.5)` for shuffling
+
+**File:** `src/data/cards.ts:298-300`
+**Issue:** `sort` with a random comparator is a well-known biased/incorrect shuffle (result distribution depends on the sort algorithm's comparison pattern, and comparator inconsistency — the same pair can compare differently across calls — is undefined behavior per spec). For a party game, mild selection bias is a minor product concern, but it's simple to correct with a proper Fisher-Yates shuffle if `randomCards(n, ...)` is used anywhere fairness/uniform randomness matters (e.g. avoiding certain cards showing up disproportionately more often).
+**Fix:**
+```ts
+export function randomCards(n: number, options: { pack?: CardPack; difficulty?: Difficulty; type?: CardType } = {}): Card[] {
+  const filtered = filterCards(options)
+  const shuffled = [...filtered]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled.slice(0, Math.min(n, shuffled.length))
+}
+```
 
 ## Info
 
-### IN-01: All 7 placeholder screens duplicate identical wrapper markup
+### IN-01: `useMultiTouch` player color reuse on mid-game touch churn
 
-**File:** `src/screens/StartScreen.tsx:3`, `SetupScreen.tsx:3`, `TouchSelectionScreen.tsx:3`, `SelectedPlayerScreen.tsx:3`, `TruthDareChoiceScreen.tsx:3`, `CardRevealScreen.tsx:3`, `NextRoundScreen.tsx:3`
-**Issue:** Every screen repeats the identical `<main className="flex min-h-svh flex-col items-center justify-center bg-background text-primary">` wrapper, differing only by the phase-name heading text. Expected/acceptable as intentional Walking Skeleton scaffolding (SKELETON.md scopes these as placeholder headings only) — flagging only so it isn't mistaken for accidental duplication, and so it gets extracted before Phase 2 content causes this markup to drift out of sync across 7 files.
-**Fix:** No action needed this phase. When Phase 2 fills these in, extract a shared `ScreenLayout` wrapper component to avoid seven independent places to update if the base layout changes.
+**File:** `src/hooks/useMultiTouch.ts:29-31, 48`
+**Issue:** `getNextColor(count)` derives color from `touchesRef.current.size` (current live touch count) rather than a stable per-player index. If player A (color index 0) lifts their finger and player C then touches down, C gets `PLAYER_COLORS[touchesRef.current.size % length]` based on the *current* size, which can reassign a color already visually associated with a still-active player in the UI, depending on touch order. This is a minor cosmetic edge case (not a crash or data-loss bug) but could confuse players mid-round if fingers are lifted and re-placed during the countdown window.
+**Fix:** Track a monotonically increasing `nextColorIndexRef` (similar to `playerNumRef`) instead of deriving from current `size`, so color assignment doesn't depend on concurrent touch state.
 
-### IN-02: `GameContext.test.tsx` has zero coverage for `CHOOSE_TRUTH_OR_DARE`, `PICK_CARD`, and `VOTE`
+### IN-02: `PackBadge` embeds a ZWJ (zero-width-joiner) emoji sequence
 
-**File:** `src/state/GameContext.test.tsx`
-**Issue:** Of the 7 `GameAction` variants, only `START_GAME`, `SELECT_PLAYER`, `NEXT_ROUND`, and `UPDATE_SETTINGS` have reducer tests. The three untested cases are exactly the three with the WR-01/WR-02/WR-03 gaps above — tests would have caught all three at review time. This matches the plan's stated task-level scope (01-01-PLAN.md required "exactly the 7 tests named in the behavior block"), so it is coverage debt rather than a plan deviation.
-**Fix:** Add reducer tests for `PICK_CARD` (asserts `selectedCard` and `phase` are both set), `CHOOSE_TRUTH_OR_DARE` (asserts the choice is retrievable from state), and `VOTE` (asserts the pass/fail result is stored, once WR-01/WR-02/WR-03 are addressed).
+**File:** `src/components/PackBadge.tsx:11`
+**Issue:** The `family` pack icon `'👨‍👩‍👧'` is a ZWJ emoji sequence (multiple codepoints joined by zero-width-joiner characters). This is legitimate content, not malicious, and renders correctly in modern browsers/fonts, but ZWJ sequences can render inconsistently (as separate glyphs, or with a "not joined" fallback showing extra family-member icons) on older Android WebViews / fonts without full ZWJ emoji support — worth a quick manual check on the actual target devices (this project explicitly targets Android + iOS Safari per `.claude/CLAUDE.md`).
+**Fix:** Verify rendering on a representative low-end Android device; if it renders as disjoint glyphs, consider a simpler single-codepoint emoji (e.g. `🏠` or `👪`) for broader compatibility.
 
-### IN-03: `useGameContext`'s "throws outside provider" contract is untested
+### IN-03: `GameContext.tsx` top-of-file eslint-disable is broad but justified — verify it stays scoped
 
-**File:** `src/state/GameContext.tsx:81-85`
-**Issue:** `useGameContext()` throws when `ctx` is null, and this is called out as an acceptance criterion in 01-01-PLAN.md ("useGameContext throws if used outside the provider"), but no test in `GameContext.test.tsx` or `App.test.tsx` actually renders a consumer outside `GameContextProvider` to verify the throw fires.
-**Fix:** Add a small test, e.g.:
-```ts
-it('throws when used outside GameContextProvider', () => {
-  function Consumer() {
-    useGameContext()
-    return null
-  }
-  expect(() => render(<Consumer />)).toThrow('useGameContext must be used within GameContextProvider')
-})
-```
+**File:** `src/state/GameContext.tsx:1-4`
+**Issue:** The file disables `react-refresh/only-export-components` for the entire module because it co-locates the reducer, persistence helpers, and hooks with the provider component. This is a reasonable, documented tradeoff (not a defect), but as the file grows (Phase 2+ likely adds more actions/hooks here) the blast radius of the disabled rule grows with it. Flagging as informational so a future phase doesn't accumulate unrelated exports under the same blanket disable without re-evaluating whether a split is warranted.
+**Fix:** No action needed now; revisit if the file's non-component export surface grows significantly.
 
-### IN-04: `saveSettings`/`loadSettings` swallow all errors uniformly, including non-storage bugs
+### IN-04: `RouletteScreen` recomputes circle positions using `window.innerWidth`/`innerHeight` without a resize listener
 
-**File:** `src/state/GameContext.tsx:17-32`
-**Issue:** The bare `catch { }` blocks catch any exception, not just `localStorage` unavailability or `JSON.parse` failures. A bug elsewhere that causes `JSON.stringify` to throw (e.g. a future settings field holding a non-serializable value) would be silently swallowed with no way to distinguish "expected private-browsing fallback" from "unexpected serialization regression." Low risk today given the current flat `GameSettings` shape, but worth guarding against as the shape grows.
-**Fix:** Consider a dev-only diagnostic inside the catch blocks so regressions are observable without changing production behavior:
-```ts
-} catch (err) {
-  if (import.meta.env.DEV) console.warn('[GameContext] settings persistence failed:', err)
-  return defaultSettings
-}
-```
-
-### IN-05: `STORAGE_KEY` is a bare, unversioned localStorage key
-
-**File:** `src/state/GameContext.tsx:9`
-**Issue:** `const STORAGE_KEY = 'truthOrDare:gameSettings'` has no schema version suffix. If `GameSettings`'s shape changes in a later phase (e.g. adds a new required field), `loadSettings()`'s `{ ...defaultSettings, ...JSON.parse(raw) }` merge will silently produce a `GameSettings` object built from a stale persisted shape, with no migration path — currently harmless because every field has a default and the merge is additive, but worth deciding now while the cost is low.
-**Fix:** Consider `truthOrDare:gameSettings:v1` now, so a future breaking change can bump to `:v2` and treat the old key as absent rather than attempting a lossy merge.
+**File:** `src/screens/RouletteScreen.tsx:23-37`
+**Issue:** `getCirclePositions` reads `window.innerWidth`/`window.innerHeight` at render time but there's no `resize`/`orientationchange` listener, so positions won't recompute if the viewport changes mid-screen (e.g. mobile browser chrome collapsing/expanding, or an orientation change while the roulette is active). Given the project's own convention note ("mobile browser chrome makes `100vh` unreliable" in `docs/PROPOSAL.md`), this is a plausible real-world scenario on iOS Safari where the address bar collapses during scroll/interaction.
+**Fix:** Not urgent for Phase 1 (screens are still being wired up), but Phase 2/4 polish should consider recalculating positions on a `resize` listener or using relative (percentage/viewport-unit) positioning instead of raw pixel math tied to a single `window.innerWidth` read.
 
 ---
 
-_Reviewed: 2026-07-11_
+_Reviewed: 2026-07-12T01:05:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

@@ -62,12 +62,6 @@ export default function RouletteScreen() {
         setHighlightIndex(targetIndex)
         setSpinning(false)
         setWinner(selectedWinner)
-        // Eliminate non-winners first, then show the result
-        setTimeout(() => setEliminated(true), 300)
-        setTimeout(() => {
-          setShowResult(true)
-          dispatch({ type: 'SELECT_PLAYER', player: selectedWinner })
-        }, 2000)
         return
       }
 
@@ -85,6 +79,22 @@ export default function RouletteScreen() {
       if (timerId) clearTimeout(timerId)
     }
   }, [players, dispatch])
+
+  // Post-spin sequence: eliminate non-winners → show result → dispatch
+  useEffect(() => {
+    if (!winner || spinning) return
+
+    const eliminateTimer = setTimeout(() => setEliminated(true), 300)
+    const resultTimer = setTimeout(() => {
+      setShowResult(true)
+      dispatch({ type: 'SELECT_PLAYER', player: winner })
+    }, 2000)
+
+    return () => {
+      clearTimeout(eliminateTimer)
+      clearTimeout(resultTimer)
+    }
+  }, [winner, spinning, dispatch])
 
   return (
     <div

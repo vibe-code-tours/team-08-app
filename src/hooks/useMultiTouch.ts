@@ -72,6 +72,7 @@ export function useMultiTouch(
           player.y = touch.clientY - rect.top
         }
       }
+      syncPlayers()
     }
 
     const handleTouchEnd = (e: TouchEvent) => {
