@@ -4,6 +4,14 @@ import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 import type { PlayerTouch } from '../types/index.ts'
 
+/** Status heading shown above the roulette, based on the current spin phase. */
+function getStatusText(spinning: boolean, eliminated: boolean, winner: PlayerTouch | null) {
+  if (spinning) return 'ရွေးနေတယ်...'
+  if (eliminated && winner) return 'မဟာကံထူးရှင်!'
+  if (winner) return 'မဟာကံထူးရှင်ရွေးပြီးပါပြီ!'
+  return 'အဆင်သင့်ဖြစ်ပြီ...'
+}
+
 /**
  * Roulette screen — spins through player dots and selects one.
  *
@@ -110,7 +118,7 @@ export default function RouletteScreen() {
           className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          {spinning ? 'Spinning...' : eliminated && winner ? 'The chosen one!' : winner ? 'Selected!' : 'Ready...'}
+          {getStatusText(spinning, eliminated, winner)}
         </h1>
       </div>
 
@@ -194,7 +202,7 @@ export default function RouletteScreen() {
               transition={{ type: 'spring', stiffness: 300, damping: 15 }}
               className="text-center"
             >
-              <p className="text-lg text-white/70 mb-2">The chosen one is...</p>
+              <p className="text-lg text-white/70 mb-2">မဟာကံထူးရှင်ကြီးကတော့...</p>
               <h2
                 className="text-4xl font-black"
                 style={{

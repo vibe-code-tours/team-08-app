@@ -6,10 +6,10 @@ type DifficultyBadgeProps = {
 }
 
 const difficultyStyles: Record<Difficulty, { label: string; color: string; bg: string }> = {
-  easy: { label: 'Easy', color: '#50BF3A', bg: 'rgba(80,191,58,0.15)' },
-  medium: { label: 'Medium', color: '#F4CC50', bg: 'rgba(244,204,80,0.15)' },
-  hard: { label: 'Hard', color: '#E9243D', bg: 'rgba(233,36,61,0.15)' },
-  all: { label: 'All', color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
+  easy: { label: 'လွယ်', color: '#50BF3A', bg: 'rgba(80,191,58,0.15)' },
+  medium: { label: 'အလယ်အလတ်', color: '#F4CC50', bg: 'rgba(244,204,80,0.15)' },
+  hard: { label: 'ခက်', color: '#E9243D', bg: 'rgba(233,36,61,0.15)' },
+  all: { label: 'အားလုံး', color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
 }
 
 /**
