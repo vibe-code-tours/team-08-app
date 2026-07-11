@@ -23,10 +23,10 @@ phase (no URL router).
   </GameContextProvider>
 </App>
 
-Screen (by gamePhase): Start -> Setup -> TouchSelection -> SelectedPlayer
+Screen (by gamePhase): Start -> Setup -> FingerSelection -> Roulette -> PlayerSelected
                         -> TruthDareChoice -> CardReveal -> NextRound
 
-TouchSelectionScreen --> useMultiTouch() --> dispatch() --> GameContext reducer
+FingerSelectionScreen --> useMultiTouch() --> dispatch() --> GameContext reducer
                                                                    |
                                                                    v
                                                      gamePhase changes, screen swaps
@@ -44,8 +44,8 @@ filtered at read time by pack/difficulty/type from `GameSettings`.
 | `src/state/GameContext.tsx` | GameState + reducer, wraps the whole app |
 | `src/hooks/useMultiTouch.ts` | multi-touch tracking hook |
 | `src/data/cards.ts` | static `Card[]` data |
-| `src/types/` | `Card`, `GameState`, `PlayerTouch`, `GameSettings` |
-| `tests/` (co-located `*.test.tsx`) | Vitest + Testing Library |
+| `src/types/` | `Card`, `GameState`, `PlayerTouch`, `GameSettings`, `Difficulty`, `CardPack`, `CardType`, `PLAYER_COLORS` |
+| `src/*.test.tsx`, `src/**/*.test.tsx` | Vitest + Testing Library (co-located with source) |
 | `.github/workflows/` | CI + security |
 | `docs/` | this file, decisions, demo/spike notes |
 | `.planning/` | GSD planning docs (roadmap, phases, generated codebase inventory) |
@@ -53,8 +53,8 @@ filtered at read time by pack/difficulty/type from `GameSettings`.
 ## External services
 
 None. No backend, no auth, no analytics — everything runs client-side with
-localStorage for settings/state persistence. Deploy target is Netlify (PR
-previews on every pull request).
+localStorage for settings persistence only (game state is in-memory). Deploy
+target is Netlify (PR previews on every pull request).
 
 ## How to run
 

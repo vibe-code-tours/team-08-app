@@ -50,7 +50,7 @@ Phase 1 has **4 tasks**. Each person picks one. All tasks run in parallel — no
 
 - Install and configure Tailwind v4 with `@theme` neon color palette
 - Define glow utilities and dark gradient background
-- Create color constants file (`src/theme/colors.ts`)
+- Color constants defined in `src/index.css` via Tailwind `@theme` tokens and `PLAYER_COLORS` array in `src/types/index.ts`
 - Build 7 shared components in `src/components/`:
 
 | Component | Props | Used In |
@@ -179,9 +179,10 @@ interface Card {
 ```
 
 - Export filter helpers:
-  - `getCardsByPack(pack)` — returns cards for that pack
-  - `getCardsByDifficulty(difficulty)` — returns cards for that difficulty
-  - `getFilteredCards(pack, difficulty)` — returns intersection
+  - `filterCards({ pack?, difficulty?, type? })` — returns all matching cards
+  - `randomCard(options)` — returns one random matching card
+  - `randomCards(n, options)` — returns N random unique matching cards
+  - `countCards(options)` — returns count of matching cards
 
 **Output:** 8–12 placeholder cards in `src/data/cards.ts`, fully filterable.
 
