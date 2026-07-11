@@ -3,8 +3,9 @@ import { describe, it, expect } from 'vitest'
 import App from './App'
 
 describe('App', () => {
-  it('renders without crashing', () => {
+  it('renders the start screen', () => {
     render(<App />)
-    expect(screen.getByText('Get started')).toBeInTheDocument()
+    expect(screen.getByText('Truth or Dare')).toBeInTheDocument()
+    expect(screen.getByText('Start Game')).toBeInTheDocument()
   })
 })
