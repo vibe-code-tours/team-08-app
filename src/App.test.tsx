@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach } from 'vitest'
 import App, { ActiveScreen } from './App'
 import { GameContextProvider, useGameContext, loadSettings } from './state/GameContext'
@@ -11,10 +11,10 @@ describe('App', () => {
 
   it('renders the start screen by default', () => {
     render(<App />)
-    expect(screen.getByText('start')).toBeInTheDocument()
+    expect(screen.getByAltText('The Chosen One')).toBeInTheDocument()
   })
 
-  it('routes to the matching screen when the phase changes', () => {
+  it('routes to finger-selection screen after START_GAME', async () => {
     function Harness() {
       const { dispatch } = useGameContext()
       useEffect(() => {
@@ -30,7 +30,9 @@ describe('App', () => {
       </GameContextProvider>,
     )
 
-    expect(screen.getByText('touchSelection')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Place your fingers!')).toBeInTheDocument()
+    })
   })
 
   it('persists a GameSettings change to localStorage across a simulated reload', () => {

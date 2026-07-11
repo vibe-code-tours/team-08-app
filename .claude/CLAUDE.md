@@ -209,12 +209,10 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 
 ## CSS / Styling Approach
 
-- **Plain CSS** — no CSS modules, no Tailwind, no CSS-in-JS, no preprocessors.
-- **Co-located CSS** — `App.css` next to `App.tsx`, `index.css` for global styles.
-- **CSS custom properties** for theming (defined in `:root` in `index.css`).
-- **Native CSS nesting** — the project uses CSS nesting syntax (`&`, `@media` nested inside selectors).
-- **Dark mode** via `@media (prefers-color-scheme: dark)` — automatic system preference detection.
-- **Responsive design** via `@media (max-width: 1024px)` breakpoints.
+- **Tailwind CSS v4** — utility-first styling via `@tailwindcss/vite` plugin.
+- **Design tokens** — neon color palette and glow shadows defined in `@theme` block in `src/index.css` (oklch color space).
+- **Component styling** — Tailwind utility classes on all components and screens.
+- **Dark theme** — always dark (neon cyber aesthetic); no light mode toggle.
 
 ## Error Handling
 
@@ -260,8 +258,9 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 |  |   |                                          |  ||
 |  |   |  StartScreen                             |  ||
 |  |   |  SetupScreen                             |  ||
-|  |   |  TouchSelectionScreen                    |  ||
-|  |   |  SelectedPlayerScreen                    |  ||
+|  |   |  FingerSelectionScreen                   |  ||
+|  |   |  RouletteScreen                          |  ||
+|  |   |  PlayerSelectedScreen                    |  ||
 |  |   |  TruthDareChoiceScreen                   |  ||
 |  |   |  CardRevealScreen                        |  ||
 |  |   |  NextRoundScreen                         |  ||
@@ -322,8 +321,9 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 |---|---|---|
 | `start` | `StartScreen` | Landing page with game title and start button |
 | `setup` | `SetupScreen` | Configure game settings (difficulty, pack, players) |
-| `touchSelection` | `TouchSelectionScreen` | All players touch the screen; random selection occurs |
-| `selectedPlayer` | `SelectedPlayerScreen` | Announce the selected player |
+| `finger-selection` | `FingerSelectionScreen` | All players place fingers; auto-starts roulette after countdown |
+| `roulette` | `RouletteScreen` | Spinning highlight animation, selects one player |
+| `player-selected` | `PlayerSelectedScreen` | Announce the selected player |
 | `truthDareChoice` | `TruthDareChoiceScreen` | Selected player chooses truth or dare |
 | `cardReveal` | `CardRevealScreen` | Display the chosen card |
 | `nextRound` | `NextRoundScreen` | Transition between rounds, update scores, continue or end |
@@ -352,10 +352,13 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 
 ## Current project state
 
-- `App.tsx` still contains the default Vite welcome page.
-- `src/screens/` directory does not exist yet.
-- `src/types/index.ts`, `src/state/GameContext.tsx`, `src/data/cards.ts`, and
-- The GameContextProvider is not yet wired into App.tsx.
+- Phase 1 (Foundation & Design System) is complete.
+- `App.tsx` is a phase-based router with AnimatePresence screen transitions, wrapped in `GameContextProvider`.
+- `src/screens/` has 8 screens: StartScreen, SetupScreen, FingerSelectionScreen, RouletteScreen, PlayerSelectedScreen, TruthDareChoiceScreen, CardRevealScreen, NextRoundScreen.
+- `src/components/` has 7 reusable components: NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot.
+- `src/hooks/useMultiTouch.ts` is fully implemented (116 lines).
+- `src/data/cards.ts` has 192 cards with filtering helpers.
+- All UI text is in Myanmar (Burmese).
 
 <!-- GSD:architecture-end -->
 

@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- this module intentionally
-   co-locates the reducer, settings-persistence helpers, and the useGameContext hook
-   alongside GameContextProvider (RESEARCH.md Pattern 2/3, 01-PATTERNS.md); splitting
-   them into separate files would break the Task 1/3 test import contract. */
+   co-locates the reducer, settings-persistence helpers, and the useGame/useGameDispatch hooks
+   alongside GameContextProvider; splitting them into separate files would break the
+   Task 1/3 test import contract. */
 import { createContext, useContext, useEffect, useReducer } from 'react'
 import type { ReactNode, Dispatch } from 'react'
 import type { GameSettings, GameState, GameAction } from '../types'
@@ -19,7 +19,7 @@ export function loadSettings(): GameSettings {
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? { ...defaultSettings, ...JSON.parse(raw) } : defaultSettings
   } catch {
-    return defaultSettings // private browsing / quota / parse errors fall back silently
+    return defaultSettings
   }
 }
 
@@ -27,14 +27,14 @@ export function saveSettings(settings: GameSettings): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
   } catch {
-    // localStorage unavailable (private browsing, quota exceeded) -- fail silently, in-memory state still works
+    // localStorage unavailable -- fail silently
   }
 }
 
 const initialState: GameState = {
   phase: 'start',
   players: [],
-  activePlayer: null,
+  selectedPlayer: null,
   selectedCard: null,
   chosenType: null,
   voteResult: null,
@@ -44,20 +44,23 @@ const initialState: GameState = {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME':
-      return { ...state, phase: 'touchSelection' }
+      return { ...state, phase: 'finger-selection' }
+    case 'SET_FINGERS':
+      return { ...state, phase: 'roulette', players: action.players }
     case 'SELECT_PLAYER':
-      return { ...state, phase: 'selectedPlayer', activePlayer: action.payload }
+      return { ...state, phase: 'player-selected', selectedPlayer: action.player }
     case 'CHOOSE_TRUTH_OR_DARE':
-      return { ...state, phase: 'cardReveal', chosenType: action.payload }
+      return { ...state, phase: 'card-reveal', chosenType: action.payload }
     case 'PICK_CARD':
-      return { ...state, phase: 'cardReveal', selectedCard: action.payload }
+      return { ...state, phase: 'card-reveal', selectedCard: action.payload }
     case 'VOTE':
       return { ...state, voteResult: action.payload }
     case 'NEXT_ROUND':
       return {
         ...state,
-        phase: 'touchSelection',
-        activePlayer: null,
+        phase: 'finger-selection',
+        players: [],
+        selectedPlayer: null,
         selectedCard: null,
         chosenType: null,
         voteResult: null,
@@ -82,6 +85,21 @@ export function GameContextProvider({ children }: { children: ReactNode }) {
   return <GameContext value={{ state, dispatch }}>{children}</GameContext>
 }
 
+/** Access full game state */
+export function useGame(): GameState {
+  const ctx = useContext(GameContext)
+  if (!ctx) throw new Error('useGame must be used within GameContextProvider')
+  return ctx.state
+}
+
+/** Access dispatch to trigger game actions */
+export function useGameDispatch(): Dispatch<GameAction> {
+  const ctx = useContext(GameContext)
+  if (!ctx) throw new Error('useGameDispatch must be used within GameContextProvider')
+  return ctx.dispatch
+}
+
+/** Legacy export — returns both state and dispatch */
 export function useGameContext(): GameContextValue {
   const ctx = useContext(GameContext)
   if (!ctx) throw new Error('useGameContext must be used within GameContextProvider')

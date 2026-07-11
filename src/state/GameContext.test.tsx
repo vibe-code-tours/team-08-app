@@ -5,16 +5,24 @@ import {
   saveSettings,
   defaultSettings,
 } from './GameContext'
-import type { GameState, GameSettings } from '../types'
+import type { GameState, GameSettings, PlayerTouch } from '../types'
 
 const baseState: GameState = {
   phase: 'start',
   players: [],
-  activePlayer: null,
+  selectedPlayer: null,
   selectedCard: null,
   chosenType: null,
   voteResult: null,
   settings: defaultSettings,
+}
+
+const samplePlayer: PlayerTouch = {
+  identifier: 0,
+  color: '#a855f7',
+  x: 10,
+  y: 20,
+  label: 'Player 1',
 }
 
 beforeEach(() => {
@@ -22,26 +30,38 @@ beforeEach(() => {
 })
 
 describe('gameReducer', () => {
-  it('START_GAME transitions phase from start to touchSelection', () => {
+  it('START_GAME transitions phase from start to finger-selection', () => {
     const result = gameReducer(baseState, { type: 'START_GAME' })
-    expect(result.phase).toBe('touchSelection')
+    expect(result.phase).toBe('finger-selection')
   })
 
-  it('SELECT_PLAYER sets phase to selectedPlayer and stores the PlayerTouch payload in activePlayer', () => {
-    const player = { id: 'p1', touchIdentifier: 0, x: 10, y: 20 }
+  it('SET_FINGERS stores players and transitions to roulette', () => {
+    const players: PlayerTouch[] = [
+      { ...samplePlayer, identifier: 0 },
+      { ...samplePlayer, identifier: 1, label: 'Player 2', color: '#ec4899' },
+    ]
+    const result = gameReducer(
+      { ...baseState, phase: 'finger-selection' },
+      { type: 'SET_FINGERS', players },
+    )
+    expect(result.phase).toBe('roulette')
+    expect(result.players).toEqual(players)
+  })
+
+  it('SELECT_PLAYER sets phase to player-selected and stores the player', () => {
     const result = gameReducer(baseState, {
       type: 'SELECT_PLAYER',
-      payload: player,
+      player: samplePlayer,
     })
-    expect(result.phase).toBe('selectedPlayer')
-    expect(result.activePlayer).toEqual(player)
+    expect(result.phase).toBe('player-selected')
+    expect(result.selectedPlayer).toEqual(samplePlayer)
   })
 
-  it('NEXT_ROUND resets phase to touchSelection and clears activePlayer and selectedCard to null', () => {
+  it('NEXT_ROUND resets phase to finger-selection and clears player/card/state', () => {
     const midRoundState: GameState = {
       ...baseState,
-      phase: 'cardReveal',
-      activePlayer: { id: 'p1', touchIdentifier: 0, x: 10, y: 20 },
+      phase: 'card-reveal',
+      selectedPlayer: samplePlayer,
       selectedCard: {
         id: 'c1',
         type: 'truth',
@@ -51,9 +71,10 @@ describe('gameReducer', () => {
       },
     }
     const result = gameReducer(midRoundState, { type: 'NEXT_ROUND' })
-    expect(result.phase).toBe('touchSelection')
-    expect(result.activePlayer).toBeNull()
+    expect(result.phase).toBe('finger-selection')
+    expect(result.selectedPlayer).toBeNull()
     expect(result.selectedCard).toBeNull()
+    expect(result.players).toEqual([])
   })
 
   it('UPDATE_SETTINGS merges a Partial GameSettings payload into state.settings without touching phase', () => {
