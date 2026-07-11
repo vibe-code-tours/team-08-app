@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach } from 'vitest'
 import App, { ActiveScreen } from './App'
 import { GameContextProvider, useGameContext, loadSettings } from './state/GameContext'
@@ -14,7 +14,7 @@ describe('App', () => {
     expect(screen.getByText('Truth or Dare')).toBeInTheDocument()
   })
 
-  it('routes to finger-selection screen after START_GAME', () => {
+  it('routes to finger-selection screen after START_GAME', async () => {
     function Harness() {
       const { dispatch } = useGameContext()
       useEffect(() => {
@@ -30,7 +30,9 @@ describe('App', () => {
       </GameContextProvider>,
     )
 
-    expect(screen.getByText('Place your fingers!')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Place your fingers!')).toBeInTheDocument()
+    })
   })
 
   it('persists a GameSettings change to localStorage across a simulated reload', () => {
