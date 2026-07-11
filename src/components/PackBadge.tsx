@@ -6,10 +6,10 @@ type PackBadgeProps = {
 }
 
 const packStyles: Record<CardPack, { label: string; icon: string; color: string; bg: string }> = {
-  friends: { label: 'Friends', icon: '👫', color: '#40A1E9', bg: 'rgba(64,161,233,0.15)' },
-  couple: { label: 'Couple', icon: '❤️', color: '#E02B96', bg: 'rgba(224,43,150,0.15)' },
-  family: { label: 'Family', icon: '👨‍👩‍👧', color: '#50BF3A', bg: 'rgba(80,191,58,0.15)' },
-  classic: { label: 'Classic', icon: '🎯', color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
+  friends: { label: 'သူငယ်ချင်း', icon: '👫', color: '#40A1E9', bg: 'rgba(64,161,233,0.15)' },
+  couple: { label: 'သမီးရည်းစား', icon: '❤️', color: '#E02B96', bg: 'rgba(224,43,150,0.15)' },
+  family: { label: 'မိသားစု', icon: '👨‍👩‍👧', color: '#50BF3A', bg: 'rgba(80,191,58,0.15)' },
+  classic: { label: 'ရိုးရိုး', icon: '🎯', color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
 }
 
 /**
