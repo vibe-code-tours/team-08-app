@@ -31,7 +31,7 @@ describe('App', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByText('လက်ချောင်းလေးတွေတင်ကြပါ')).toBeInTheDocument()
+      expect(screen.getByText('Place your fingers!')).toBeInTheDocument()
     })
   })
 

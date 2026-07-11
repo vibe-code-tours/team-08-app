@@ -100,7 +100,7 @@ export default function RouletteScreen() {
           className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          {spinning ? 'ရွေးနေတယ်...' : eliminated && winner ? 'မဟာကံထူးရှင်!' : winner ? 'မဟာကံထူးရှင်ရွေးပြီးပါပြီ!' : 'အဆင်သင့်ဖြစ်ပြီ...'}
+          {spinning ? 'Spinning...' : eliminated && winner ? 'The chosen one!' : winner ? 'Selected!' : 'Ready...'}
         </h1>
       </div>
 
@@ -184,7 +184,7 @@ export default function RouletteScreen() {
               transition={{ type: 'spring', stiffness: 300, damping: 15 }}
               className="text-center"
             >
-              <p className="text-lg text-white/70 mb-2">မဟာကံထူးရှင်ကြီးကတော့...</p>
+              <p className="text-lg text-white/70 mb-2">The chosen one is...</p>
               <h2
                 className="text-4xl font-black"
                 style={{

@@ -59,14 +59,14 @@ export default function FingerSelectionScreen() {
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          လက်ချောင်းလေးတွေတင်ကြပါ
+          Place your fingers!
         </h1>
         <p className="text-sm text-white/50">
           {players.length === 0
-            ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
+            ? 'Waiting for players...'
             : counting
-              ? 'ခနနေဦး…'
-              : `ကစားသမား ${players.length} ယောက် — ထပ်ထည့်မယ်!`}
+              ? 'Hold still…'
+              : `${players.length} player${players.length > 1 ? 's' : ''} — add more!`}
         </p>
       </div>
 

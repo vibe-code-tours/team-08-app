@@ -61,7 +61,7 @@ export default function PlayerSelectedScreen() {
         transition={{ delay: 0.6 }}
         className="text-white/50 mt-2 z-10"
       >
-        သင့်အလှည့်ပါ!
+        It&apos;s your turn!
       </motion.p>
 
       {/* Continue button */}
@@ -75,7 +75,7 @@ export default function PlayerSelectedScreen() {
           shadow-[0_0_20px_rgba(168,85,247,0.4)]
           active:scale-95 transition-transform z-10"
       >
-        နောက်တစ်ပွဲဆော့မယ်
+        Next Round
       </motion.button>
     </div>
   )
