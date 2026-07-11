@@ -1,113 +1,89 @@
-/* eslint-disable react-refresh/only-export-components */
-// Hooks (useGame, useGameDispatch) are co-located with the provider by design.
-import { createContext, useContext, useReducer, useEffect, type ReactNode } from 'react'
-import type { GameState, GameAction, GameSettings } from '../types'
+/* eslint-disable react-refresh/only-export-components -- this module intentionally
+   co-locates the reducer, settings-persistence helpers, and the useGameContext hook
+   alongside GameContextProvider (RESEARCH.md Pattern 2/3, 01-PATTERNS.md); splitting
+   them into separate files would break the Task 1/3 test import contract. */
+import { createContext, useContext, useEffect, useReducer } from 'react'
+import type { ReactNode, Dispatch } from 'react'
+import type { GameSettings, GameState, GameAction } from '../types'
 
-// --- Default settings ---
+const STORAGE_KEY = 'truthOrDare:gameSettings'
 
-const DEFAULT_SETTINGS: GameSettings = {
-  difficulty: 'medium',
+export const defaultSettings: GameSettings = {
+  difficulty: 'all',
   pack: 'classic',
-  maxPlayers: 10,
+  timerEnabled: true,
 }
 
-const INITIAL_STATE: GameState = {
+export function loadSettings(): GameSettings {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? { ...defaultSettings, ...JSON.parse(raw) } : defaultSettings
+  } catch {
+    return defaultSettings // private browsing / quota / parse errors fall back silently
+  }
+}
+
+export function saveSettings(settings: GameSettings): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
+  } catch {
+    // localStorage unavailable (private browsing, quota exceeded) -- fail silently, in-memory state still works
+  }
+}
+
+const initialState: GameState = {
   phase: 'start',
   players: [],
-  selectedPlayer: null,
-  settings: DEFAULT_SETTINGS,
-  round: 1,
+  activePlayer: null,
+  selectedCard: null,
+  chosenType: null,
+  voteResult: null,
+  settings: loadSettings(),
 }
 
-// --- localStorage persistence ---
-
-const SETTINGS_KEY = 'truth-dare-settings'
-
-function loadSettings(): GameSettings {
-  try {
-    const stored = localStorage.getItem(SETTINGS_KEY)
-    if (stored) return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) }
-  } catch { /* ignore */ }
-  return DEFAULT_SETTINGS
-}
-
-function saveSettings(settings: GameSettings): void {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)) } catch { /* ignore */ }
-}
-
-// --- Reducer ---
-
-function gameReducer(state: GameState, action: GameAction): GameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME':
-      return { ...INITIAL_STATE, settings: state.settings, phase: 'finger-selection' }
-
-    case 'SET_FINGERS':
-      return { ...state, players: action.players, phase: 'roulette' }
-
+      return { ...state, phase: 'touchSelection' }
     case 'SELECT_PLAYER':
-      return { ...state, selectedPlayer: action.player, phase: 'player-selected' }
-
+      return { ...state, phase: 'selectedPlayer', activePlayer: action.payload }
+    case 'CHOOSE_TRUTH_OR_DARE':
+      return { ...state, phase: 'cardReveal', chosenType: action.payload }
+    case 'PICK_CARD':
+      return { ...state, phase: 'cardReveal', selectedCard: action.payload }
+    case 'VOTE':
+      return { ...state, voteResult: action.payload }
     case 'NEXT_ROUND':
       return {
         ...state,
-        players: [],
-        selectedPlayer: null,
-        round: state.round + 1,
-        phase: 'finger-selection',
+        phase: 'touchSelection',
+        activePlayer: null,
+        selectedCard: null,
+        chosenType: null,
+        voteResult: null,
       }
-
-    case 'RESTART':
-      return { ...INITIAL_STATE, settings: state.settings }
-
-    case 'CHANGE_SETTINGS': {
-      const newSettings = { ...state.settings, ...action.settings }
-      saveSettings(newSettings)
-      return { ...state, settings: newSettings }
-    }
-
+    case 'UPDATE_SETTINGS':
+      return { ...state, settings: { ...state.settings, ...action.payload } }
     default:
       return state
   }
 }
 
-// --- Split Context (critical for 60fps touch perf) ---
+type GameContextValue = { state: GameState; dispatch: Dispatch<GameAction> }
+const GameContext = createContext<GameContextValue | null>(null)
 
-const GameStateContext = createContext<GameState>(INITIAL_STATE)
-const GameDispatchContext = createContext<React.Dispatch<GameAction>>(() => {})
+export function GameContextProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(gameReducer, initialState)
 
-// --- Provider ---
-
-type GameContextProviderProps = {
-  children: ReactNode
-}
-
-export function GameContextProvider({ children }: GameContextProviderProps) {
-  const [state, dispatch] = useReducer(gameReducer, {
-    ...INITIAL_STATE,
-    settings: loadSettings(),
-  })
-
-  // Sync settings changes to localStorage
   useEffect(() => {
     saveSettings(state.settings)
   }, [state.settings])
 
-  return (
-    <GameStateContext value={state}>
-      <GameDispatchContext value={dispatch}>
-        {children}
-      </GameDispatchContext>
-    </GameStateContext>
-  )
+  return <GameContext value={{ state, dispatch }}>{children}</GameContext>
 }
 
-// --- Hooks ---
-
-export function useGame(): GameState {
-  return useContext(GameStateContext)
-}
-
-export function useGameDispatch(): React.Dispatch<GameAction> {
-  return useContext(GameDispatchContext)
+export function useGameContext(): GameContextValue {
+  const ctx = useContext(GameContext)
+  if (!ctx) throw new Error('useGameContext must be used within GameContextProvider')
+  return ctx
 }

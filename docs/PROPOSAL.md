@@ -73,14 +73,26 @@ Phase 1 has **4 tasks**. Each person picks one. All tasks run in parallel — no
 
 **Pick this if:** You like TypeScript, state management, and building the brain of the app.
 
+> **Reducer invariant:** The reducer is the only place `phase` changes. Screens dispatch intent (e.g. `CHOOSE_TYPE`, `SELECT_CARD`) and the reducer decides the resulting phase. No screen component calls a phase-setting action directly.
+
 **What you do:**
 
 - Define all TypeScript types in `src/types/index.ts`:
   - `GamePhase` — all 15 game phases (splash → onboarding → setup → finger-selection → roulette → player-selected → truth-dare → coin-flip → card-grid → card-reveal → challenge → timer → voting → result-success → result-failed → next-round)
-  - `Card` — `{ id, type, difficulty, pack, text }`
-  - `PlayerTouch` — `{ identifier, color, x, y }`
-  - `GameSettings` — `{ difficulty, pack, timerEnabled, timerDuration }`
-  - `GameState` — full game state shape
+  - Standalone shared types, referenced from `Card` / `GameSettings` instead of inlined:
+    - `Difficulty = 'easy' | 'medium' | 'hard'`
+    - `Pack = 'friends' | 'couple' | 'family' | 'classic'`
+    - `CardType = 'truth' | 'dare'`
+    - `Vote = 'fail' | 'pass' | 'excellent'`
+  - `Card` — `{ id, type: CardType, difficulty: Difficulty, pack: Pack, text }`
+  - `PlayerTouch` — `{ identifier, color, x, y }`. `identifier` is the browser's `pointerId` — stable across a single touch gesture, and NOT an array index. Do not substitute a generated index.
+  - `GameSettings` — `{ difficulty: Difficulty, pack: Pack, timerEnabled, timerDuration }`
+  - `GameState` — full game state shape, including the round-state fields:
+    - `selectedPlayerId: number | null`
+    - `chosenType: CardType | null`
+    - `selectedCard: Card | null`
+    - `lastVote: Vote | null`
+    - Nullable fields use `| null`, not `?`.
   - `GameAction` — all possible actions (discriminated union)
 
 - Build `GameContext.tsx` with **split context pattern** (critical for performance):
@@ -91,9 +103,11 @@ Phase 1 has **4 tasks**. Each person picks one. All tasks run in parallel — no
 - Implement `useReducer` with all state transitions:
   - `START_GAME`, `SET_FINGERS`, `SELECT_PLAYER`, `CHOOSE_TRUTH_DARE`
   - `COIN_FLIP_RESULT`, `SELECT_CARD`, `REVEAL_CARD`, `VOTE`
-  - `NEXT_ROUND`, `CHANGE_SETTINGS`, `RESTART`
+  - `CHANGE_SETTINGS`
+  - `NEXT_ROUND` — clears `selectedPlayerId`, `chosenType`, `selectedCard`, `lastVote`. Preserves `touches`, `settings`, `hasSeenOnboarding`.
+  - `RESTART` — resets to initial state entirely, EXCEPT `settings` is preserved and `hasSeenOnboarding` is forced to `true`.
 
-- Add localStorage persistence for `GameSettings`
+- Persist ONLY `settings` and `hasSeenOnboarding` to localStorage. Nothing else — `phase`, `touches`, and round state (`selectedPlayerId`, `chosenType`, `selectedCard`, `lastVote`) must NOT be persisted, since rehydrating mid-round would resume showing a card to whoever refreshes the page.
 
 - Export clean hooks: `useGame()`, `useGameDispatch()`
 
@@ -130,9 +144,14 @@ Phase 1 has **4 tasks**. Each person picks one. All tasks run in parallel — no
 - Configure `vite-plugin-pwa` in `vite.config.ts`:
   - `registerType: "autoUpdate"`
   - Portrait orientation lock
-  - Basic web manifest (name, theme color, icons)
+  - Basic web manifest (name, theme color, icons), including a 512x512 icon with `purpose: 'maskable'` alongside the existing icons
 
-- Add PWA meta tags to `index.html`
+- Add PWA meta tags to `index.html`, including `viewport-fit=cover` alongside the existing viewport settings
+
+- Lock down touch handling at the root, not per-screen:
+  - `html, body, #root { touch-action: none; overscroll-behavior: none; }`
+
+- Note for all screen components: use `h-dvh`, not `h-screen` — mobile browser chrome makes `100vh` unreliable.
 
 **Output:** App shows placeholder screens and navigates between them by game phase.
 
@@ -146,7 +165,7 @@ Phase 1 has **4 tasks**. Each person picks one. All tasks run in parallel — no
 
 **What you do:**
 
-- Write 50–100+ truth/dare cards in `src/data/cards.ts`
+- Write 8–12 placeholder cards (2–3 per pack) in `src/data/cards.ts` — enough to build and test the card grid against. The full card library (50–100+, all packs/difficulties) is Phase 3's `CONT-01`, not Phase 1. Pack-tone writing guidance (what "friends" vs "couple" vs "family" vs "classic" should sound like) lives in Phase 3's task description, not here.
 - Each card matches this type:
 
 ```typescript
@@ -159,23 +178,12 @@ interface Card {
 }
 ```
 
-- Content by pack:
-  - **Friends** — fun, silly, lighthearted
-  - **Couple** — romantic, daring, flirty
-  - **Family** — wholesome, funny, appropriate
-  - **Classic** — mixed, general party vibes
-
-- Content by difficulty:
-  - **Easy** — simple, low-stakes (e.g., "Sing your favorite song for 15 seconds")
-  - **Medium** — moderate challenge (e.g., "Do your best impression of a celebrity")
-  - **Hard** — bold, embarrassing (e.g., "Let the group post anything on your social media")
-
 - Export filter helpers:
   - `getCardsByPack(pack)` — returns cards for that pack
   - `getCardsByDifficulty(difficulty)` — returns cards for that difficulty
   - `getFilteredCards(pack, difficulty)` — returns intersection
 
-**Output:** 50+ cards in `src/data/cards.ts`, fully filterable.
+**Output:** 8–12 placeholder cards in `src/data/cards.ts`, fully filterable.
 
 **Files you touch:** `src/data/cards.ts`
 
@@ -252,7 +260,6 @@ Once all 4 tasks merge to main, we branch out:
 |----------|-----|
 | Split Context (GameState + GameDispatch) | Prevents 60fps re-renders during touch events |
 | `useRef` for touch positions, not `useState` | Touch events fire at 60fps — setState would kill performance |
-| `touch-action: none` CSS on game screens | Browser consumes touch events before JS sees them without this |
 | Motion (not Framer Motion) | Same API, successor package, actively maintained |
 | Tailwind v4 `@theme` | CSS-first config, no tailwind.config.js needed |
 | Cards as TypeScript (not JSON) | Type safety, IDE autocomplete, compile-time validation |

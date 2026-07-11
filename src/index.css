@@ -1,31 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-neon-purple: #a855f7;
-  --color-neon-pink: #ec4899;
-  --color-neon-blue: #3b82f6;
-  --color-neon-cyan: #22d3ee;
-  --color-neon-gold: #facc15;
-  --color-neon-orange: #f97316;
-  --color-dark-900: #0f0a1a;
-  --color-dark-800: #1a1025;
-  --color-dark-700: #251a33;
-}
+  /* Color tokens — color-picked from public/images/Screens.png per D-01 */
+  --color-background: oklch(0.13 0.04 301);   /* #0A0414 */
+  --color-surface: oklch(0.20 0.06 301);      /* #1C0E2E */
+  --color-primary: oklch(0.54 0.25 301);      /* #8B2FE2 neon purple */
+  --color-secondary: oklch(0.61 0.23 350);    /* #E02B96 neon pink */
+  --color-accent: oklch(0.68 0.14 245);       /* #40A1E9 electric blue */
+  --color-highlight: oklch(0.86 0.15 91);     /* #F4CC50 gold/orange */
+  --color-truth: oklch(0.68 0.14 245);        /* #40A1E9 blue */
+  --color-dare: oklch(0.57 0.21 7);           /* #D22461 pink/red */
+  --color-success: oklch(0.71 0.20 141);      /* #50BF3A green */
+  --color-failure: oklch(0.60 0.23 22);       /* #E9243D red */
+  --color-premium: oklch(0.75 0.13 76);       /* #DDA242 gold */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #0a0612;
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  user-select: none;
+  /* Glow shadow tokens — reusable across Phases 2-4 per D-03 */
+  --shadow-glow-primary: 0 0 24px 4px oklch(0.54 0.25 301 / 0.55);
+  --shadow-glow-secondary: 0 0 24px 4px oklch(0.61 0.23 350 / 0.55);
+  --shadow-glow-accent: 0 0 24px 4px oklch(0.68 0.14 245 / 0.55);
+  --shadow-glow-highlight: 0 0 24px 4px oklch(0.86 0.15 91 / 0.55);
+  --shadow-glow-success: 0 0 20px 3px oklch(0.71 0.20 141 / 0.5);
+  --shadow-glow-failure: 0 0 20px 3px oklch(0.60 0.23 22 / 0.5);
 }

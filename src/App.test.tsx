@@ -1,11 +1,56 @@
+import { useEffect } from 'react'
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
-import App from './App'
+import { describe, it, expect, beforeEach } from 'vitest'
+import App, { ActiveScreen } from './App'
+import { GameContextProvider, useGameContext, loadSettings } from './state/GameContext'
 
 describe('App', () => {
-  it('renders the start screen', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('renders the start screen by default', () => {
     render(<App />)
-    expect(screen.getByText('Truth or Dare')).toBeInTheDocument()
-    expect(screen.getByText('Start Game')).toBeInTheDocument()
+    expect(screen.getByText('start')).toBeInTheDocument()
+  })
+
+  it('routes to the matching screen when the phase changes', () => {
+    function Harness() {
+      const { dispatch } = useGameContext()
+      useEffect(() => {
+        dispatch({ type: 'START_GAME' })
+      }, [dispatch])
+      return null
+    }
+
+    render(
+      <GameContextProvider>
+        <Harness />
+        <ActiveScreen />
+      </GameContextProvider>,
+    )
+
+    expect(screen.getByText('touchSelection')).toBeInTheDocument()
+  })
+
+  it('persists a GameSettings change to localStorage across a simulated reload', () => {
+    function Harness() {
+      const { dispatch } = useGameContext()
+      useEffect(() => {
+        dispatch({ type: 'UPDATE_SETTINGS', payload: { difficulty: 'hard' } })
+      }, [dispatch])
+      return null
+    }
+
+    render(
+      <GameContextProvider>
+        <Harness />
+      </GameContextProvider>,
+    )
+
+    // Simulate a fresh page reload: a brand new call to loadSettings() must
+    // reflect the persisted change (round-trip through localStorage).
+    const reloaded = loadSettings()
+    expect(reloaded.difficulty).toBe('hard')
   })
 })

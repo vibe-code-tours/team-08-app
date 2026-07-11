@@ -1,44 +1,46 @@
-import { AnimatePresence, motion } from 'motion/react'
-import { GameContextProvider, useGame } from './state/GameContext.tsx'
+import { GameContextProvider, useGameContext } from './state/GameContext'
+import StartScreen from './screens/StartScreen'
+import SetupScreen from './screens/SetupScreen'
+import TouchSelectionScreen from './screens/TouchSelectionScreen'
+import SelectedPlayerScreen from './screens/SelectedPlayerScreen'
+import TruthDareChoiceScreen from './screens/TruthDareChoiceScreen'
+import CardRevealScreen from './screens/CardRevealScreen'
+import NextRoundScreen from './screens/NextRoundScreen'
 
-// Screens — lazy imports for code splitting
-import StartScreen from './screens/StartScreen.tsx'
-import FingerSelectionScreen from './screens/FingerSelectionScreen.tsx'
-import RouletteScreen from './screens/RouletteScreen.tsx'
-import PlayerSelectedScreen from './screens/PlayerSelectedScreen.tsx'
+export function ActiveScreen() {
+  const { state } = useGameContext()
 
-function ScreenRouter() {
-  const { phase } = useGame()
-
-  const screens: Record<string, React.ComponentType> = {
-    start: StartScreen,
-    'finger-selection': FingerSelectionScreen,
-    roulette: RouletteScreen,
-    'player-selected': PlayerSelectedScreen,
+  switch (state.phase) {
+    case 'start':
+      return <StartScreen />
+    case 'setup':
+      return <SetupScreen />
+    case 'touchSelection':
+      return <TouchSelectionScreen />
+    case 'selectedPlayer':
+      return <SelectedPlayerScreen />
+    case 'truthDareChoice':
+      return <TruthDareChoiceScreen />
+    case 'cardReveal':
+      return <CardRevealScreen />
+    case 'nextRound':
+      return <NextRoundScreen />
+    default: {
+      // Compile-time exhaustiveness check: if a new GamePhase is added to
+      // src/types/index.ts without a matching case above, this assignment
+      // fails to typecheck (state.phase would no longer narrow to never).
+      const _exhaustiveCheck: never = state.phase
+      return _exhaustiveCheck
+    }
   }
-
-  const Screen = screens[phase] ?? StartScreen
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={phase}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="w-full h-dvh"
-      >
-        <Screen />
-      </motion.div>
-    </AnimatePresence>
-  )
 }
 
-export default function App() {
+function App() {
   return (
     <GameContextProvider>
-      <ScreenRouter />
+      <ActiveScreen />
     </GameContextProvider>
   )
 }
+
+export default App
