@@ -58,6 +58,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'NEXT_ROUND':
       return {
         ...state,
+        phase: 'next-round',
+        players: [],
+        selectedPlayer: null,
+        selectedCard: null,
+        chosenType: null,
+        voteResult: null,
+      }
+    case 'START_NEXT_ROUND':
+      return {
+        ...state,
         phase: 'finger-selection',
         players: [],
         selectedPlayer: null,
@@ -65,6 +75,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         chosenType: null,
         voteResult: null,
       }
+    case 'GO_TO_SETUP':
+      return { ...state, phase: 'setup' }
+    case 'RESTART':
+      return { ...initialState, settings: state.settings }
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.payload } }
     default:

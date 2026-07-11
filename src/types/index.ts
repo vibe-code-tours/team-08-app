@@ -69,4 +69,7 @@ export type GameAction =
   | { type: 'PICK_CARD'; payload: Card }
   | { type: 'VOTE'; payload: 'pass' | 'fail' }
   | { type: 'NEXT_ROUND' }
+  | { type: 'START_NEXT_ROUND' }
+  | { type: 'GO_TO_SETUP' }
+  | { type: 'RESTART' }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<GameSettings> }

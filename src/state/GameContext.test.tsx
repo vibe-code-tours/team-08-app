@@ -57,7 +57,7 @@ describe('gameReducer', () => {
     expect(result.selectedPlayer).toEqual(samplePlayer)
   })
 
-  it('NEXT_ROUND resets phase to finger-selection and clears player/card/state', () => {
+  it('NEXT_ROUND transitions to next-round and clears player/card/state', () => {
     const midRoundState: GameState = {
       ...baseState,
       phase: 'card-reveal',
@@ -71,10 +71,38 @@ describe('gameReducer', () => {
       },
     }
     const result = gameReducer(midRoundState, { type: 'NEXT_ROUND' })
-    expect(result.phase).toBe('finger-selection')
+    expect(result.phase).toBe('next-round')
     expect(result.selectedPlayer).toBeNull()
     expect(result.selectedCard).toBeNull()
     expect(result.players).toEqual([])
+  })
+
+  it('START_NEXT_ROUND transitions to finger-selection and clears all game state', () => {
+    const result = gameReducer(
+      { ...baseState, phase: 'next-round', selectedPlayer: samplePlayer, voteResult: 'pass' },
+      { type: 'START_NEXT_ROUND' },
+    )
+    expect(result.phase).toBe('finger-selection')
+    expect(result.selectedPlayer).toBeNull()
+    expect(result.voteResult).toBeNull()
+    expect(result.players).toEqual([])
+  })
+
+  it('GO_TO_SETUP transitions to setup phase', () => {
+    const result = gameReducer(baseState, { type: 'GO_TO_SETUP' })
+    expect(result.phase).toBe('setup')
+  })
+
+  it('RESTART resets entire state to initial (keeps settings)', () => {
+    const result = gameReducer(
+      { ...baseState, phase: 'next-round', selectedPlayer: samplePlayer, voteResult: 'pass' },
+      { type: 'RESTART' },
+    )
+    expect(result.phase).toBe('start')
+    expect(result.selectedPlayer).toBeNull()
+    expect(result.voteResult).toBeNull()
+    expect(result.players).toEqual([])
+    expect(result.settings).toEqual(defaultSettings)
   })
 
   it('UPDATE_SETTINGS merges a Partial GameSettings payload into state.settings without touching phase', () => {
