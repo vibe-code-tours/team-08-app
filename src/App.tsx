@@ -1,8 +1,9 @@
 import { GameContextProvider, useGameContext } from './state/GameContext'
 import StartScreen from './screens/StartScreen'
 import SetupScreen from './screens/SetupScreen'
-import TouchSelectionScreen from './screens/TouchSelectionScreen'
-import SelectedPlayerScreen from './screens/SelectedPlayerScreen'
+import FingerSelectionScreen from './screens/FingerSelectionScreen'
+import RouletteScreen from './screens/RouletteScreen'
+import PlayerSelectedScreen from './screens/PlayerSelectedScreen'
 import TruthDareChoiceScreen from './screens/TruthDareChoiceScreen'
 import CardRevealScreen from './screens/CardRevealScreen'
 import NextRoundScreen from './screens/NextRoundScreen'
@@ -15,20 +16,19 @@ export function ActiveScreen() {
       return <StartScreen />
     case 'setup':
       return <SetupScreen />
-    case 'touchSelection':
-      return <TouchSelectionScreen />
-    case 'selectedPlayer':
-      return <SelectedPlayerScreen />
-    case 'truthDareChoice':
+    case 'finger-selection':
+      return <FingerSelectionScreen />
+    case 'roulette':
+      return <RouletteScreen />
+    case 'player-selected':
+      return <PlayerSelectedScreen />
+    case 'truth-dare-choice':
       return <TruthDareChoiceScreen />
-    case 'cardReveal':
+    case 'card-reveal':
       return <CardRevealScreen />
-    case 'nextRound':
+    case 'next-round':
       return <NextRoundScreen />
     default: {
-      // Compile-time exhaustiveness check: if a new GamePhase is added to
-      // src/types/index.ts without a matching case above, this assignment
-      // fails to typecheck (state.phase would no longer narrow to never).
       const _exhaustiveCheck: never = state.phase
       return _exhaustiveCheck
     }
