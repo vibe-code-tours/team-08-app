@@ -12,25 +12,15 @@ export default function StartScreen() {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900" />
 
-      {/* Title */}
-      <motion.h1
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+      {/* Logo */}
+      <motion.img
+        src="/images/TheChosenOneLogo.png"
+        alt="The Chosen One"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="text-4xl font-black text-white z-10"
-        style={{ textShadow: '0 0 30px rgba(168,85,247,0.6)' }}
-      >
-        Truth or Dare
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="text-white/50 mt-2 z-10"
-      >
-        Finger Roulette Edition
-      </motion.p>
+        className="w-64 h-auto z-10 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+      />
 
       {/* Start button */}
       <motion.button

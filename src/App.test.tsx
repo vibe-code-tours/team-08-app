@@ -11,7 +11,7 @@ describe('App', () => {
 
   it('renders the start screen by default', () => {
     render(<App />)
-    expect(screen.getByText('Truth or Dare')).toBeInTheDocument()
+    expect(screen.getByAltText('The Chosen One')).toBeInTheDocument()
   })
 
   it('routes to finger-selection screen after START_GAME', async () => {
