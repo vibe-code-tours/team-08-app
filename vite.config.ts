@@ -10,19 +10,19 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['images/TheChosenOneLogo.png'],
       manifest: {
-        name: 'Truth or Dare — Finger Roulette',
-        short_name: 'Truth or Dare',
+        name: 'The Chosen One',
+        short_name: 'The Chosen One',
         description:
-          'A premium multiplayer party game — fingers on screen, spinning light, truth or dare.',
-        theme_color: '#8B2FE2', // matches --color-primary, D-13
-        background_color: '#0A0414', // matches --color-background
+          'A premium multiplayer party game — fingers on screen, spinning light, who will be chosen?',
+        theme_color: '#8B2FE2',
+        background_color: '#0A0414',
         display: 'standalone',
         icons: [
-          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'pwa-512x512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'images/TheChosenOneLogo.png', sizes: '192x192', type: 'image/png' },
+          { src: 'images/TheChosenOneLogo.png', sizes: '512x512', type: 'image/png' },
+          { src: 'images/TheChosenOneLogo.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       devOptions: {
