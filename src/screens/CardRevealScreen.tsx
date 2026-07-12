@@ -5,11 +5,13 @@ import { CardBack } from '../components/CardBack.tsx'
 import { DifficultyBadge } from '../components/DifficultyBadge.tsx'
 import { PackBadge } from '../components/PackBadge.tsx'
 import { NeonButton } from '../components/NeonButton.tsx'
+import { TimerDisplay } from '../components/TimerDisplay.tsx'
 import { randomCards } from '../data/cards.ts'
 import type { Card } from '../types/index.ts'
 
 const TRUTH_COLOR = '#3b82f6'
 const DARE_COLOR = '#ec4899'
+const ROUND_SECONDS = 30
 
 /**
  * Card selection grid with 3D flip reveal.
@@ -21,6 +23,7 @@ export default function CardRevealScreen() {
   const dispatch = useGameDispatch()
   const [flippedId, setFlippedId] = useState<string | null>(null)
   const [isRevealing, setIsRevealing] = useState(false)
+  const [seconds, setSeconds] = useState(ROUND_SECONDS)
   const revealedCard = isRevealing ? selectedCard : null
   const pickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -37,6 +40,21 @@ export default function CardRevealScreen() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!revealedCard || !settings.timerEnabled) return
+
+    if (seconds <= 0) {
+      dispatch({ type: 'GO_TO_VOTING' })
+      return
+    }
+
+    const timerId = window.setTimeout(() => {
+      setSeconds((current) => Math.max(current - 1, 0))
+    }, 1000)
+
+    return () => clearTimeout(timerId)
+  }, [dispatch, revealedCard, seconds, settings.timerEnabled])
+
   const cards = useMemo(
     () =>
       randomCards(10, {
@@ -51,6 +69,7 @@ export default function CardRevealScreen() {
     (card: Card) => {
       if (flippedId) return
       setFlippedId(card.id)
+      setSeconds(ROUND_SECONDS)
       pickTimeoutRef.current = setTimeout(() => {
         dispatch({ type: 'PICK_CARD', payload: card })
       }, 800)
@@ -58,8 +77,8 @@ export default function CardRevealScreen() {
     [flippedId, dispatch],
   )
 
-  const handleNextRound = useCallback(() => {
-    dispatch({ type: 'NEXT_ROUND' })
+  const handleStartVoting = useCallback(() => {
+    dispatch({ type: 'GO_TO_VOTING' })
   }, [dispatch])
 
   const accentColor = chosenType === 'truth' ? TRUTH_COLOR : DARE_COLOR
@@ -137,6 +156,10 @@ export default function CardRevealScreen() {
             transition={{ type: 'spring', stiffness: 180, damping: 18, delay: 0.1 }}
             className="relative z-10 flex flex-col items-center px-5 w-full max-w-sm"
           >
+            {settings.timerEnabled && (
+              <TimerDisplay seconds={seconds} total={ROUND_SECONDS} className="z-20 mb-4 shrink-0" />
+            )}
+
             {/* Glow behind card */}
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
@@ -210,13 +233,13 @@ export default function CardRevealScreen() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.9, type: 'spring', stiffness: 200, damping: 15 }}
-              className="mt-5 w-full"
+              className={`mt-5 w-full ${settings.timerEnabled ? 'hidden' : ''}`}
             >
               <NeonButton
                 color={accentColor}
                 size="lg"
                 className="w-full"
-                onClick={handleNextRound}
+                onClick={handleStartVoting}
               >
                 ▶ နောက်တစ်ဆင့်
               </NeonButton>
