@@ -7,6 +7,10 @@ import type { ReactNode, Dispatch } from 'react'
 import type { GameSettings, GameState, GameAction } from '../types'
 
 const STORAGE_KEY = 'truthOrDare:gameSettings'
+const PHASE_KEY = 'truthOrDare:phase'
+
+/** Phases safe to restore — others need transient data lost on refresh */
+const SAFE_PHASES = new Set(['start', 'onboarding', 'setup', 'finger-selection', 'next-round'])
 
 export const defaultSettings: GameSettings = {
   difficulty: 'all',
@@ -31,8 +35,26 @@ export function saveSettings(settings: GameSettings): void {
   }
 }
 
+function loadPhase(): GameState['phase'] {
+  try {
+    const raw = localStorage.getItem(PHASE_KEY)
+    if (raw && SAFE_PHASES.has(raw)) return raw as GameState['phase']
+  } catch {
+    // fail silently
+  }
+  return 'start'
+}
+
+function savePhase(phase: GameState['phase']): void {
+  try {
+    localStorage.setItem(PHASE_KEY, phase)
+  } catch {
+    // fail silently
+  }
+}
+
 const initialState: GameState = {
-  phase: 'start',
+  phase: loadPhase(),
   players: [],
   selectedPlayer: null,
   selectedCard: null,
@@ -44,12 +66,16 @@ const initialState: GameState = {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME':
-      return { ...state, phase: 'finger-selection' }
+      if (state.phase === 'setup') return { ...state, phase: 'finger-selection' }
+      if (state.phase === 'onboarding') return { ...state, phase: 'setup' }
+      return { ...state, phase: 'onboarding' }
     case 'SET_FINGERS':
       return { ...state, phase: 'roulette', players: action.players }
     case 'SELECT_PLAYER':
       return { ...state, phase: 'player-selected', selectedPlayer: action.player }
     case 'GO_TO_TRUTH_DARE_CHOICE':
+      return { ...state, phase: 'truth-dare-choice' }
+    case 'GO_TO_TRUTH_DARE':
       return { ...state, phase: 'truth-dare-choice' }
     case 'CHOOSE_TRUTH_OR_DARE':
       return { ...state, phase: 'card-reveal', chosenType: action.payload }
@@ -62,6 +88,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'NEXT_ROUND':
       return {
         ...state,
+        phase: 'next-round',
+        players: [],
+        selectedPlayer: null,
+        selectedCard: null,
+        chosenType: null,
+        voteResult: null,
+      }
+    case 'START_NEXT_ROUND':
+      return {
+        ...state,
         phase: 'finger-selection',
         players: [],
         selectedPlayer: null,
@@ -69,6 +105,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         chosenType: null,
         voteResult: null,
       }
+    case 'GO_TO_SETUP':
+      return { ...state, phase: 'setup' }
+    case 'RESTART':
+      savePhase('start')
+      return { ...initialState, settings: state.settings, phase: 'start' }
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.payload } }
     default:
@@ -85,6 +126,10 @@ export function GameContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveSettings(state.settings)
   }, [state.settings])
+
+  useEffect(() => {
+    savePhase(state.phase)
+  }, [state.phase])
 
   return <GameContext value={{ state, dispatch }}>{children}</GameContext>
 }

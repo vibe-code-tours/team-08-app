@@ -3,6 +3,7 @@
 
 export type GamePhase =
   | 'start'
+  | 'onboarding'
   | 'setup'
   | 'finger-selection'
   | 'roulette'
@@ -68,9 +69,13 @@ export type GameAction =
   | { type: 'SET_FINGERS'; players: PlayerTouch[] }
   | { type: 'SELECT_PLAYER'; player: PlayerTouch }
   | { type: 'GO_TO_TRUTH_DARE_CHOICE' }
+  | { type: 'GO_TO_TRUTH_DARE' }
   | { type: 'CHOOSE_TRUTH_OR_DARE'; payload: CardType }
   | { type: 'PICK_CARD'; payload: Card }
   | { type: 'GO_TO_VOTING' }
   | { type: 'VOTE'; payload: 'pass' | 'excellent' | 'fail' }
   | { type: 'NEXT_ROUND' }
+  | { type: 'START_NEXT_ROUND' }
+  | { type: 'GO_TO_SETUP' }
+  | { type: 'RESTART' }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<GameSettings> }
