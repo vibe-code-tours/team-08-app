@@ -157,7 +157,16 @@ export default function CardRevealScreen() {
             className="relative z-10 flex flex-col items-center px-5 w-full max-w-sm"
           >
             {settings.timerEnabled && (
-              <TimerDisplay seconds={seconds} total={ROUND_SECONDS} className="z-20 mb-4 shrink-0" />
+              <div className="flex flex-col items-center gap-2 z-20 mb-4 shrink-0">
+                <TimerDisplay seconds={seconds} total={ROUND_SECONDS} />
+                <button
+                  onClick={handleStartVoting}
+                  className="px-5 py-1.5 rounded-full text-xs text-white/40
+                    border border-white/10 hover:text-white/70 hover:border-white/20 transition-colors"
+                >
+                  ✅ ပြီးပြီ
+                </button>
+              </div>
             )}
 
             {/* Glow behind card */}

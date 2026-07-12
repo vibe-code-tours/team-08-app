@@ -33,7 +33,7 @@ export default function StartScreen() {
           shadow-[0_0_30px_rgba(168,85,247,0.5)]
           active:scale-95 transition-transform z-10"
       >
-        Start Game
+        စမယ်
       </motion.button>
     </div>
   )

@@ -47,7 +47,7 @@ export default function NextRoundScreen() {
         className="text-2xl font-bold text-white mb-6 z-10"
         style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
       >
-        ဘာဆက်မလဲ?
+        ဘာဆက်လုပ်မလဲ?
       </motion.h1>
 
       {/* Options */}

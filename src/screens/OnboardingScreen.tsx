@@ -89,7 +89,7 @@ export default function OnboardingScreen() {
         className="absolute top-4 left-4 z-20 px-4 py-1.5 rounded-full text-sm text-white/50
           border border-white/10 hover:text-white/80 hover:border-white/20 transition-colors"
       >
-        ကျော်မယ်
+        ⏭️ ကျော်မယ်
       </motion.button>
 
       {/* Slide content */}

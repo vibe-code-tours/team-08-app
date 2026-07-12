@@ -120,7 +120,7 @@ export function ResultDisplay() {
         className="mt-8"
         onClick={() => dispatch({ type: 'NEXT_ROUND' })}
       >
-        Next Round
+        ဆက်သွားမယ်
       </NeonButton>
     </GlassPanel>
   )
