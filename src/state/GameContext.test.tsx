@@ -30,9 +30,9 @@ beforeEach(() => {
 })
 
 describe('gameReducer', () => {
-  it('START_GAME transitions phase from start to finger-selection', () => {
+  it('START_GAME transitions phase from start to setup', () => {
     const result = gameReducer(baseState, { type: 'START_GAME' })
-    expect(result.phase).toBe('finger-selection')
+    expect(result.phase).toBe('setup')
   })
 
   it('SET_FINGERS stores players and transitions to roulette', () => {

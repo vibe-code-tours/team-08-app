@@ -44,7 +44,7 @@ const initialState: GameState = {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME':
-      return { ...state, phase: 'finger-selection' }
+      return { ...state, phase: 'setup' }
     case 'SET_FINGERS':
       return { ...state, phase: 'roulette', players: action.players }
     case 'SELECT_PLAYER':
