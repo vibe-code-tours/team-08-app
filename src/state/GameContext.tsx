@@ -54,7 +54,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'CHOOSE_TRUTH_OR_DARE':
       return { ...state, phase: 'card-reveal', chosenType: action.payload }
     case 'PICK_CARD':
-      return { ...state, phase: 'next-round', selectedCard: action.payload }
+      return { ...state, phase: 'card-reveal', selectedCard: action.payload }
     case 'VOTE':
       return { ...state, voteResult: action.payload }
     case 'NEXT_ROUND':
