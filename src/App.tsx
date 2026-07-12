@@ -7,6 +7,8 @@ import RouletteScreen from './screens/RouletteScreen'
 import PlayerSelectedScreen from './screens/PlayerSelectedScreen'
 import TruthDareChoiceScreen from './screens/TruthDareChoiceScreen'
 import CardRevealScreen from './screens/CardRevealScreen'
+import VotingScreen from './screens/VotingScreen'
+import ResultScreen from './screens/ResultScreen'
 import NextRoundScreen from './screens/NextRoundScreen'
 
 function ScreenContent({ phase }: { phase: string }) {
@@ -25,6 +27,10 @@ function ScreenContent({ phase }: { phase: string }) {
       return <TruthDareChoiceScreen />
     case 'card-reveal':
       return <CardRevealScreen />
+    case 'voting':
+      return <VotingScreen />
+    case 'result':
+      return <ResultScreen />
     case 'next-round':
       return <NextRoundScreen />
     default:

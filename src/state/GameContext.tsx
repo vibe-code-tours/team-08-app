@@ -55,8 +55,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return { ...state, phase: 'card-reveal', chosenType: action.payload }
     case 'PICK_CARD':
       return { ...state, phase: 'card-reveal', selectedCard: action.payload }
+    case 'GO_TO_VOTING':
+      return { ...state, phase: 'voting' }
     case 'VOTE':
-      return { ...state, voteResult: action.payload }
+      return { ...state, phase: 'result', voteResult: action.payload }
     case 'NEXT_ROUND':
       return {
         ...state,
