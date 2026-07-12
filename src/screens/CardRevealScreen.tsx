@@ -22,16 +22,13 @@ export default function CardRevealScreen() {
   const [flippedId, setFlippedId] = useState<string | null>(null)
   const [revealedCard, setRevealedCard] = useState<Card | null>(null)
 
-  // When selectedCard changes (after PICK_CARD dispatch), show single card view
   useEffect(() => {
     if (selectedCard && !revealedCard) {
-      // Small delay so the flip animation plays first
       const timer = setTimeout(() => setRevealedCard(selectedCard), 850)
       return () => clearTimeout(timer)
     }
   }, [selectedCard, revealedCard])
 
-  // Generate 10 random cards based on game settings
   const cards = useMemo(
     () =>
       randomCards(10, {
@@ -44,10 +41,8 @@ export default function CardRevealScreen() {
 
   const handleCardClick = useCallback(
     (card: Card) => {
-      if (flippedId) return // Already flipping
+      if (flippedId) return
       setFlippedId(card.id)
-
-      // Dispatch after flip animation completes
       setTimeout(() => {
         dispatch({ type: 'PICK_CARD', payload: card })
       }, 800)
@@ -66,9 +61,17 @@ export default function CardRevealScreen() {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900" />
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-30"
         style={{
-          background: `radial-gradient(circle at 50% 20%, ${accentColor}40 0%, transparent 50%)`,
+          background: `radial-gradient(ellipse at 50% 30%, ${accentColor}35 0%, transparent 60%)`,
+        }}
+      />
+      {/* Subtle grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(168,85,247,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.5) 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
         }}
       />
 
@@ -79,8 +82,8 @@ export default function CardRevealScreen() {
             key="grid"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, scale: 0.95, filter: 'blur(8px)' }}
+            transition={{ duration: 0.4 }}
             className="relative z-10 flex flex-col items-center w-full"
           >
             {/* Header */}
@@ -88,22 +91,22 @@ export default function CardRevealScreen() {
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-              className="text-center mb-6 px-4"
+              className="text-center mb-5 px-4"
             >
               <h1
-                className="text-2xl font-black mb-2"
+                className="text-2xl font-black mb-1.5 tracking-wide"
                 style={{
                   color: accentColor,
-                  textShadow: `0 0 20px ${accentColor}60`,
+                  textShadow: `0 0 30px ${accentColor}50, 0 2px 4px rgba(0,0,0,0.3)`,
                 }}
               >
-                {chosenType === 'truth' ? '💙 Truth' : '💗 Dare'} — ကိုရွေးပါ
+                {chosenType === 'truth' ? '💙 Truth' : '💗 Dare'}
               </h1>
-              <p className="text-white/50 text-sm">ကဒ်တစ်ကဒ်ကို နှိပ်ပါ</p>
+              <p className="text-white/40 text-xs tracking-widest uppercase">ကဒ်တစ်ကဒ်ကို နှိပ်ပါ</p>
             </motion.div>
 
             {/* Card Grid — 5 columns × 2 rows */}
-            <div className="grid grid-cols-5 gap-2 px-3 w-full max-w-lg">
+            <div className="grid grid-cols-5 gap-2.5 px-4 w-full max-w-lg">
               {cards.map((card, index) => (
                 <FlipCard
                   key={card.id}
@@ -121,41 +124,85 @@ export default function CardRevealScreen() {
           /* ─── Phase 2: Single Revealed Card ──────────────── */
           <motion.div
             key="revealed"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.1 }}
-            className="relative z-10 flex flex-col items-center px-4 w-full max-w-sm"
+            initial={{ opacity: 0, scale: 0.7, rotateY: -15 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ type: 'spring', stiffness: 180, damping: 18, delay: 0.1 }}
+            className="relative z-10 flex flex-col items-center px-5 w-full max-w-sm"
           >
+            {/* Glow behind card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 0.4, scale: 1.2 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="absolute -inset-10 rounded-full blur-3xl pointer-events-none"
+              style={{ background: `radial-gradient(circle, ${accentColor}60 0%, transparent 70%)` }}
+            />
+
             {/* Revealed card */}
-            <div
+            <motion.div
+              initial={{ boxShadow: `0 0 0px ${accentColor}00` }}
+              animate={{ boxShadow: `0 0 40px ${accentColor}30, 0 0 80px ${accentColor}15` }}
+              transition={{ duration: 1.2, delay: 0.4 }}
               className="relative w-full rounded-2xl overflow-hidden"
               style={{
                 aspectRatio: '2.5/3.5',
-                background: 'linear-gradient(135deg, #1C0E2E, #0A0414)',
-                border: `2px solid ${accentColor}80`,
-                boxShadow: `0 0 30px ${accentColor}50, inset 0 0 40px ${accentColor}15`,
+                background: 'linear-gradient(145deg, #1a0a2e 0%, #0d0521 50%, #1a0a2e 100%)',
+                border: `1.5px solid ${accentColor}50`,
               }}
             >
-              <div className="flex flex-col items-center justify-between h-full p-6 text-center">
+              {/* Top accent line */}
+              <div
+                className="absolute top-0 left-4 right-4 h-px"
+                style={{ background: `linear-gradient(90deg, transparent, ${accentColor}60, transparent)` }}
+              />
+
+              {/* Content */}
+              <div className="flex flex-col items-center justify-between h-full p-6 pt-8 text-center relative z-10">
+                {/* Type icon */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', delay: 0.5, stiffness: 300 }}
+                  className="text-3xl mb-2"
+                >
+                  {chosenType === 'truth' ? '💙' : '💗'}
+                </motion.div>
+
                 {/* Card text */}
-                <p className="text-white text-base sm:text-lg font-medium leading-relaxed mt-4 line-clamp-8">
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.4 }}
+                  className="text-white text-sm sm:text-base font-medium leading-relaxed line-clamp-7 flex-1 flex items-center"
+                >
                   {revealedCard.text}
-                </p>
+                </motion.p>
 
                 {/* Badges */}
-                <div className="flex flex-wrap gap-2 justify-center mb-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="flex flex-wrap gap-2 justify-center"
+                >
                   <DifficultyBadge difficulty={revealedCard.difficulty} />
                   <PackBadge pack={revealedCard.pack} />
-                </div>
+                </motion.div>
               </div>
-            </div>
+
+              {/* Bottom accent line */}
+              <div
+                className="absolute bottom-0 left-4 right-4 h-px"
+                style={{ background: `linear-gradient(90deg, transparent, ${accentColor}40, transparent)` }}
+              />
+            </motion.div>
 
             {/* Next button */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 15 }}
-              className="mt-6 w-full"
+              transition={{ delay: 0.9, type: 'spring', stiffness: 200, damping: 15 }}
+              className="mt-5 w-full"
             >
               <NeonButton
                 color={accentColor}
@@ -187,19 +234,22 @@ type FlipCardProps = {
 function FlipCard({ card, isFlipped, isDisabled, accentColor, index, onClick }: FlipCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
         type: 'spring',
-        stiffness: 200,
-        damping: 15,
-        delay: 0.2 + index * 0.05,
+        stiffness: 250,
+        damping: 20,
+        delay: 0.15 + index * 0.06,
       }}
       className="relative w-full"
-      style={{ perspective: '1000px' }}
+      style={{ perspective: '800px' }}
     >
       <motion.div
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        animate={{
+          rotateY: isFlipped ? 180 : 0,
+          scale: isFlipped ? 1.1 : 1,
+        }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         className="relative w-full"
         style={{
@@ -207,7 +257,7 @@ function FlipCard({ card, isFlipped, isDisabled, accentColor, index, onClick }: 
           aspectRatio: '2.5/3.5',
         }}
       >
-        {/* Back of card (face-down) */}
+        {/* Back of card */}
         <div
           className="absolute inset-0"
           style={{ backfaceVisibility: 'hidden' }}
@@ -219,27 +269,24 @@ function FlipCard({ card, isFlipped, isDisabled, accentColor, index, onClick }: 
           />
         </div>
 
-        {/* Front of card (face-up) */}
+        {/* Front of card */}
         <div
-          className="absolute inset-0 rounded-xl overflow-hidden"
+          className="absolute inset-0 rounded-2xl overflow-hidden"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            background: 'linear-gradient(135deg, #1C0E2E, #0A0414)',
-            border: `2px solid ${accentColor}80`,
-            boxShadow: `0 0 20px ${accentColor}40, inset 0 0 30px ${accentColor}10`,
+            background: 'linear-gradient(145deg, #1a0a2e 0%, #0d0521 50%, #1a0a2e 100%)',
+            border: `1.5px solid ${accentColor}60`,
+            boxShadow: `0 0 20px ${accentColor}30, inset 0 0 20px ${accentColor}08`,
           }}
         >
-          <div className="flex flex-col items-center justify-between h-full p-3 text-center">
-            {/* Card text */}
-            <p className="text-white text-[10px] sm:text-xs font-medium leading-snug mt-1 line-clamp-5">
+          <div className="flex flex-col items-center justify-between h-full p-2.5 pt-3 text-center">
+            <p className="text-white/90 text-[9px] sm:text-[10px] font-medium leading-snug mt-0.5 line-clamp-5">
               {card.text}
             </p>
-
-            {/* Badges */}
-            <div className="flex flex-wrap gap-1.5 justify-center mb-2">
-              <DifficultyBadge difficulty={card.difficulty} />
-              <PackBadge pack={card.pack} />
+            <div className="flex flex-wrap gap-1 justify-center mb-1.5">
+              <DifficultyBadge difficulty={card.difficulty} className="!text-[7px] !px-1.5 !py-0" />
+              <PackBadge pack={card.pack} className="!text-[7px] !px-1.5 !py-0" />
             </div>
           </div>
         </div>
