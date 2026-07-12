@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { CardBack } from '../components/CardBack.tsx'
@@ -20,14 +20,22 @@ export default function CardRevealScreen() {
   const { chosenType, settings, selectedCard } = useGame()
   const dispatch = useGameDispatch()
   const [flippedId, setFlippedId] = useState<string | null>(null)
-  const [revealedCard, setRevealedCard] = useState<Card | null>(null)
+  const [isRevealing, setIsRevealing] = useState(false)
+  const revealedCard = isRevealing ? selectedCard : null
+  const pickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (selectedCard && !revealedCard) {
-      const timer = setTimeout(() => setRevealedCard(selectedCard), 850)
+    if (selectedCard && !isRevealing) {
+      const timer = setTimeout(() => setIsRevealing(true), 850)
       return () => clearTimeout(timer)
     }
-  }, [selectedCard, revealedCard])
+  }, [selectedCard, isRevealing])
+
+  useEffect(() => {
+    return () => {
+      if (pickTimeoutRef.current) clearTimeout(pickTimeoutRef.current)
+    }
+  }, [])
 
   const cards = useMemo(
     () =>
@@ -43,7 +51,7 @@ export default function CardRevealScreen() {
     (card: Card) => {
       if (flippedId) return
       setFlippedId(card.id)
-      setTimeout(() => {
+      pickTimeoutRef.current = setTimeout(() => {
         dispatch({ type: 'PICK_CARD', payload: card })
       }, 800)
     },

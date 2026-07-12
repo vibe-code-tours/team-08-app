@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { NeonButton } from '../components/NeonButton.tsx'
@@ -19,6 +19,13 @@ export default function TruthDareChoiceScreen() {
   const dispatch = useGameDispatch()
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipResult, setFlipResult] = useState<CardType | null>(null)
+  const flipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (flipTimeoutRef.current) clearTimeout(flipTimeoutRef.current)
+    }
+  }, [])
 
   const handleChoice = useCallback(
     (type: CardType) => {
@@ -36,11 +43,11 @@ export default function TruthDareChoiceScreen() {
     const result: CardType = Math.random() < 0.5 ? 'truth' : 'dare'
     setFlipResult(result)
 
-    // After flip animation completes, dispatch the choice
-    setTimeout(() => {
+    // After flip animation completes (transition duration: 1.2s, see overlay below), dispatch the choice
+    flipTimeoutRef.current = setTimeout(() => {
       setIsFlipping(false)
       dispatch({ type: 'CHOOSE_TRUTH_OR_DARE', payload: result })
-    }, 1500)
+    }, 1200)
   }, [isFlipping, dispatch])
 
   if (!selectedPlayer) return null

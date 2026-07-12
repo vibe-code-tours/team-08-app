@@ -95,13 +95,6 @@ export function CardBack({ onClick, size = 'md', className = '' }: CardBackProps
       {/* Top/bottom decorative lines */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 w-8 h-px bg-gradient-to-r from-transparent via-purple-400/30 to-transparent" />
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-px bg-gradient-to-r from-transparent via-purple-400/30 to-transparent" />
-
-      <style>{`
-        @keyframes shimmer {
-          0%, 100% { background-position: 200% 0; }
-          50% { background-position: -200% 0; }
-        }
-      `}</style>
     </motion.div>
   )
 }
