@@ -7,6 +7,7 @@ import type { ReactNode, Dispatch } from 'react'
 import type { GameSettings, GameState, GameAction } from '../types'
 
 const STORAGE_KEY = 'truthOrDare:gameSettings'
+const PHASE_KEY = 'truthOrDare:phase'
 
 export const defaultSettings: GameSettings = {
   difficulty: 'all',
@@ -31,8 +32,29 @@ export function saveSettings(settings: GameSettings): void {
   }
 }
 
+/** Phases safe to restore — others need transient data lost on refresh */
+const SAFE_PHASES = new Set(['start', 'onboarding', 'setup', 'finger-selection', 'next-round'])
+
+function loadPhase(): GameState['phase'] {
+  try {
+    const raw = localStorage.getItem(PHASE_KEY)
+    if (raw && SAFE_PHASES.has(raw)) return raw as GameState['phase']
+  } catch {
+    // fail silently
+  }
+  return 'start'
+}
+
+function savePhase(phase: GameState['phase']): void {
+  try {
+    localStorage.setItem(PHASE_KEY, phase)
+  } catch {
+    // fail silently
+  }
+}
+
 const initialState: GameState = {
-  phase: 'start',
+  phase: loadPhase(),
   players: [],
   selectedPlayer: null,
   selectedCard: null,
@@ -44,7 +66,9 @@ const initialState: GameState = {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME':
-      return { ...state, phase: 'setup' }
+      if (state.phase === 'setup') return { ...state, phase: 'finger-selection' }
+      if (state.phase === 'onboarding') return { ...state, phase: 'setup' }
+      return { ...state, phase: 'onboarding' }
     case 'SET_FINGERS':
       return { ...state, phase: 'roulette', players: action.players }
     case 'SELECT_PLAYER':
@@ -77,8 +101,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     case 'GO_TO_SETUP':
       return { ...state, phase: 'setup' }
+    case 'GO_TO_TRUTH_DARE':
+      return { ...state, phase: 'truth-dare-choice' }
     case 'RESTART':
-      return { ...initialState, settings: state.settings }
+      savePhase('start')
+      return { ...initialState, settings: state.settings, phase: 'start' }
     case 'UPDATE_SETTINGS':
       return { ...state, settings: { ...state.settings, ...action.payload } }
     default:
@@ -95,6 +122,10 @@ export function GameContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveSettings(state.settings)
   }, [state.settings])
+
+  useEffect(() => {
+    savePhase(state.phase)
+  }, [state.phase])
 
   return <GameContext value={{ state, dispatch }}>{children}</GameContext>
 }

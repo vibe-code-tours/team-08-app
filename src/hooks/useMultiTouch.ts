@@ -17,8 +17,6 @@ export function useMultiTouch(
   const touchesRef = useRef<Map<number, PlayerTouch>>(new Map())
   /** Player list in state — triggers re-renders for UI */
   const [players, setPlayers] = useState<PlayerTouch[]>([])
-  /** Next player number for label assignment */
-  const playerNumRef = useRef(1)
 
   /** Sync ref → state after structural changes (add/remove) */
   const syncPlayers = useCallback(() => {
@@ -35,6 +33,9 @@ export function useMultiTouch(
     const el = containerRef.current
     if (!el) return
 
+    // Clear stale touches on mount
+    touchesRef.current.clear()
+
     const handleTouchStart = (e: TouchEvent) => {
       e.preventDefault()
       const rect = el.getBoundingClientRect()
@@ -46,18 +47,27 @@ export function useMultiTouch(
         if (touchesRef.current.has(touch.identifier)) continue
 
         const color = getNextColor(touchesRef.current.size)
-        const label = `Player ${playerNumRef.current++}`
 
         touchesRef.current.set(touch.identifier, {
           identifier: touch.identifier,
           color,
           x: touch.clientX - rect.left,
           y: touch.clientY - rect.top,
-          label,
+          label: '', // assigned below
         })
         changed = true
       }
-      if (changed) syncPlayers()
+
+      if (changed) {
+        // Renumber and recolor all players to prevent duplicates
+        let num = 1
+        for (const player of touchesRef.current.values()) {
+          player.label = `Player ${num}`
+          player.color = getNextColor(num - 1)
+          num++
+        }
+        syncPlayers()
+      }
     }
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -101,10 +111,9 @@ export function useMultiTouch(
     return Array.from(touchesRef.current.values())
   }, [])
 
-  /** Reset all touches and player counter */
+  /** Reset all touches and player list */
   const reset = useCallback(() => {
     touchesRef.current.clear()
-    playerNumRef.current = 1
     setPlayers([])
   }, [])
 

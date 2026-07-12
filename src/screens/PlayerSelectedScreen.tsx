@@ -69,13 +69,13 @@ export default function PlayerSelectedScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+        onClick={() => dispatch({ type: 'GO_TO_TRUTH_DARE' })}
         className="mt-10 px-8 py-3 rounded-full text-white font-bold
           bg-gradient-to-r from-purple-600 to-pink-600
           shadow-[0_0_20px_rgba(168,85,247,0.4)]
           active:scale-95 transition-transform z-10"
       >
-        နောက်တစ်ပွဲဆော့မယ်
+        ရွေးချယ်ပါ
       </motion.button>
     </div>
   )

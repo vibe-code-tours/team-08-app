@@ -14,7 +14,7 @@ describe('App', () => {
     expect(screen.getByAltText('The Chosen One')).toBeInTheDocument()
   })
 
-  it('routes to setup screen after START_GAME', async () => {
+  it('routes to onboarding screen after START_GAME', async () => {
     function Harness() {
       const { dispatch } = useGameContext()
       useEffect(() => {
@@ -31,7 +31,7 @@ describe('App', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByText('ဂိမ်းအပြင်အဆင်')).toBeInTheDocument()
+      expect(screen.getByText('မဟာကံထူးရှင်ရွေးကြမယ်!')).toBeInTheDocument()
     })
   })
 

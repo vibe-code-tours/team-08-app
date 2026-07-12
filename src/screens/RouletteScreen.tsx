@@ -43,14 +43,14 @@ export default function RouletteScreen() {
     // Pre-select winner and animation params (impure — OK inside effect)
     const selectedWinner = players[Math.floor(Math.random() * players.length)]
     const targetIndex = players.indexOf(selectedWinner)
-    const totalSteps = 20 + Math.floor(Math.random() * 10)
-    const slowDownStart = totalSteps - 8
+    const totalSteps = 25 + Math.floor(Math.random() * 8)
+    const slowDownStart = totalSteps - 7
 
     // Defer state update to avoid cascading render
     const spinTimer = setTimeout(() => setSpinning(true), 0)
 
     let step = 0
-    let delay = 60
+    let delay = 55
     let timerId = 0
 
     const tick = () => {
@@ -66,13 +66,13 @@ export default function RouletteScreen() {
       }
 
       if (step >= slowDownStart) {
-        delay += 80 + (step - slowDownStart) * 40
+        delay += 45 + (step - slowDownStart) * 30
       }
 
       timerId = window.setTimeout(tick, delay)
     }
 
-    timerId = window.setTimeout(tick, 500)
+    timerId = window.setTimeout(tick, 450)
 
     return () => {
       clearTimeout(spinTimer)
@@ -118,28 +118,34 @@ export default function RouletteScreen() {
       {players.map((player, i) => {
         const isWinner = winner?.identifier === player.identifier
         const isEliminated = eliminated && !isWinner
+        const centerX = window.innerWidth / 2
+        const centerY = window.innerHeight / 2 - 40
 
         return (
           <motion.div
             key={player.identifier}
+            initial={{ x: positions[i].x, y: positions[i].y, opacity: 1, scale: 1 }}
             animate={
               isEliminated
                 ? { opacity: 0, scale: 0 }
                 : isWinner && eliminated
-                  ? { scale: 1.4 }
-                  : { opacity: 1, scale: 1 }
+                  ? { x: centerX, y: centerY, scale: 1.5 }
+                  : { x: positions[i].x, y: positions[i].y, opacity: 1, scale: 1 }
             }
             transition={
               isEliminated
                 ? { duration: 0.4, ease: 'easeIn' }
-                : { type: 'spring', stiffness: 300, damping: 15 }
+                : isWinner && eliminated
+                  ? { type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }
+                  : { type: 'spring', stiffness: 300, damping: 15 }
             }
             className="absolute"
+            style={{ left: -28, top: -28 }}
           >
             <PlayerDot
               color={player.color}
-              x={positions[i].x}
-              y={positions[i].y}
+              x={28}
+              y={28}
               label={player.label}
               active={highlightIndex === i || !spinning}
               size={isWinner && eliminated ? 72 : highlightIndex === i ? 64 : 48}
@@ -149,9 +155,9 @@ export default function RouletteScreen() {
               <motion.div
                 initial={{ y: 10, opacity: 0, scale: 0 }}
                 animate={{ y: -40, opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 12, delay: 0.2 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 12, delay: 0.3 }}
                 className="absolute text-3xl pointer-events-none"
-                style={{ left: positions[i].x - 16, top: positions[i].y - 16 }}
+                style={{ left: 28 - 16, top: 28 - 16 }}
               >
                 👑
               </motion.div>

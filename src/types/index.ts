@@ -3,6 +3,7 @@
 
 export type GamePhase =
   | 'start'
+  | 'onboarding'
   | 'setup'
   | 'finger-selection'
   | 'roulette'
@@ -71,5 +72,6 @@ export type GameAction =
   | { type: 'NEXT_ROUND' }
   | { type: 'START_NEXT_ROUND' }
   | { type: 'GO_TO_SETUP' }
+  | { type: 'GO_TO_TRUTH_DARE' }
   | { type: 'RESTART' }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<GameSettings> }

@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
+import { SettingsButton } from './components/SettingsButton'
 import StartScreen from './screens/StartScreen'
 import SetupScreen from './screens/SetupScreen'
 import FingerSelectionScreen from './screens/FingerSelectionScreen'
@@ -8,11 +9,14 @@ import PlayerSelectedScreen from './screens/PlayerSelectedScreen'
 import TruthDareChoiceScreen from './screens/TruthDareChoiceScreen'
 import CardRevealScreen from './screens/CardRevealScreen'
 import NextRoundScreen from './screens/NextRoundScreen'
+import OnboardingScreen from './screens/OnboardingScreen'
 
 function ScreenContent({ phase }: { phase: string }) {
   switch (phase) {
     case 'start':
       return <StartScreen />
+    case 'onboarding':
+      return <OnboardingScreen />
     case 'setup':
       return <SetupScreen />
     case 'finger-selection':
@@ -55,6 +59,7 @@ function App() {
   return (
     <GameContextProvider>
       <ActiveScreen />
+      <SettingsButton />
     </GameContextProvider>
   )
 }

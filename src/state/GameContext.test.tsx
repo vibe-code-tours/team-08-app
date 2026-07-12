@@ -30,9 +30,19 @@ beforeEach(() => {
 })
 
 describe('gameReducer', () => {
-  it('START_GAME transitions phase from start to setup', () => {
+  it('START_GAME transitions phase from start to onboarding', () => {
     const result = gameReducer(baseState, { type: 'START_GAME' })
+    expect(result.phase).toBe('onboarding')
+  })
+
+  it('START_GAME from onboarding transitions to setup', () => {
+    const result = gameReducer({ ...baseState, phase: 'onboarding' }, { type: 'START_GAME' })
     expect(result.phase).toBe('setup')
+  })
+
+  it('START_GAME from setup transitions to finger-selection', () => {
+    const result = gameReducer({ ...baseState, phase: 'setup' }, { type: 'START_GAME' })
+    expect(result.phase).toBe('finger-selection')
   })
 
   it('SET_FINGERS stores players and transitions to roulette', () => {
