@@ -26,7 +26,11 @@ export default function FingerSelectionScreen() {
   const rafRef = useRef(0)
   const playersRef = useRef(players)
   const prevCountRef = useRef(0)
-  playersRef.current = players
+
+  // Keep playersRef in sync (read by setTimeout callback)
+  useEffect(() => {
+    playersRef.current = players
+  })
 
   // Flash new player numbers
   useEffect(() => {
@@ -83,7 +87,6 @@ export default function FingerSelectionScreen() {
       cancelAnimationFrame(rafRef.current)
       if (countdownRef.current) clearTimeout(countdownRef.current)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only reset on finger count change, not position updates
   }, [players.length, dispatch])
 
   return (
