@@ -9,6 +9,8 @@ export type GamePhase =
   | 'player-selected'
   | 'truth-dare-choice'
   | 'card-reveal'
+  | 'voting'
+  | 'result'
   | 'next-round'
 
 export type Difficulty = 'easy' | 'medium' | 'hard' | 'all'
@@ -57,7 +59,7 @@ export interface GameState {
   selectedPlayer: PlayerTouch | null
   selectedCard: Card | null
   chosenType: CardType | null
-  voteResult: 'pass' | 'fail' | null
+  voteResult: 'pass' | 'excellent' | 'fail' | null
   settings: GameSettings
 }
 
@@ -68,6 +70,7 @@ export type GameAction =
   | { type: 'GO_TO_TRUTH_DARE_CHOICE' }
   | { type: 'CHOOSE_TRUTH_OR_DARE'; payload: CardType }
   | { type: 'PICK_CARD'; payload: Card }
-  | { type: 'VOTE'; payload: 'pass' | 'fail' }
+  | { type: 'GO_TO_VOTING' }
+  | { type: 'VOTE'; payload: 'pass' | 'excellent' | 'fail' }
   | { type: 'NEXT_ROUND' }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<GameSettings> }
