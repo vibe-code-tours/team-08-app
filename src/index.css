@@ -22,3 +22,8 @@
   --shadow-glow-success: 0 0 20px 3px oklch(0.71 0.20 141 / 0.5);
   --shadow-glow-failure: 0 0 20px 3px oklch(0.60 0.23 22 / 0.5);
 }
+
+@keyframes shimmer {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -200% 0; }
+}
