@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 
 type CardBackProps = {
   onClick?: () => void
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'responsive'
   className?: string
 }
 
@@ -10,6 +10,7 @@ const sizeMap = {
   sm: { w: 100, h: 140 },
   md: { w: 130, h: 180 },
   lg: { w: 160, h: 220 },
+  responsive: { w: undefined, h: undefined },
 }
 
 /**
@@ -28,7 +29,7 @@ export function CardBack({ onClick, size = 'md', className = '' }: CardBackProps
       className={`relative rounded-xl overflow-hidden
         ${onClick ? 'cursor-pointer' : ''}
         ${className}`}
-      style={{ width: w, height: h }}
+      style={w !== undefined && h !== undefined ? { width: w, height: h } : undefined}
     >
       {/* Background */}
       <div

@@ -75,8 +75,8 @@ export default function CardRevealScreen() {
         <p className="text-white/50 text-sm">ကဒ်တစ်ကဒ်ကို နှိပ်ပါ</p>
       </motion.div>
 
-      {/* Card Grid — 2 columns × 5 rows */}
-      <div className="relative z-10 grid grid-cols-2 gap-3 px-4 max-w-md">
+      {/* Card Grid — 5 columns × 2 rows */}
+      <div className="relative z-10 grid grid-cols-5 gap-2 px-3 w-full max-w-lg">
         {cards.map((card, index) => (
           <FlipCard
             key={card.id}
@@ -115,7 +115,7 @@ function FlipCard({ card, isFlipped, isDisabled, accentColor, index, onClick }: 
         damping: 15,
         delay: 0.2 + index * 0.05,
       }}
-      className="relative"
+      className="relative w-full"
       style={{ perspective: '1000px' }}
     >
       <motion.div
@@ -134,6 +134,7 @@ function FlipCard({ card, isFlipped, isDisabled, accentColor, index, onClick }: 
         >
           <CardBack
             onClick={isDisabled ? undefined : onClick}
+            size="responsive"
             className="w-full h-full"
           />
         </div>
@@ -151,7 +152,7 @@ function FlipCard({ card, isFlipped, isDisabled, accentColor, index, onClick }: 
         >
           <div className="flex flex-col items-center justify-between h-full p-3 text-center">
             {/* Card text */}
-            <p className="text-white text-xs sm:text-sm font-medium leading-snug mt-2 line-clamp-6">
+            <p className="text-white text-[10px] sm:text-xs font-medium leading-snug mt-1 line-clamp-5">
               {card.text}
             </p>
 
