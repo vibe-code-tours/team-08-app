@@ -56,7 +56,7 @@ export default function OnboardingScreen() {
   const handleNext = () => {
     play('tap')
     if (isLast) {
-      
+
       dispatch({ type: 'START_GAME' })
     } else {
       setCurrent((p) => p + 1)

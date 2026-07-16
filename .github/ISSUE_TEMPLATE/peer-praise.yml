@@ -1,0 +1,24 @@
+name: "👏 Peer feedback — Praise"
+description: "Something this team did really well."
+title: "[peer/praise] "
+labels: ["praise"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Call out what works well — it tells the team what to keep.
+        Prefer a quick ⭐ star + 👍 react too. **One highlight per issue.**
+  - type: textarea
+    id: what
+    attributes:
+      label: What works well
+      placeholder: "e.g. the empty-state copy is clear and friendly"
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it stood out (optional)
+      placeholder: "What made it good — polish, clarity, clever idea, etc."
+    validations:
+      required: false

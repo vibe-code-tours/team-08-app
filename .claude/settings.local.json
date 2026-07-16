@@ -40,6 +40,9 @@
       "Bash(pkill -f \"node.*vite\")",
       "Bash(git cherry-pick *)",
       "Bash(git branch *)"
+      "WebFetch(domain:github.com)",
+      "Bash(curl -sL --max-time 15 \"https://github.com/vibe-code-tours/team-08-app/pull/42\")",
+      "Bash(curl -sL --max-time 20 \"https://github.com/vibe-code-tours/team-08-app/pull/42.diff\")"
     ]
   }
 }
