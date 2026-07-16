@@ -119,7 +119,7 @@ export default function SetupScreen() {
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 4 }}
-                    className="absolute right-0 bottom-full mb-2 w-64 p-3 rounded-xl bg-slate-800 border border-white/10 text-xs text-white/70 leading-relaxed z-50"
+                    className="absolute bottom-full mb-2 w-64 p-3 rounded-xl bg-slate-800 border border-white/10 text-xs text-white/70 leading-relaxed z-50 -translate-x-1/2 left-1/2"
                   >
                     အချိန်အကန့်အသတ်ကို ဖွင့်ထားမယ်ဆိုရင် challenge လုပ်ရတဲ့ player ဟာ သတ်မှတ်အချိန်အတွင်း challenge ကို ပြီးမြောက်အောင်လုပ်ရမှာဖြစ်ပါတယ်။
                   </motion.div>
