@@ -156,7 +156,7 @@ export default function CardRevealScreen() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="relative z-10 flex flex-col items-center px-6 w-full max-w-sm"
+            className="relative z-10 flex flex-col items-center px-6 pt-8 pb-4 w-full max-w-sm"
           >
             {/* Timer circle — above the card */}
             {settings.timerEnabled && (
@@ -164,7 +164,7 @@ export default function CardRevealScreen() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="relative mb-8 z-20"
+                className="relative mb-6 z-30"
               >
                 <svg width="88" height="88" className="drop-shadow-[0_0_16px_rgba(168,85,247,0.5)]">
                   {/* Background circle */}
@@ -204,12 +204,12 @@ export default function CardRevealScreen() {
 
             {/* Card container */}
             <div className="relative w-full">
-              {/* Glow behind card */}
+              {/* Glow behind card — only below and sides, not overlapping timer */}
               <div
-                className="absolute -inset-8 rounded-full blur-3xl pointer-events-none"
+                className="absolute -inset-x-6 -inset-y-4 rounded-3xl blur-2xl pointer-events-none"
                 style={{
-                  background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)`,
-                  opacity: 0.5,
+                  background: `radial-gradient(circle, ${accentColor}30 0%, transparent 70%)`,
+                  opacity: 0.4,
                 }}
               />
 
@@ -278,7 +278,7 @@ export default function CardRevealScreen() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 200, damping: 15 }}
-              className="mt-8 mb-10 w-full"
+              className="mt-8 mb-14 w-full"
             >
               {settings.timerEnabled ? (
                 <motion.button
