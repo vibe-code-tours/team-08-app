@@ -106,7 +106,7 @@ export default function FingerSelectionScreen() {
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          Place your fingers!
+          လက်ချောင်းလေးတွေတင်ကြပါ
         </h1>
         {/* Player count badge */}
         {players.length > 0 && (
@@ -122,10 +122,10 @@ export default function FingerSelectionScreen() {
         )}
         <p className="text-sm text-white/50">
           {players.length === 0
-            ? 'Waiting for players...'
+            ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
             : counting
-              ? 'Hold still…'
-              : 'ထပ်ထားပါ!'}
+              ? 'ခနနေဦး…'
+              : `ကစားသမား ${players.length} ယောက် — ထပ်ထည့်မယ်!`}
         </p>
       </div>
 
@@ -140,6 +140,7 @@ export default function FingerSelectionScreen() {
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none"
           >
             <svg width="120" height="120" className="drop-shadow-[0_0_20px_rgba(168,85,247,0.7)]">
+              {/* Background circle */}
               <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(168,85,247,0.15)" strokeWidth="4" />
               <motion.circle
                 cx="60"
@@ -163,7 +164,7 @@ export default function FingerSelectionScreen() {
               </defs>
             </svg>
             <motion.p
-              className="absolute inset-0 flex items-center justify-center text-3xl font-black text-white"
+              className="absolute inset-0 flex items-center justify-center text-xl font-bold text-white/80"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}

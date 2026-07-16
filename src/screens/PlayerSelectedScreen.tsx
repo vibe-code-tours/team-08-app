@@ -82,7 +82,7 @@ export default function PlayerSelectedScreen() {
           shadow-[0_0_20px_rgba(168,85,247,0.4)]
           active:scale-95 transition-transform z-10"
       >
-        ရွေးချယ်ပါ
+        ဆက်လက်ဆော့ကစားမယ်
       </motion.button>
     </div>
   )
