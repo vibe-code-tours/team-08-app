@@ -8,7 +8,6 @@ import SetupScreen from './screens/SetupScreen'
 import FingerSelectionScreen from './screens/FingerSelectionScreen'
 import RouletteScreen from './screens/RouletteScreen'
 import PlayerSelectedScreen from './screens/PlayerSelectedScreen'
-import TruthDareChoiceScreen from './screens/TruthDareChoiceScreen'
 import CardRevealScreen from './screens/CardRevealScreen'
 import VotingScreen from './screens/VotingScreen'
 import ResultScreen from './screens/ResultScreen'
@@ -29,7 +28,7 @@ function ScreenContent({ phase }: { phase: string }) {
     case 'player-selected':
       return <PlayerSelectedScreen />
     case 'truth-dare-choice':
-      return <TruthDareChoiceScreen />
+      return <PlayerSelectedScreen />
     case 'card-reveal':
       return <CardRevealScreen />
     case 'voting':
