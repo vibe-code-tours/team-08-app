@@ -23,6 +23,7 @@ export default function FingerSelectionScreen() {
   const [countdown, setCountdown] = useState(0)
   const [flashingIds, setFlashingIds] = useState<Set<number>>(new Set())
   const countdownRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const tickIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const rafRef = useRef(0)
   const playersRef = useRef(players)
   const prevCountRef = useRef(0)
@@ -55,6 +56,10 @@ export default function FingerSelectionScreen() {
       clearTimeout(countdownRef.current)
       countdownRef.current = null
     }
+    if (tickIdRef.current) {
+      clearInterval(tickIdRef.current)
+      tickIdRef.current = null
+    }
 
     if (players.length >= 2) {
       rafRef.current = requestAnimationFrame(() => {
@@ -62,17 +67,23 @@ export default function FingerSelectionScreen() {
         setCountdown(Math.ceil(STABLE_DELAY / 1000))
       })
       // Tick countdown every second
-      const tickId = setInterval(() => {
+      tickIdRef.current = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            clearInterval(tickId)
+            if (tickIdRef.current) {
+              clearInterval(tickIdRef.current)
+              tickIdRef.current = null
+            }
             return 0
           }
           return prev - 1
         })
       }, 1000)
       countdownRef.current = setTimeout(() => {
-        clearInterval(tickId)
+        if (tickIdRef.current) {
+          clearInterval(tickIdRef.current)
+          tickIdRef.current = null
+        }
         setCounting(false)
         dispatch({ type: 'SET_FINGERS', players: playersRef.current })
       }, STABLE_DELAY)
@@ -86,6 +97,10 @@ export default function FingerSelectionScreen() {
     return () => {
       cancelAnimationFrame(rafRef.current)
       if (countdownRef.current) clearTimeout(countdownRef.current)
+      if (tickIdRef.current) {
+        clearInterval(tickIdRef.current)
+        tickIdRef.current = null
+      }
     }
   }, [players.length, dispatch])
 
