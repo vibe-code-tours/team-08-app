@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { GlassPanel } from '../components/GlassPanel.tsx'
 import type { CardPack, Difficulty } from '../types/index.ts'
 
@@ -24,6 +25,7 @@ const difficulties: { key: Difficulty; label: string; color: string }[] = [
 export default function SetupScreen() {
   const { settings } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
 
   return (
     <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center">
@@ -52,7 +54,7 @@ export default function SetupScreen() {
                 <motion.button
                   key={pack.key}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => dispatch({ type: 'UPDATE_SETTINGS', payload: { pack: pack.key } })}
+                  onClick={() => { play('vote'); dispatch({ type: 'UPDATE_SETTINGS', payload: { pack: pack.key } }) }}
                   className={`flex items-center gap-2 p-3 rounded-xl text-sm font-semibold transition-all
                     ${selected ? 'border-2' : 'border border-white/10 bg-white/5'}`}
                   style={selected ? {
@@ -80,7 +82,7 @@ export default function SetupScreen() {
                 <motion.button
                   key={diff.key}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => dispatch({ type: 'UPDATE_SETTINGS', payload: { difficulty: diff.key } })}
+                  onClick={() => { play('vote'); dispatch({ type: 'UPDATE_SETTINGS', payload: { difficulty: diff.key } }) }}
                   className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all
                     ${selected ? 'border-2' : 'border border-white/10 bg-white/5'}`}
                   style={selected ? {
@@ -102,7 +104,7 @@ export default function SetupScreen() {
           <span className="text-sm text-white/70">အချိန်တိုင်းကိရိယာ</span>
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={() => dispatch({ type: 'UPDATE_SETTINGS', payload: { timerEnabled: !settings.timerEnabled } })}
+            onClick={() => { play('vote'); dispatch({ type: 'UPDATE_SETTINGS', payload: { timerEnabled: !settings.timerEnabled } }) }}
             className="relative w-12 h-6 rounded-full transition-colors"
             style={{
               backgroundColor: settings.timerEnabled ? '#8B2FE2' : 'rgba(255,255,255,0.15)',
@@ -123,7 +125,7 @@ export default function SetupScreen() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
-        onClick={() => dispatch({ type: 'START_GAME' })}
+        onClick={() => { play('tap'); dispatch({ type: 'START_GAME' }) }}
         className="mt-8 px-10 py-4 rounded-full text-xl font-bold text-white
           bg-gradient-to-r from-purple-600 to-pink-600
           shadow-[0_0_30px_rgba(168,85,247,0.5)]

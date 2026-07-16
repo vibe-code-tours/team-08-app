@@ -1,11 +1,13 @@
 import { motion } from 'motion/react'
 import { useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 
 /**
  * Landing page — minimal placeholder for now.
  */
 export default function StartScreen() {
   const dispatch = useGameDispatch()
+  const { play } = useSound()
 
   return (
     <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center justify-center">
@@ -27,7 +29,7 @@ export default function StartScreen() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
-        onClick={() => dispatch({ type: 'START_GAME' })}
+        onClick={() => { play('tap'); dispatch({ type: 'START_GAME' }) }}
         className="mt-12 px-10 py-4 rounded-full text-xl font-bold text-white
           bg-gradient-to-r from-purple-600 to-pink-600
           shadow-[0_0_30px_rgba(168,85,247,0.5)]

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
 import { SettingsButton } from './components/SettingsButton'
+import { PhaseMusic } from './components/PhaseMusic'
 import StartScreen from './screens/StartScreen'
 import OnboardingScreen from './screens/OnboardingScreen'
 import SetupScreen from './screens/SetupScreen'
@@ -64,6 +65,7 @@ export function ActiveScreen() {
 function App() {
   return (
     <GameContextProvider>
+      <PhaseMusic />
       <ActiveScreen />
       <SettingsButton />
     </GameContextProvider>

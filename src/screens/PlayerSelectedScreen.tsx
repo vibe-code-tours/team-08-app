@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { motion } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 
 /**
  * Shows the selected player with a crown and glow effect.
@@ -8,6 +10,11 @@ import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 export default function PlayerSelectedScreen() {
   const { selectedPlayer } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
+
+  useEffect(() => {
+    play('fanfare')
+  }, [play])
 
   if (!selectedPlayer) return null
 
@@ -69,7 +76,7 @@ export default function PlayerSelectedScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        onClick={() => dispatch({ type: 'GO_TO_TRUTH_DARE' })}
+        onClick={() => { play('tap'); dispatch({ type: 'GO_TO_TRUTH_DARE' }) }}
         className="mt-10 px-8 py-3 rounded-full text-white font-bold
           bg-gradient-to-r from-purple-600 to-pink-600
           shadow-[0_0_20px_rgba(168,85,247,0.4)]

@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
+import { useSound } from '../hooks/useSound.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 
 /** How long to wait (ms) after fingers stabilize before auto-starting */
@@ -18,6 +19,7 @@ export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
   const containerRef = useRef<HTMLDivElement>(null)
   const { players } = useMultiTouch(containerRef, 10)
+  const { play } = useSound()
 
   const [counting, setCounting] = useState(false)
   const [countdown, setCountdown] = useState(0)
@@ -36,6 +38,7 @@ export default function FingerSelectionScreen() {
   useEffect(() => {
     if (players.length > prevCountRef.current) {
       // New player added — flash their number
+      play('tap')
       const newPlayer = players[players.length - 1]
       setFlashingIds((prev) => new Set(prev).add(newPlayer.identifier))
       setTimeout(() => {
@@ -47,7 +50,7 @@ export default function FingerSelectionScreen() {
       }, FLASH_DURATION)
     }
     prevCountRef.current = players.length
-  }, [players])
+  }, [players, play])
 
   // Auto-start countdown when finger count changes
   useEffect(() => {

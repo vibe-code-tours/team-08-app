@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { NeonButton } from '../components/NeonButton.tsx'
 import { GlassPanel } from '../components/GlassPanel.tsx'
 import type { CardType } from '../types/index.ts'
@@ -17,6 +18,7 @@ const RANDOM_COLOR = '#eab308' // gold
 export default function TruthDareChoiceScreen() {
   const { selectedPlayer } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipResult, setFlipResult] = useState<CardType | null>(null)
   const flipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -29,15 +31,17 @@ export default function TruthDareChoiceScreen() {
 
   const handleChoice = useCallback(
     (type: CardType) => {
+      play('tap')
       dispatch({ type: 'CHOOSE_TRUTH_OR_DARE', payload: type })
     },
-    [dispatch],
+    [dispatch, play],
   )
 
   const handleRandom = useCallback(() => {
     if (isFlipping) return
     setIsFlipping(true)
     setFlipResult(null)
+    play('coin-flip')
 
     // Randomly pick truth or dare
     const result: CardType = Math.random() < 0.5 ? 'truth' : 'dare'
@@ -48,7 +52,7 @@ export default function TruthDareChoiceScreen() {
       setIsFlipping(false)
       dispatch({ type: 'CHOOSE_TRUTH_OR_DARE', payload: result })
     }, 1200)
-  }, [isFlipping, dispatch])
+  }, [isFlipping, dispatch, play])
 
   if (!selectedPlayer) return null
 

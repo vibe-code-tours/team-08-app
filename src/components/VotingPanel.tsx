@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { GlassPanel } from './GlassPanel.tsx'
 import { NeonButton } from './NeonButton.tsx'
 import type { GameState } from '../types/index.ts'
@@ -22,6 +23,7 @@ type VotingPanelProps = {
 
 export function VotingPanel({ className = '' }: VotingPanelProps) {
   const dispatch = useGameDispatch()
+  const { play } = useSound()
 
   return (
     <GlassPanel className={`w-full max-w-sm p-5 ${className}`}>
@@ -37,7 +39,10 @@ export function VotingPanel({ className = '' }: VotingPanelProps) {
             color={option.color}
             size="lg"
             className="w-full"
-            onClick={() => dispatch({ type: 'VOTE', payload: option.result })}
+            onClick={() => {
+              play('vote')
+              dispatch({ type: 'VOTE', payload: option.result })
+            }}
           >
             {option.label}
           </NeonButton>

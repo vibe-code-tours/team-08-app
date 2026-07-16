@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { useGameDispatch } from '../state/GameContext.tsx'
+import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 
 /** Apple-style toggle switch */
 function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
@@ -28,9 +29,11 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
  */
 export function SettingsButton() {
   const [open, setOpen] = useState(false)
-  const [soundOn, setSoundOn] = useState(true)
-  const [musicOn, setMusicOn] = useState(true)
+  const { settings } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
+  const soundOn = settings.soundEnabled
+  const musicOn = settings.musicEnabled
 
   return (
     <>
@@ -40,7 +43,7 @@ export function SettingsButton() {
         animate={{ scale: 1 }}
         transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => setOpen(!open)}
+        onClick={() => { play('vote', 0.5); setOpen(!open) }}
         className="fixed top-4 right-4 z-50 w-10 h-10 rounded-full
           flex items-center justify-center text-lg
           bg-white/10 backdrop-blur-md border border-white/20
@@ -78,13 +81,20 @@ export function SettingsButton() {
               {/* Sound toggle */}
               <div className="flex items-center justify-between px-4 py-3">
                 <span className="text-sm text-white/80">{soundOn ? '🔊' : '🔇'} အသံ</span>
-                <Toggle on={soundOn} onToggle={() => setSoundOn(!soundOn)} />
+                <Toggle on={soundOn} onToggle={() => {
+                  // Force-play even when sound is being turned off
+                  play('vote', 0.6)
+                  dispatch({ type: 'UPDATE_SETTINGS', payload: { soundEnabled: !soundOn } })
+                }} />
               </div>
 
               {/* Music toggle */}
               <div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
                 <span className="text-sm text-white/80">{musicOn ? '🎵' : '🔕'} သီချင်း</span>
-                <Toggle on={musicOn} onToggle={() => setMusicOn(!musicOn)} />
+                <Toggle on={musicOn} onToggle={() => {
+                  play('vote', 0.6)
+                  dispatch({ type: 'UPDATE_SETTINGS', payload: { musicEnabled: !musicOn } })
+                }} />
               </div>
 
               {/* Divider */}
@@ -93,6 +103,7 @@ export function SettingsButton() {
               {/* Home button */}
               <button
                 onClick={() => {
+                  play('vote', 0.5)
                   setOpen(false)
                   dispatch({ type: 'RESTART' })
                 }}
