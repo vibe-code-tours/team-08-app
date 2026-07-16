@@ -164,7 +164,7 @@ export default function CardRevealScreen() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="relative mb-6"
+                className="relative mb-8 z-20"
               >
                 <svg width="88" height="88" className="drop-shadow-[0_0_16px_rgba(168,85,247,0.5)]">
                   {/* Background circle */}
@@ -278,7 +278,7 @@ export default function CardRevealScreen() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 200, damping: 15 }}
-              className="mt-8 w-full"
+              className="mt-8 mb-10 w-full"
             >
               {settings.timerEnabled ? (
                 <motion.button
