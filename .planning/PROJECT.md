@@ -82,7 +82,7 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 
 ## Context
 
-**Existing State:** Phase 1 (Foundation & Design System) complete — Tailwind v4 neon `@theme` design tokens, the full TypeScript type barrel (`src/types/index.ts`), and `GameContext` (reducer + localStorage-backed `GameSettings`) are implemented and tested. `App.tsx` is a phase-based router over 7 placeholder screens (`src/screens/`), and the app is an installable PWA (manifest + service worker). `src/data/cards.ts` and `src/hooks/useMultiTouch.ts` remain empty stubs, targeted by Phase 2.
+**Existing State:** Phase 1 (Foundation & Design System) complete — Tailwind v4 neon `@theme` design tokens, the full TypeScript type barrel (`src/types/index.ts`), and `GameContext` (reducer + localStorage-backed `GameSettings`) are implemented and tested. `App.tsx` is a phase-based router with AnimatePresence screen transitions over 8 screens (`src/screens/`), and the app is an installable PWA (manifest + service worker). 7 reusable components in `src/components/` (NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot). `src/hooks/useMultiTouch.ts` is fully implemented (116 lines). `src/data/cards.ts` has 192 cards across 4 packs × 3 difficulties with filtering helpers. All UI text is in Myanmar (Burmese). 4 screens are fully implemented (StartScreen, FingerSelectionScreen, RouletteScreen, PlayerSelectedScreen); 4 are stubs (SetupScreen, TruthDareChoiceScreen, CardRevealScreen, NextRoundScreen).
 
 **Design Reference:** A 24-screen UI kit (`public/images/Screens.png`) provides the complete visual target — from splash screen through onboarding, gameplay, and settings. The design is in Myanmar/Burmese language but the visual language (neon dark theme, glow effects, card animations, roulette) is clear.
 
@@ -103,13 +103,13 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Tailwind CSS over styled-components | Utility-first scales better for custom neon design system | — Pending |
-| Framer Motion over CSS-only | Complex sequences (roulette, card flip, particles) need spring physics and orchestration | — Pending |
-| Static TypeScript cards over JSON | Type safety, IDE autocomplete, compile-time validation | — Pending |
-| React Context over Redux | MVP state is simple (game phase + settings); Context + useReducer sufficient | — Pending |
+| Tailwind CSS over styled-components | Utility-first scales better for custom neon design system | — Validated (Phase 1) |
+| Framer Motion over CSS-only | Complex sequences (roulette, card flip, particles) need spring physics and orchestration | — Validated (Phase 1) |
+| Static TypeScript cards over JSON | Type safety, IDE autocomplete, compile-time validation | — Validated (Phase 1, 192 cards) |
+| React Context over Redux | MVP state is simple (game phase + settings); Context + useReducer sufficient | — Validated (Phase 1) |
 | Self-vote only | Simplifies UX — selected player judges own challenge | — Pending |
-| PWA (no native) | Cross-platform reach, no app store friction, share-the-phone model | — Pending |
-| Starter cards in codebase | 50–100+ cards across 4 packs × 3 difficulties built into the project | — Pending |
+| PWA (no native) | Cross-platform reach, no app store friction, share-the-phone model | — Validated (Phase 1) |
+| Starter cards in codebase | 50–100+ cards across 4 packs × 3 difficulties built into the project | — Validated (Phase 1, 192 cards) |
 
 ## Evolution
 

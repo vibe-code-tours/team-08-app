@@ -1,4 +1,5 @@
-# Requirements: Truth or Dare -- Finger Roulette
+# Requirements: Truth
+or Dare -- Finger Roulette
 
 **Defined:** 2026-07-09
 **Core Value:** The roulette selection moment -- fingers on screen, spinning light, dramatic slowdown, winner revealed -- must feel electric and fun.

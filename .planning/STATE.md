@@ -23,7 +23,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-09)
 
 **Core value:** The roulette selection moment -- fingers on screen, spinning light, dramatic slowdown, winner revealed -- must feel electric and fun.
-**Current focus:** Phase 01 — foundation-design-system
+**Current focus:** Phase 02 — Core Game Loop
 
 ## Current Position
 
@@ -38,27 +38,17 @@ Progress: [░░░░░░░░░░] 0%
 
 **Velocity:**
 
-- Total plans completed: 11
-- Average duration: - min
-- Total execution time: 0 hours
+- Total plans completed: 2
+- Total execution time: ~9 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 2 | - | - |
-| 2. Core Game Loop | 3 | - | - |
-| 3. Content & Settings | 2 | - | - |
-| 4. Polish | 2 | - | - |
-| 01 | 2 | - | - |
-
-**Recent Trend:**
-
-- Last 5 plans: (none)
-- Trend: N/A
-
-| Phase 01-foundation-design-system P01 | 3min | 3 tasks | 4 files |
-| Phase 01-foundation-design-system P02 | 6min | 3 tasks | 13 files |
+| 1. Foundation | 2 | ~9min | ~4.5min |
+| 2. Core Game Loop | 0 | - | - |
+| 3. Content & Settings | 0 | - | - |
+| 4. Polish | 0 | - | - |
 
 ## Accumulated Context
 

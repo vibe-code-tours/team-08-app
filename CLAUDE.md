@@ -5,7 +5,7 @@ Vite + React + TypeScript + vite-plugin-pwa. Vitest for tests, ESLint for lint.
 
 ## Architecture
 See docs/ARCHITECTURE.md for the diagram. Flow:
-Start → Setup → Touch Selection → Selected Player → Truth/Dare choice → Card Reveal → Next Round
+Start → Finger Selection → Roulette → Player Selected → Truth/Dare choice → Card Reveal → Next Round
 
 ## Key technical learnings (don't relearn these)
 - Multi-touch tracking MUST key by `touch.identifier`, never array index — 
@@ -17,8 +17,8 @@ Start → Setup → Touch Selection → Selected Player → Truth/Dare choice �
 - src/screens/       — one file per screen, matches the flow above
 - src/state/          — GameContext.tsx holds GameState
 - src/data/cards.ts   — static Card[] data, filtered by pack/difficulty/type
-- src/hooks/useMultiTouch.ts — spike touch logic, hook-ified
-- src/types/          — Card, GameState, PlayerTouch, GameSettings
+- src/hooks/useMultiTouch.ts — multi-touch tracking hook (fully implemented)
+- src/types/          — Card, GameState, PlayerTouch, GameSettings, Difficulty, CardPack, CardType, PLAYER_COLORS
 
 ## Workflow
 - One GitHub issue = one focused Claude Code session = one PR.
