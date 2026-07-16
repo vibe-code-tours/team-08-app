@@ -136,7 +136,7 @@ export default function CardRevealScreen() {
                   textShadow: `0 0 30px ${accentColor}50, 0 2px 4px rgba(0,0,0,0.3)`,
                 }}
               >
-                {chosenType === 'truth' ? '💙 Truth' : '💗 Dare'}
+                {chosenType === 'truth' ? '💡 Truth' : '🔥 Dare'}
               </h1>
               <p className="text-white/40 text-xs tracking-widest uppercase">ကဒ်တစ်ကဒ်ကို နှိပ်ပါ</p>
             </motion.div>
@@ -166,15 +166,20 @@ export default function CardRevealScreen() {
             className="relative z-10 flex flex-col items-center px-5 w-full max-w-sm"
           >
             {settings.timerEnabled && (
-              <div className="flex flex-col items-center gap-2 z-20 mb-4 shrink-0">
+              <div className="flex flex-col items-center gap-3 z-20 mb-5 shrink-0">
                 <TimerDisplay seconds={seconds} total={ROUND_SECONDS} />
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
                   onClick={handleStartVoting}
-                  className="px-5 py-1.5 rounded-full text-xs text-white/40
-                    border border-white/10 hover:text-white/70 hover:border-white/20 transition-colors"
+                  className="px-8 py-3 rounded-full text-base font-bold text-white
+                    bg-gradient-to-r from-purple-600 to-pink-600
+                    shadow-[0_0_24px_rgba(168,85,247,0.5),0_0_48px_rgba(168,85,247,0.2)]
+                    active:shadow-[0_0_12px_rgba(168,85,247,0.3)]
+                    transition-all"
                 >
                   ✅ ပြီးပြီ
-                </button>
+                </motion.button>
               </div>
             )}
 
@@ -190,31 +195,60 @@ export default function CardRevealScreen() {
             {/* Revealed card */}
             <motion.div
               initial={{ boxShadow: `0 0 0px ${accentColor}00` }}
-              animate={{ boxShadow: `0 0 40px ${accentColor}30, 0 0 80px ${accentColor}15` }}
+              animate={{ boxShadow: `0 0 40px ${accentColor}40, 0 0 80px ${accentColor}20, inset 0 0 60px ${accentColor}10` }}
               transition={{ duration: 1.2, delay: 0.4 }}
-              className="relative w-full rounded-2xl overflow-hidden"
+              className="relative w-full rounded-3xl overflow-hidden"
               style={{
                 aspectRatio: '2.5/3.5',
-                background: 'linear-gradient(145deg, #1a0a2e 0%, #0d0521 50%, #1a0a2e 100%)',
-                border: `1.5px solid ${accentColor}50`,
+                background: 'linear-gradient(160deg, #1e0a35 0%, #0d0521 40%, #1a0828 100%)',
+                border: `2px solid ${accentColor}40`,
               }}
             >
+              {/* Inner glow overlay */}
+              <div
+                className="absolute inset-0 opacity-30"
+                style={{
+                  background: `radial-gradient(ellipse at 50% 20%, ${accentColor}25 0%, transparent 60%)`,
+                }}
+              />
+
               {/* Top accent line */}
               <div
-                className="absolute top-0 left-4 right-4 h-px"
-                style={{ background: `linear-gradient(90deg, transparent, ${accentColor}60, transparent)` }}
+                className="absolute top-0 left-6 right-6 h-px"
+                style={{ background: `linear-gradient(90deg, transparent, ${accentColor}70, transparent)` }}
+              />
+
+              {/* Corner accents */}
+              <div
+                className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 rounded-tl-xl"
+                style={{ borderColor: `${accentColor}50` }}
+              />
+              <div
+                className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 rounded-tr-xl"
+                style={{ borderColor: `${accentColor}50` }}
+              />
+              <div
+                className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 rounded-bl-xl"
+                style={{ borderColor: `${accentColor}30` }}
+              />
+              <div
+                className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 rounded-br-xl"
+                style={{ borderColor: `${accentColor}30` }}
               />
 
               {/* Content */}
               <div className="flex flex-col items-center justify-between h-full p-6 pt-8 text-center relative z-10">
                 {/* Type icon */}
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', delay: 0.5, stiffness: 300 }}
-                  className="text-3xl mb-2"
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', delay: 0.5, stiffness: 200, damping: 15 }}
+                  className="text-4xl mb-3"
+                  style={{
+                    filter: `drop-shadow(0 0 12px ${accentColor}80)`,
+                  }}
                 >
-                  {chosenType === 'truth' ? '💙' : '💗'}
+                  {chosenType === 'truth' ? '💡' : '🔥'}
                 </motion.div>
 
                 {/* Card text */}
@@ -223,16 +257,19 @@ export default function CardRevealScreen() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.4 }}
                   className="text-white text-sm sm:text-base font-medium leading-relaxed line-clamp-7 flex-1 flex items-center"
+                  style={{
+                    textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                  }}
                 >
                   {revealedCard.text}
                 </motion.p>
 
                 {/* Badges */}
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 }}
-                  className="flex flex-wrap gap-2 justify-center"
+                  className="flex flex-wrap gap-2 justify-center mt-3"
                 >
                   <DifficultyBadge difficulty={revealedCard.difficulty} />
                   <PackBadge pack={revealedCard.pack} />
@@ -241,8 +278,8 @@ export default function CardRevealScreen() {
 
               {/* Bottom accent line */}
               <div
-                className="absolute bottom-0 left-4 right-4 h-px"
-                style={{ background: `linear-gradient(90deg, transparent, ${accentColor}40, transparent)` }}
+                className="absolute bottom-0 left-6 right-6 h-px"
+                style={{ background: `linear-gradient(90deg, transparent, ${accentColor}50, transparent)` }}
               />
             </motion.div>
 
