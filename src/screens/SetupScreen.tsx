@@ -46,7 +46,7 @@ export default function SetupScreen() {
       <GlassPanel className="w-[90%] max-w-sm p-6 z-10 space-y-6">
         {/* Pack selection */}
         <div>
-          <p className="text-sm text-white/60 mb-3">ကားဒ်အုပ်စု</p>
+          <p className="text-sm text-white/60 mb-3">ဘယ်သူတွေနဲ့ ဆော့မှာလည်းရွေးပါ</p>
           <div className="grid grid-cols-2 gap-3">
             {packs.map((pack) => {
               const selected = settings.pack === pack.key
@@ -101,7 +101,17 @@ export default function SetupScreen() {
 
         {/* Timer toggle */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/70">အချိန်တိုင်းကိရိယာ</span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-white/70">အချိန်အကန့်အသတ်</span>
+            <div className="group relative">
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-white/10 text-white/50 text-xs cursor-help hover:bg-white/20 hover:text-white/70 transition-colors">
+                ?
+              </span>
+              <div className="absolute left-0 bottom-full mb-2 w-64 p-3 rounded-xl bg-slate-800 border border-white/10 text-xs text-white/70 leading-relaxed opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                အချိန်အကန့်အသတ်ကို ဖွင့်ထားမယ်ဆိုရင် challenge လုပ်ရတဲ့ player ဟာ သတ်မှတ်အချိန်အတွင်း challenge ကို ပြီးမြောက်အောင်လုပ်ရမှာဖြစ်ပါတယ်။
+              </div>
+            </div>
+          </div>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => { play('vote'); dispatch({ type: 'UPDATE_SETTINGS', payload: { timerEnabled: !settings.timerEnabled } }) }}
