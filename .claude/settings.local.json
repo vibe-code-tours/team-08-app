@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "mcp__context7__resolve-library-id",
+      "WebSearch",
+      "mcp__context7__query-docs",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm view *)",
+      "Bash(node *)",
+      "Bash(echo \"tailwindcss: $\\(npm view tailwindcss version 2>/dev/null\\)\")",
+      "Bash(echo \"@tailwindcss/vite: $\\(npm view @tailwindcss/vite version 2>/dev/null\\)\")",
+      "Bash(echo \"motion: $\\(npm view motion version 2>/dev/null\\)\")",
+      "Bash(echo \"howler: $\\(npm view howler version 2>/dev/null\\)\")",
+      "Bash(echo \"canvas-confetti: $\\(npm view canvas-confetti version 2>/dev/null\\)\")",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"---EXIT: $?\")",
+      "Bash(npx vitest *)",
+      "Bash(git merge *)",
+      "Bash(gh issue *)",
+      "Bash(git push *)",
+      "Bash(powershell.exe -Command \"Remove-Item -Recurse -Force 'D:\\\\Programming\\\\VibeCode-Tour\\\\VibeCodeTour\\\\team-08-app\\\\node_modules'\")",
+      "Bash(gh pr *)",
+      "Bash(gh api *)",
+      "Bash(git revert *)",
+      "Bash(powershell.exe -Command \"Remove-Item -Recurse -Force 'D:\\\\Programming\\\\VibeCode-Tour\\\\VibeCodeTour\\\\team-08-app\\\\node_modules' -ErrorAction SilentlyContinue; Remove-Item 'D:\\\\Programming\\\\VibeCode-Tour\\\\VibeCodeTour\\\\team-08-app\\\\package-lock.json' -ErrorAction SilentlyContinue\")",
+      "Bash(python3 *)",
+      "Bash(npx --yes @ffmpeg-installer/ffmpeg --version)",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__new_page",
+      "Bash(npx eslint *)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -sL --max-time 15 \"https://github.com/vibe-code-tours/team-08-app/pull/42\")",
+      "Bash(curl -sL --max-time 20 \"https://github.com/vibe-code-tours/team-08-app/pull/42.diff\")"
+    ]
+  }
+}
