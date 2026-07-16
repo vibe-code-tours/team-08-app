@@ -1,0 +1,41 @@
+name: "💡 Peer feedback — Suggestion"
+description: "From the demo or using the app — something to improve, or a better approach."
+title: "[peer/suggestion] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A concrete improvement or a different/better approach. **One idea per issue.**
+        Already suggested? 👍 react — or 💬 comment if you have a different angle.
+  - type: dropdown
+    id: source
+    attributes:
+      label: Based on
+      options:
+        - Watching the demo
+        - Testing the app
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What to improve
+      description: Be specific — which feature/screen/flow.
+      placeholder: "e.g. the onboarding asks for too much before showing value"
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea / better approach
+      placeholder: "e.g. let users try the core flow first, ask for signup after"
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters (optional)
+      placeholder: "Impact on users, clarity, adoption, etc."
+    validations:
+      required: false
