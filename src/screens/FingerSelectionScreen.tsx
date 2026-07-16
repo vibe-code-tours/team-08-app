@@ -69,7 +69,7 @@ export default function FingerSelectionScreen() {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(tickId)
-            return 0
+            return 1
           }
           return prev - 1
         })

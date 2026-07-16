@@ -114,9 +114,18 @@ export default function PlayerSelectedScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="text-white/50 mt-2 mb-8 z-10"
+        className="text-white/50 mt-2 mb-2 z-10"
       >
-        သင့်အလှည့်ပါ
+        ကိုရွေးချယ်ခံရပါတယ်
+      </motion.p>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="text-white/40 text-sm mb-6 z-10"
+      >
+        Truth လား Dare လားရွေးပါ။
       </motion.p>
 
       {/* Choice buttons */}
