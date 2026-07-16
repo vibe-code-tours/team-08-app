@@ -14,14 +14,14 @@ function VotingScreen() {
         animate={{ opacity: 1, y: 0 }}
         className="z-10 mb-6 text-center"
       >
-        <p className="text-sm font-semibold uppercase text-white/50">
+        <p className="text-sm font-semibold text-white/50">
           {selectedPlayer?.label ?? 'Player'}
         </p>
         <h1
-          className="mt-2 text-3xl font-black"
+          className="mt-2 text-2xl font-black"
           style={{ textShadow: '0 0 24px rgba(168,85,247,0.65)' }}
         >
-          Vote the result
+          ရလဒ်ကို မဲပေးပါ
         </h1>
       </motion.div>
 
