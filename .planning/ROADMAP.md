@@ -7,9 +7,9 @@ The game builds in four phases: first the design system and game state skeleton,
 ## Phases
 
 - [x] **Phase 1: Foundation & Design System** - Tailwind neon theme, GameContext, type definitions, PWA wiring, screen router (completed 2026-07-10)
-- [ ] **Phase 2: Core Game Loop** - Multi-touch roulette selection and the complete play flow (Truth/Dare choice, card selection, reveal, voting, results, next round)
-- [ ] **Phase 3: Content, Settings & Platform** - Card data (50-100+ cards), game settings screens (difficulty, pack, timer toggle)
-- [ ] **Phase 4: Premium Polish** - Splash screen, onboarding, sound effects, countdown timer, pack color accents
+- [x] **Phase 2: Core Game Loop** - Multi-touch roulette selection and the complete play flow (Truth/Dare choice, card selection, reveal, voting, results, next round) (completed 2026-07-13)
+- [x] **Phase 3: Content, Settings & Platform** - Card data (192 cards), game settings screens (difficulty, pack, timer toggle) (completed 2026-07-14)
+- [x] **Phase 4: Premium Polish** - Splash screen, onboarding, sound effects, background music, countdown timer (completed 2026-07-16)
 
 ## Phase Details
 
@@ -52,13 +52,13 @@ Plans:
   4. The player can self-vote (Fail / Pass / Excellent) and sees the appropriate result screen (celebration for pass, failure for fail)
   5. After voting, the player sees Next Round / Change Settings / Restart options and can return to the touch selection screen
 
-**Plans**: TBD
+**Plans**: 3/3 plans complete
 
 Plans:
 
-- [ ] 02-01: Multi-touch hook, touch selection screen, roulette animation with spring physics and winner reveal
-- [ ] 02-02: Truth/Dare choice screen, card selection grid, card flip reveal, challenge display
-- [ ] 02-03: Self-voting screen, result screens (pass/fail), next round flow
+- [x] 02-01: Multi-touch hook, touch selection screen, roulette animation with spring physics and winner reveal
+- [x] 02-02: Truth/Dare choice screen, card selection grid, card flip reveal, challenge display
+- [x] 02-03: Self-voting screen, result screens (pass/fail), next round flow
 
 ### Phase 3: Content, Settings & Platform
 
@@ -73,12 +73,12 @@ Plans:
   3. Players can toggle the countdown timer on or off in settings
   4. Settings persist in local storage and the game respects difficulty/pack filters during card selection
 
-**Plans**: TBD
+**Plans**: 2/2 plans complete
 
 Plans:
 
-- [ ] 03-01: Card data (50-100+ cards) across packs and difficulties
-- [ ] 03-02: Settings screens (difficulty, pack, timer toggle) with local storage persistence
+- [x] 03-01: Card data (192 cards) across packs and difficulties
+- [x] 03-02: Settings screens (difficulty, pack, timer toggle) with local storage persistence
 
 ### Phase 4: Premium Polish
 
@@ -94,12 +94,12 @@ Plans:
   4. The optional countdown timer shows increasing visual pressure as time runs out
   5. Card packs have subtle color accent differentiation (e.g., Friends = blue tint, Couple = pink tint)
 
-**Plans**: TBD
+**Plans**: 2/2 plans complete
 
 Plans:
 
-- [ ] 04-01: Splash screen and onboarding walkthrough
-- [ ] 04-02: Sound effects (Howler.js) and countdown timer pressure effects
+- [x] 04-01: Splash screen and onboarding walkthrough
+- [x] 04-02: Sound effects (Web Audio API SFX + HTML5 Audio BGM) and countdown timer
 
 ## Progress
 
@@ -109,6 +109,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4. Phases 2, 3, and 4 can execut
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 2/2 | Complete    | 2026-07-10 |
-| 2. Core Game Loop | 0/3 | Not started | - |
-| 3. Content, Settings & Platform | 0/2 | Not started | - |
-| 4. Premium Polish | 0/2 | Not started | - |
+| 2. Core Game Loop | 3/3 | Complete | 2026-07-13 |
+| 3. Content, Settings & Platform | 2/2 | Complete | 2026-07-14 |
+| 4. Premium Polish | 2/2 | Complete | 2026-07-16 |

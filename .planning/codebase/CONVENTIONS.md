@@ -87,12 +87,10 @@ Explicit `.tsx` extension is used when importing TypeScript files directly (e.g.
 
 ## CSS / Styling Approach
 
-- **Plain CSS** — no CSS modules, no Tailwind, no CSS-in-JS, no preprocessors.
-- **Co-located CSS** — `App.css` next to `App.tsx`, `index.css` for global styles.
-- **CSS custom properties** for theming (defined in `:root` in `index.css`).
-- **Native CSS nesting** — the project uses CSS nesting syntax (`&`, `@media` nested inside selectors).
-- **Dark mode** via `@media (prefers-color-scheme: dark)` — automatic system preference detection.
-- **Responsive design** via `@media (max-width: 1024px)` breakpoints.
+- **Tailwind CSS v4** — utility-first styling via `@tailwindcss/vite` plugin.
+- **Design tokens** — neon color palette and glow shadows defined in `@theme` block in `src/index.css` (oklch color space).
+- **Component styling** — Tailwind utility classes on all components and screens.
+- **Dark theme** — always dark (neon cyber aesthetic); no light mode toggle.
 
 ## Error Handling
 

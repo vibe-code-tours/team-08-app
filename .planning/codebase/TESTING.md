@@ -68,9 +68,14 @@ There is **no separate `__tests__/` directory** or `tests/` folder. The architec
 
 ## What Is Currently Tested
 
-### Coverage: Smoke Test Only
+### Coverage: 16 Tests Across 2 Files
 
-The single existing test file (`src/App.test.tsx`):
+Test files:
+
+- `src/App.test.tsx` — App component rendering
+- `src/state/GameContext.test.tsx` — GameContext reducer (7+ tests)
+
+All 16 tests pass. Lint and build are clean.
 
 ```tsx
 import { render, screen } from '@testing-library/react'

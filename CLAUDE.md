@@ -9,7 +9,7 @@ Start → Finger Selection → Roulette → Player Selected → Truth/Dare choic
 
 ## Key technical learnings (don't relearn these)
 - Multi-touch tracking MUST key by `touch.identifier`, never array index — 
-  see docs/multitouch-spike-result.md for spike findings.
+  see docs/spikes/multitouch-spike-2026-07.md for spike findings.
 - Hardware/OS may cap simultaneous touches before events reach the browser;
   don't chase "missed finger" bugs that aren't reproducible in JS event logs.
 

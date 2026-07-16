@@ -113,7 +113,7 @@ The project uses a **project references** setup with two configs:
 ## PWA Configuration
 
 - **Plugin:** `vite-plugin-pwa ^1.3.0`
-- **Status:** Plugin is listed as a devDependency but is **not currently wired** into `vite.config.ts`. The Vite config only loads `react()`. PWA features (manifest, service worker, icons) are not yet configured.
+- **Status:** Plugin is wired into `vite.config.ts` with manifest, service worker, and icons configured. PWA is installable and offline-capable.
 - **Target behavior** (per README): installable, offline-capable PWA
 
 ---
