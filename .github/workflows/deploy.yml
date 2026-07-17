@@ -1,0 +1,77 @@
+name: deploy
+# Auto-deploy to GitHub Pages on every push to main. Safe on any static stack:
+# guarded so a fresh repo stays GREEN and just skips (no-op) until you have
+# something to publish — then it starts shipping automatically on every merge.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; never cancel an in-flight deploy (would leave Pages half-updated).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest      # never windows/macos — they bill 2x / 10x
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # ---------- Build (runs only if a Node build script exists) ----------
+      - name: Setup Node
+        if: ${{ hashFiles('package.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Install
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm ci || npm install
+      - name: Build
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm run build --if-present
+
+      # ---------- Find what to publish ----------
+      # First of the usual static-output dirs that has an index.html; fall back to the
+      # repo root for a hand-written index.html. Nothing found -> skip cleanly (green).
+      - name: Locate site
+        id: site
+        run: |
+          for d in dist build out public _site .; do
+            if [ -f "$d/index.html" ]; then
+              echo "dir=$d"    >> "$GITHUB_OUTPUT"
+              echo "found=true" >> "$GITHUB_OUTPUT"
+              echo "Publishing: $d"
+              exit 0
+            fi
+          done
+          echo "found=false" >> "$GITHUB_OUTPUT"
+          echo "No index.html in dist/build/out/public/_site/root — nothing to deploy yet. Skipping (this is fine)."
+
+      - name: Configure Pages
+        if: ${{ steps.site.outputs.found == 'true' }}
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload artifact
+        if: ${{ steps.site.outputs.found == 'true' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.site.outputs.dir }}
+
+      - name: Deploy
+        id: deploy
+        if: ${{ steps.site.outputs.found == 'true' }}
+        uses: actions/deploy-pages@v4
