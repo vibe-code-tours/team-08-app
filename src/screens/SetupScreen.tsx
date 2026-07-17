@@ -1,4 +1,5 @@
-import { motion } from 'motion/react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { GlassPanel } from '../components/GlassPanel.tsx'
 import type { CardPack, Difficulty } from '../types/index.ts'
@@ -24,6 +25,7 @@ const difficulties: { key: Difficulty; label: string; color: string }[] = [
 export default function SetupScreen() {
   const { settings } = useGame()
   const dispatch = useGameDispatch()
+  const [showTimerTooltip, setShowTimerTooltip] = useState(false)
 
   return (
     <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center">
@@ -44,7 +46,7 @@ export default function SetupScreen() {
       <GlassPanel className="w-[90%] max-w-sm p-6 z-10 space-y-6">
         {/* Pack selection */}
         <div>
-          <p className="text-sm text-white/60 mb-3">ကားဒ်အုပ်စု</p>
+          <p className="text-sm text-white/60 mb-3">ဘယ်သူတွေနဲ့ ဆော့မှာလည်းရွေးပါ</p>
           <div className="grid grid-cols-2 gap-3">
             {packs.map((pack) => {
               const selected = settings.pack === pack.key
@@ -99,10 +101,33 @@ export default function SetupScreen() {
 
         {/* Timer toggle */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/70">အချိန်တိုင်းကိရိယာ</span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-white/70">အချိန်အကန့်အသတ်</span>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowTimerTooltip(!showTimerTooltip)}
+                className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-white/10 text-white/50 text-xs active:bg-white/20 active:text-white/70 transition-colors"
+              >
+                ?
+              </button>
+              <AnimatePresence>
+                {showTimerTooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    className="absolute bottom-full mb-2 w-64 p-3 rounded-xl bg-slate-800 border border-white/10 text-xs text-white/70 leading-relaxed z-50 -translate-x-1/2 left-1/2"
+                  >
+                    အချိန်အကန့်အသတ်ကို ဖွင့်ထားမယ်ဆိုရင် challenge လုပ်ရတဲ့ player ဟာ သတ်မှတ်အချိန်အတွင်း challenge ကို ပြီးမြောက်အောင်လုပ်ရမှာဖြစ်ပါတယ်။
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={() => dispatch({ type: 'UPDATE_SETTINGS', payload: { timerEnabled: !settings.timerEnabled } })}
+            onClick={() => dispatch({ type: 'UPDATE_SETTINGS', payload: { timerEnabled: !settings.timerEnabled } }) }
             className="relative w-12 h-6 rounded-full transition-colors"
             style={{
               backgroundColor: settings.timerEnabled ? '#8B2FE2' : 'rgba(255,255,255,0.15)',
