@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Core Game Loop
 status: "Phase 01 shipped — PR #19"
-stopped_at: Completed quick task 260718-5t8
-last_updated: "2026-07-17T20:14:17.297Z"
+stopped_at: Completed quick task 260718-60d
+last_updated: "2026-07-17T20:20:00.000Z"
 last_activity: 2026-07-18
-last_activity_desc: "Completed quick task 260718-5t8: narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only"
+last_activity_desc: "Completed quick task 260718-60d: fix stale desktop-gate coverage range in CLAUDE.md"
 progress:
   total_phases: 1
   completed_phases: 1
@@ -79,6 +79,8 @@ None yet.
 | 260718-51q | issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen | 2026-07-18 | 8cba1e1 | [260718-51q-issue-81-gate-desktop-non-touch-devices-](./quick/260718-51q-issue-81-gate-desktop-non-touch-devices-/) |
 | 2 | rename desktop-gate handoff text from Finger Roulette to TheChosenOne | 2026-07-17 | 6578166 | — |
 | 3 | point desktop-gate QR at production GitHub Pages URL instead of window.location.href | 2026-07-17 | 8bcb135 | — |
+| 260718-5t8 | narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
+| 260718-60d | fix stale desktop-gate coverage range in CLAUDE.md | 2026-07-18 | 14815d7 | [260718-60d-fix-stale-claude-md-documentation-of-des](./quick/260718-60d-fix-stale-claude-md-documentation-of-des/) |
 | 260718-5t8 | narrow TOUCH_REQUIRED_PHASES in App.tsx to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
 
 ## Deferred Items
