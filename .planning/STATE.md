@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-09)
 Phase: 2 — Core Game Loop
 Plan: Not started
 Status: Phase 01 shipped — PR #19
-Last activity: 2026-07-11
+Last activity: 2026-07-18 - Completed quick task 260718-51q: issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -71,6 +71,12 @@ None yet.
 ### Blockers/Concerns
 
 None yet.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260718-51q | issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen | 2026-07-18 | 8cba1e1 | [260718-51q-issue-81-gate-desktop-non-touch-devices-](./quick/260718-51q-issue-81-gate-desktop-non-touch-devices-/) |
 
 ## Deferred Items
 
