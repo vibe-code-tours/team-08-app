@@ -99,7 +99,7 @@ export default function TruthDareChoiceScreen() {
               onClick={() => handleChoice('truth')}
               disabled={isFlipping}
             >
-              💙 Truth
+              💙 Truth (အမှန်ပြော)
             </NeonButton>
           </motion.div>
 
@@ -116,7 +116,7 @@ export default function TruthDareChoiceScreen() {
               onClick={() => handleChoice('dare')}
               disabled={isFlipping}
             >
-              💗 Dare
+              💗 Dare (ရဲရဲလုပ်)
             </NeonButton>
           </motion.div>
 
@@ -133,7 +133,7 @@ export default function TruthDareChoiceScreen() {
               onClick={handleRandom}
               disabled={isFlipping}
             >
-              {isFlipping ? '🪙' : '🎲'} {isFlipping ? 'Flipping...' : 'Random'}
+              {isFlipping ? '🪙' : '🎲'} {isFlipping ? 'ခေါင်းပန်းလှည့်နေသည်...' : 'Random (ကျပန်း)'}
             </NeonButton>
           </motion.div>
         </div>
