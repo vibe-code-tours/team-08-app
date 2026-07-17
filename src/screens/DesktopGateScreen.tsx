@@ -6,6 +6,8 @@ type DesktopGateScreenProps = {
   onContinueAnyway: () => void
 }
 
+const PRODUCTION_URL = 'https://vibecode.tours/team-08-app/'
+
 /**
  * Gate screen shown on desktop / non-touch devices when a touch-required
  * game phase is reached. Offers a QR code handoff to a phone plus a
@@ -18,7 +20,7 @@ export default function DesktopGateScreen({ onContinueAnyway }: DesktopGateScree
   useEffect(() => {
     let cancelled = false
 
-    QRCode.toDataURL(window.location.href, {
+    QRCode.toDataURL(PRODUCTION_URL, {
       width: 200,
       margin: 2,
       color: { dark: '#1a1025', light: '#ffffff' },
