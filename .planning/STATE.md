@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Core Game Loop
 status: "Phase 01 shipped — PR #19"
-stopped_at: Completed quick task 260718-60d
-last_updated: "2026-07-17T20:20:00.000Z"
+stopped_at: Completed quick task 260718-6dk
+last_updated: "2026-07-17T20:36:00.000Z"
 last_activity: 2026-07-18
-last_activity_desc: "Completed quick task 260718-60d: fix stale desktop-gate coverage range in CLAUDE.md"
+last_activity_desc: "Completed quick task 260718-6dk: derive QR target URL dynamically instead of hardcoding production domain"
 progress:
   total_phases: 1
   completed_phases: 1
@@ -81,6 +81,7 @@ None yet.
 | 3 | point desktop-gate QR at production GitHub Pages URL instead of window.location.href | 2026-07-17 | 8bcb135 | — |
 | 260718-5t8 | narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
 | 260718-60d | fix stale desktop-gate coverage range in CLAUDE.md | 2026-07-18 | 14815d7 | [260718-60d-fix-stale-claude-md-documentation-of-des](./quick/260718-60d-fix-stale-claude-md-documentation-of-des/) |
+| 260718-6dk | derive QR target URL dynamically instead of hardcoding production domain | 2026-07-18 | f1c246c | [260718-6dk-fix-hardcoded-production-url-in-desktopg](./quick/260718-6dk-fix-hardcoded-production-url-in-desktopg/) |
 | 260718-5t8 | narrow TOUCH_REQUIRED_PHASES in App.tsx to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
 
 ## Deferred Items
