@@ -119,6 +119,10 @@ export default function OnboardingScreen() {
                   src={slides[current].image}
                   alt={slides[current].title || 'Game Onboarding Slide'}
                   className="w-56 h-56 object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  width={224}
+                  height={224}
                   style={{ filter: `drop-shadow(0 0 20px ${slides[current].color}40)` }}
                 />
               ) : (
