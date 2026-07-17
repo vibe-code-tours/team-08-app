@@ -18,16 +18,7 @@ import NextRoundScreen from './screens/NextRoundScreen'
 import DesktopGateScreen from './screens/DesktopGateScreen'
 
 /** Phases that require touch input; desktop/non-touch devices are gated here. */
-const TOUCH_REQUIRED_PHASES: GamePhase[] = [
-  'finger-selection',
-  'roulette',
-  'player-selected',
-  'truth-dare-choice',
-  'card-reveal',
-  'voting',
-  'result',
-  'next-round',
-]
+const TOUCH_REQUIRED_PHASES: GamePhase[] = ['finger-selection', 'roulette']
 
 function ScreenContent({ phase }: { phase: string }) {
   switch (phase) {
