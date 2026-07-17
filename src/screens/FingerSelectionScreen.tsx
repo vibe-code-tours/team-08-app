@@ -342,7 +342,7 @@ export default function FingerSelectionScreen() {
               </p>
               <button
                 type="button"
-                onClick={() => setShowDesktopTip(false)}
+                onClick={(e) => { e.stopPropagation(); setShowDesktopTip(false) }}
                 className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-sm leading-none"
               >
                 ✕
