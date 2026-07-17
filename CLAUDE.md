@@ -12,6 +12,11 @@ Start → Finger Selection → Roulette → Player Selected → Truth/Dare choic
   see docs/multitouch-spike-result.md for spike findings.
 - Hardware/OS may cap simultaneous touches before events reach the browser;
   don't chase "missed finger" bugs that aren't reproducible in JS event logs.
+- Non-touch device detection (`useTouchCapability`) uses feature detection ONLY
+  (`'ontouchstart' in window` OR `navigator.maxTouchPoints > 0`) — never user-agent sniffing.
+- The desktop gate (`DesktopGateScreen`) fires only on touch-required game phases
+  (finger-selection through next-round), never on intro/setup, and offers a
+  session-scoped "Continue anyway" escape hatch.
 
 ## Folder conventions
 - src/screens/       — one file per screen, matches the flow above
