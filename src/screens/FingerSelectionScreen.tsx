@@ -38,6 +38,12 @@ export default function FingerSelectionScreen() {
   const [isDesktop] = useState(() => !isTouchDevice())
   const [clickPlayers, setClickPlayers] = useState<PlayerTouch[]>([])
   const clickIdCounter = useRef(0)
+  const [showDesktopTip, setShowDesktopTip] = useState(() => {
+    if (!isTouchDevice()) {
+      return !sessionStorage.getItem('desktopTipShown')
+    }
+    return false
+  })
 
   // Use touch players on mobile, click players on desktop
   const players = isDesktop ? clickPlayers : touchPlayers
@@ -178,7 +184,7 @@ export default function FingerSelectionScreen() {
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          {isDesktop ? 'Click to add players' : 'Place your fingers!'}
+          {isDesktop ? 'ကစားသမားတွေထပ်ထည့်ဖို့ ကြိုက်ရနေရာမှာ click လုပ်လိုက်ပါ' : 'Place your fingers!'}
         </h1>
         {/* Player count badge */}
         {players.length > 0 && (
@@ -195,10 +201,10 @@ export default function FingerSelectionScreen() {
         <p className="text-sm text-white/50">
           {isDesktop
             ? players.length === 0
-              ? 'Click anywhere to add players. Right-click to remove.'
+              ? 'ပြန်ဖြုတ်ဖို့အတွက် right click ကိုသုံးပါ'
               : players.length < 2
-                ? 'Add at least 2 players'
-                : 'Click "Start" when ready'
+                ? 'ကစားသမား ၂ ယောက်ထက်မနည်း ထည့်ပါ'
+                : '"Start" ကိုနှိပ်ပြီး စတင်ပါ'
             : players.length === 0
               ? 'Waiting for players...'
               : counting
@@ -317,6 +323,60 @@ export default function FingerSelectionScreen() {
             </AnimatePresence>
           </div>
         ))}
+      </AnimatePresence>
+
+      {/* Desktop tip modal — one-time suggestion to play on mobile */}
+      <AnimatePresence>
+        {showDesktopTip && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-center justify-center bg-black/60"
+            onClick={() => {
+              sessionStorage.setItem('desktopTipShown', '1')
+              setShowDesktopTip(false)
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="mx-6 max-w-sm w-full p-6 rounded-2xl text-center"
+              style={{
+                background: 'linear-gradient(165deg, #1a0a2e 0%, #0d0521 100%)',
+                border: '1.5px solid rgba(168,85,247,0.4)',
+                boxShadow: '0 0 40px rgba(168,85,247,0.3), 0 20px 60px rgba(0,0,0,0.5)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-4xl mb-4">📱</div>
+              <h2 className="text-lg font-bold text-white mb-3"
+                style={{ textShadow: '0 0 16px rgba(168,85,247,0.5)' }}
+              >
+                💡 အကြံပြချက်
+              </h2>
+              <p className="text-white/70 text-sm leading-relaxed mb-6">
+                mobile phone များကိုသာအသုံးပြုပြီးဆော့ကြဖို့ အကြံပေးချင်ပါတယ်ခင်ဗျာ။
+                ဒီဂိမ်းက mobile အတွက် အဓိကရည်ရွယ်ထားတာဖြစ်လို့,
+                အကောင်းဆုံး experience ကိုရဖို့ mobile phone များကိုသာ အသုံးပြုဆော့ကြပါ။
+              </p>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  sessionStorage.setItem('desktopTipShown', '1')
+                  setShowDesktopTip(false)
+                }}
+                className="px-8 py-3 rounded-xl text-base font-bold text-white
+                  bg-gradient-to-r from-purple-600 to-pink-600
+                  shadow-[0_0_24px_rgba(168,85,247,0.4)]"
+              >
+                နားထောင့်ပါ၊ ဆက်လက်ဆော့ပါမည်
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   )
