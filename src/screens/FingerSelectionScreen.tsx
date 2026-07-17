@@ -175,7 +175,7 @@ export default function FingerSelectionScreen() {
       <div className="absolute inset-0 bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900" />
 
       {/* Instruction text */}
-      <div className="absolute inset-x-0 top-28 flex flex-col items-center gap-2 z-10 pointer-events-none">
+      <div className="absolute inset-x-0 top-12 flex flex-col items-center gap-2 z-10 pointer-events-none">
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
@@ -195,17 +195,20 @@ export default function FingerSelectionScreen() {
         )}
         <p className="text-sm text-white/50">
           {isDesktop
-            ? players.length === 0
-              ? 'ပြန်ဖြုတ်ဖို့အတွက် right click ကိုသုံးပါ'
-              : players.length < 2
-                ? 'ကစားသမား ၂ ယောက်ထက်မနည်း ထည့်ပါ'
-                : '"Start" ကိုနှိပ်ပြီး စတင်ပါ'
+            ? players.length < 2
+              ? 'ကစားသမား ၂ ယောက်ထက်မနည်း ထည့်ပါ'
+              : '"Start" ကိုနှိပ်ပြီး စတင်ပါ'
             : players.length === 0
               ? 'Waiting for players...'
               : counting
                 ? 'Hold still…'
                 : 'ထပ်ထားပါ!'}
         </p>
+        {isDesktop && (
+          <p className="text-xs text-white/40">
+            ပြန်ဖြုတ်ဖို့အတွက် right click ကိုသုံးပါ
+          </p>
+        )}
       </div>
 
       {/* Desktop: Start button */}
