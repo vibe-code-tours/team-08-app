@@ -325,56 +325,37 @@ export default function FingerSelectionScreen() {
         ))}
       </AnimatePresence>
 
-      {/* Desktop tip modal — one-time suggestion to play on mobile */}
+      {/* Desktop floating tip — dismissable suggestion to play on mobile */}
       <AnimatePresence>
         {showDesktopTip && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 flex items-center justify-center bg-black/60"
-            onClick={() => {
-              sessionStorage.setItem('desktopTipShown', '1')
-              setShowDesktopTip(false)
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 40, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="absolute bottom-24 inset-x-0 mx-6 z-30 p-4 rounded-2xl"
+            style={{
+              background: 'linear-gradient(165deg, #1a0a2e 0%, #0d0521 100%)',
+              border: '1.5px solid rgba(168,85,247,0.4)',
+              boxShadow: '0 0 30px rgba(168,85,247,0.25), 0 10px 40px rgba(0,0,0,0.4)',
             }}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="mx-6 max-w-sm w-full p-6 rounded-2xl text-center"
-              style={{
-                background: 'linear-gradient(165deg, #1a0a2e 0%, #0d0521 100%)',
-                border: '1.5px solid rgba(168,85,247,0.4)',
-                boxShadow: '0 0 40px rgba(168,85,247,0.3), 0 20px 60px rgba(0,0,0,0.5)',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-4xl mb-4">📱</div>
-              <h2 className="text-lg font-bold text-white mb-3"
-                style={{ textShadow: '0 0 16px rgba(168,85,247,0.5)' }}
-              >
-                💡 အကြံပြချက်
-              </h2>
-              <p className="text-white/70 text-sm leading-relaxed mb-6">
-                mobile phone များကိုသာအသုံးပြုပြီးဆော့ကြဖို့ အကြံပေးချင်ပါတယ်ခင်ဗျာ။
-                ဒီဂိမ်းက mobile အတွက် အဓိကရည်ရွယ်ထားတာဖြစ်လို့,
-                အကောင်းဆုံး experience ကိုရဖို့ mobile phone များကိုသာ အသုံးပြုဆော့ကြပါ။
+            <div className="flex items-start gap-3">
+              <span className="text-xl shrink-0 mt-0.5">💡</span>
+              <p className="text-white/70 text-xs leading-relaxed flex-1">
+                ပိုမိုကောင်းမွန်သော အတွေ့အကြုံအတွက် ဤဂိမ်းကို Mobile Phone ဖြင့် ဆော့ကစားရန် အကြံပြုပါသည်။ Desktop တွင် Multi-touch အသုံးပြု၍ မရသောကြောင့် ဤအဆင့်ကို Click ဖြင့် Player များထည့်သွင်းနိုင်သည့် ပုံစံသို့ ပြောင်းလဲထားပါသည်။
               </p>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+              <button
+                type="button"
                 onClick={() => {
                   sessionStorage.setItem('desktopTipShown', '1')
                   setShowDesktopTip(false)
                 }}
-                className="px-8 py-3 rounded-xl text-base font-bold text-white
-                  bg-gradient-to-r from-purple-600 to-pink-600
-                  shadow-[0_0_24px_rgba(168,85,247,0.4)]"
+                className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-lg leading-none"
               >
-                နားထောင့်ပါ၊ ဆက်လက်ဆော့ပါမည်
-              </motion.button>
-            </motion.div>
+                ✕
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
