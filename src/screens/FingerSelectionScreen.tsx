@@ -38,12 +38,7 @@ export default function FingerSelectionScreen() {
   const [isDesktop] = useState(() => !isTouchDevice())
   const [clickPlayers, setClickPlayers] = useState<PlayerTouch[]>([])
   const clickIdCounter = useRef(0)
-  const [showDesktopTip, setShowDesktopTip] = useState(() => {
-    if (!isTouchDevice()) {
-      return !sessionStorage.getItem('desktopTipShown')
-    }
-    return false
-  })
+  const [showDesktopTip, setShowDesktopTip] = useState(() => !isTouchDevice())
 
   // Use touch players on mobile, click players on desktop
   const players = isDesktop ? clickPlayers : touchPlayers
@@ -329,29 +324,26 @@ export default function FingerSelectionScreen() {
       <AnimatePresence>
         {showDesktopTip && (
           <motion.div
-            initial={{ y: 40, opacity: 0 }}
+            initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 40, opacity: 0 }}
+            exit={{ y: -20, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="absolute bottom-24 inset-x-0 mx-6 z-30 p-4 rounded-2xl"
+            className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[85%] max-w-xs p-3 rounded-xl"
             style={{
               background: 'linear-gradient(165deg, #1a0a2e 0%, #0d0521 100%)',
               border: '1.5px solid rgba(168,85,247,0.4)',
               boxShadow: '0 0 30px rgba(168,85,247,0.25), 0 10px 40px rgba(0,0,0,0.4)',
             }}
           >
-            <div className="flex items-start gap-3">
-              <span className="text-xl shrink-0 mt-0.5">💡</span>
-              <p className="text-white/70 text-xs leading-relaxed flex-1">
+            <div className="flex items-start gap-2">
+              <span className="text-base shrink-0 mt-0.5">💡</span>
+              <p className="text-white/70 text-[11px] leading-relaxed flex-1">
                 ပိုမိုကောင်းမွန်သော အတွေ့အကြုံအတွက် ဤဂိမ်းကို Mobile Phone ဖြင့် ဆော့ကစားရန် အကြံပြုပါသည်။ Desktop တွင် Multi-touch အသုံးပြု၍ မရသောကြောင့် ဤအဆင့်ကို Click ဖြင့် Player များထည့်သွင်းနိုင်သည့် ပုံစံသို့ ပြောင်းလဲထားပါသည်။
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  sessionStorage.setItem('desktopTipShown', '1')
-                  setShowDesktopTip(false)
-                }}
-                className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-lg leading-none"
+                onClick={() => setShowDesktopTip(false)}
+                className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-sm leading-none"
               >
                 ✕
               </button>
