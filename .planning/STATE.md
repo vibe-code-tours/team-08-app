@@ -6,7 +6,7 @@ current_phase: 2
 current_phase_name: Core Game Loop
 status: "Phase 01 shipped — PR #19"
 stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-07-17T19:57:38.698Z"
+last_updated: "2026-07-17T20:00:11.609Z"
 last_activity: 2026-07-18
 last_activity_desc: "Completed quick task 260718-51q: issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen"
 progress:
@@ -78,6 +78,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260718-51q | issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen | 2026-07-18 | 8cba1e1 | [260718-51q-issue-81-gate-desktop-non-touch-devices-](./quick/260718-51q-issue-81-gate-desktop-non-touch-devices-/) |
 | 2 | rename desktop-gate handoff text from Finger Roulette to TheChosenOne | 2026-07-17 | 6578166 | — |
+| 3 | point desktop-gate QR at production GitHub Pages URL instead of window.location.href | 2026-07-17 | 8bcb135 | — |
 
 ## Deferred Items
 
