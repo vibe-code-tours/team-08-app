@@ -195,7 +195,7 @@ export default function FingerSelectionScreen() {
               bg-white/10 border border-white/20"
             style={{ boxShadow: '0 0 12px rgba(168,85,247,0.3)' }}
           >
-            {players.length} ကစားသမား
+            ကစားသမား {players.length} ယောက်
           </motion.div>
         )}
         <p className="text-sm text-white/50">
