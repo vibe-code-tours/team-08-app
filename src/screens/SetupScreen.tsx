@@ -28,7 +28,7 @@ export default function SetupScreen() {
   const [showTimerTooltip, setShowTimerTooltip] = useState(false)
 
   return (
-    <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center">
+    <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center justify-center">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900" />
 
@@ -37,7 +37,7 @@ export default function SetupScreen() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="text-2xl font-bold text-white mt-12 mb-6 z-10"
+        className="text-2xl font-bold text-white mb-6 z-10"
         style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
       >
         ဂိမ်းအပြင်အဆင်
