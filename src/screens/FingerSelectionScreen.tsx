@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { useGameDispatch } from '../state/GameContext.tsx'
+import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 
@@ -16,8 +16,12 @@ const FLASH_DURATION = 1500
  */
 export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
+  const { settings } = useGame()
   const containerRef = useRef<HTMLDivElement>(null)
-  const { players } = useMultiTouch(containerRef, 10)
+  
+  // Cap at 2 players for couple pack, otherwise default to 10
+  const maxPlayers = settings.pack === 'couple' ? 2 : 10
+  const { players } = useMultiTouch(containerRef, maxPlayers)
 
   const [counting, setCounting] = useState(false)
   const [countdown, setCountdown] = useState(0)
