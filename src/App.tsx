@@ -64,8 +64,10 @@ export function ActiveScreen() {
 function App() {
   return (
     <GameContextProvider>
-      <ActiveScreen />
-      <SettingsButton />
+      <div className="relative w-full h-dvh bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900 overflow-hidden">
+        <ActiveScreen />
+        <SettingsButton />
+      </div>
     </GameContextProvider>
   )
 }
