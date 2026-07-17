@@ -12,7 +12,7 @@ import type { Card } from '../types/index.ts'
 const TRUTH_COLOR = '#3b82f6'
 const DARE_COLOR = '#ec4899'
 const ROUND_SECONDS = 30
-const CARD_RADIUS = 52
+const CARD_RADIUS = 44
 
 /**
  * Card selection grid with 3D flip reveal.
@@ -156,7 +156,7 @@ export default function CardRevealScreen() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="relative z-10 flex flex-col items-center px-6 pt-8 pb-4 w-full max-w-sm"
+            className="relative z-10 flex flex-col items-center px-6 pt-2 pb-4 w-full max-w-sm"
           >
             {/* Timer circle — above the card */}
             {settings.timerEnabled && (
@@ -164,13 +164,13 @@ export default function CardRevealScreen() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="relative mb-6 z-30"
+                className="relative mb-4 z-30"
               >
-                <svg width="88" height="88" className="drop-shadow-[0_0_16px_rgba(168,85,247,0.5)]">
+                <svg width="96" height="96" className="drop-shadow-[0_0_16px_rgba(168,85,247,0.5)]">
                   {/* Background circle */}
                   <circle
-                    cx="44"
-                    cy="44"
+                    cx="48"
+                    cy="48"
                     r={CARD_RADIUS}
                     fill="none"
                     stroke="rgba(168,85,247,0.15)"
@@ -178,8 +178,8 @@ export default function CardRevealScreen() {
                   />
                   {/* Progress circle */}
                   <motion.circle
-                    cx="44"
-                    cy="44"
+                    cx="48"
+                    cy="48"
                     r={CARD_RADIUS}
                     fill="none"
                     stroke="url(#timer-gradient)"
@@ -187,7 +187,7 @@ export default function CardRevealScreen() {
                     strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * CARD_RADIUS}
                     strokeDashoffset={2 * Math.PI * CARD_RADIUS * (1 - timerProgress)}
-                    transform="rotate(-90 44 44)"
+                    transform="rotate(-90 48 48)"
                   />
                   <defs>
                     <linearGradient id="timer-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -220,7 +220,7 @@ export default function CardRevealScreen() {
                 transition={{ type: 'spring', stiffness: 150, damping: 20 }}
                 className="relative w-full rounded-3xl overflow-hidden"
                 style={{
-                  aspectRatio: '3/4',
+                  aspectRatio: '3/3.2',
                   background: 'linear-gradient(165deg, #1a0a2e 0%, #0d0521 50%, #1a0828 100%)',
                   border: `2px solid ${accentColor}50`,
                   boxShadow: `0 0 40px ${accentColor}30, 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)`,
