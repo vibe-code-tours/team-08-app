@@ -28,8 +28,7 @@ export default function FingerSelectionScreen() {
 
   // Cap at 2 players for couple pack, otherwise default to 10
   const maxPlayers = settings.pack === 'couple' ? 2 : 10
-  const { players } = useMultiTouch(containerRef, maxPlayers)
-  const { players: touchPlayers } = useMultiTouch(containerRef, 10)
+  const { players: touchPlayers } = useMultiTouch(containerRef, maxPlayers)
 
   const [counting, setCounting] = useState(false)
   const [countdown, setCountdown] = useState(0)
@@ -89,7 +88,6 @@ export default function FingerSelectionScreen() {
         setCounting(true)
         setCountdown(Math.ceil(STABLE_DELAY / 1000))
       })
-      const tickId = setInterval(() => {
       // Tick countdown every second
       tickIdRef.current = setInterval(() => {
         setCountdown((prev) => {
@@ -202,8 +200,7 @@ export default function FingerSelectionScreen() {
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          {isDesktop ? 'ကစားသမားတွေထပ်ထည့်ဖို့ ကြိုက်ရနေရာမှာ click လုပ်လိုက်ပါ' : 'Place your fingers!'}
-          ဖုန်းစခရင်ပေါ်ကို လက်ချောင်းလေးတွေတင်လိုက်ကြပါ။
+          {isDesktop ? 'ကစားသမားတွေထပ်ထည့်ဖို့ ကြိုက်ရနေရာမှာ click လုပ်လိုက်ပါ' : 'ဖုန်းစခရင်ပေါ်ကို လက်ချောင်းလေးတွေတင်လိုက်ကြပါ။'}
         </h1>
         {/* Player count badge */}
         {players.length > 0 && (
