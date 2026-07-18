@@ -130,7 +130,7 @@ export default function FingerSelectionScreen() {
   const handleContainerClick = useCallback(
     (e: React.MouseEvent) => {
       if (!isDesktop) return
-      if (clickPlayers.length >= 10) return
+      if (clickPlayers.length >= maxPlayers) return
 
       const rect = containerRef.current?.getBoundingClientRect()
       if (!rect) return
@@ -157,7 +157,7 @@ export default function FingerSelectionScreen() {
         }))
       })
     },
-    [isDesktop, clickPlayers.length],
+    [isDesktop, clickPlayers.length, maxPlayers],
   )
 
   // Desktop: handle right-click to remove last player
