@@ -39,9 +39,9 @@ export default function TruthDareChoiceScreen() {
 
   const handleRandom = useCallback(() => {
     if (isFlipping) return
+    play('coin-flip')
     setIsFlipping(true)
     setFlipResult(null)
-    play('coin-flip')
 
     // Randomly pick truth or dare
     const result: CardType = Math.random() < 0.5 ? 'truth' : 'dare'
@@ -103,7 +103,7 @@ export default function TruthDareChoiceScreen() {
               onClick={() => handleChoice('truth')}
               disabled={isFlipping}
             >
-              💙 Truth
+              💙 Truth (အမှန်ပြော)
             </NeonButton>
           </motion.div>
 
@@ -120,7 +120,7 @@ export default function TruthDareChoiceScreen() {
               onClick={() => handleChoice('dare')}
               disabled={isFlipping}
             >
-              💗 Dare
+              💗 Dare (ရဲရဲလုပ်)
             </NeonButton>
           </motion.div>
 
@@ -137,7 +137,7 @@ export default function TruthDareChoiceScreen() {
               onClick={handleRandom}
               disabled={isFlipping}
             >
-              {isFlipping ? '🪙' : '🎲'} {isFlipping ? 'Flipping...' : 'Random'}
+              {isFlipping ? '🪙' : '🎲'} {isFlipping ? 'ခေါင်းပန်းလှည့်နေသည်...' : 'Random (ကျပန်း)'}
             </NeonButton>
           </motion.div>
         </div>

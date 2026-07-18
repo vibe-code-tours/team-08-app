@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 0
-current_phase_name: Complete
-status: "All phases shipped — sound effects and BGM added"
-stopped_at: All phases complete
-last_updated: "2026-07-16"
-last_activity: 2026-07-16
+current_phase: 2
+current_phase_name: Core Game Loop
+status: "Phase 01 shipped — PR #19"
+stopped_at: Completed quick task 260718-6dk
+last_updated: "2026-07-17T20:36:00.000Z"
+last_activity: 2026-07-18
+last_activity_desc: "Completed quick task 260718-6dk: derive QR target URL dynamically instead of hardcoding production domain"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-09)
 
 **Core value:** The roulette selection moment -- fingers on screen, spinning light, dramatic slowdown, winner revealed -- must feel electric and fun.
-**Current focus:** Complete — all features shipped
+**Current focus:** Phase 02 — Core Game Loop
 
 ## Current Position
 
-Phase: Complete
-Plan: All plans done
-Status: All phases shipped — sound effects and BGM added
-Last activity: 2026-07-16
+Phase: 2 — Core Game Loop
+Plan: Not started
+Status: Phase 01 shipped — PR #19
+Last activity: 2026-07-18 - Completed quick task 260718-5t8: narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -72,6 +72,18 @@ None yet.
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260718-51q | issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen | 2026-07-18 | 8cba1e1 | [260718-51q-issue-81-gate-desktop-non-touch-devices-](./quick/260718-51q-issue-81-gate-desktop-non-touch-devices-/) |
+| 2 | rename desktop-gate handoff text from Finger Roulette to TheChosenOne | 2026-07-17 | 6578166 | — |
+| 3 | point desktop-gate QR at production GitHub Pages URL instead of window.location.href | 2026-07-17 | 8bcb135 | — |
+| 260718-5t8 | narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
+| 260718-60d | fix stale desktop-gate coverage range in CLAUDE.md | 2026-07-18 | 14815d7 | [260718-60d-fix-stale-claude-md-documentation-of-des](./quick/260718-60d-fix-stale-claude-md-documentation-of-des/) |
+| 260718-6dk | derive QR target URL dynamically instead of hardcoding production domain | 2026-07-18 | f1c246c | [260718-6dk-fix-hardcoded-production-url-in-desktopg](./quick/260718-6dk-fix-hardcoded-production-url-in-desktopg/) |
+| 260718-5t8 | narrow TOUCH_REQUIRED_PHASES in App.tsx to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
+
 ## Deferred Items
 
 Items acknowledged and carried forward from previous milestone close:
@@ -82,6 +94,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-10T12:43:33.235Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-07-17T20:14:17.291Z
+Stopped at: Completed quick task 260718-5t8
 Resume file: None

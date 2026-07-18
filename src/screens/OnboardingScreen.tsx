@@ -5,28 +5,28 @@ import { useSound } from '../hooks/useSound.ts'
 
 const slides = [
   {
-    image: '/images/OnboardingScreens/Welcome.png',
+    image: `${import.meta.env.BASE_URL}images/OnboardingScreens/Welcome.png`,
     title: 'The Chosen One',
     subtitle: 'မဟာကံထူးရှင်ရွေးကြမယ်!',
     desc: 'သူငယ်ချင်းတွေနဲ့အတူ ဖုန်းမျက်နှာပြင်ပေါ်မှာ လက်ညှိုးတွေထားပြီး ကံစမ်းကြမယ်!',
     color: '#a855f7',
   },
   {
-    image: '/images/OnboardingScreens/FingerRoulette.png',
+    image: `${import.meta.env.BASE_URL}images/OnboardingScreens/FingerRoulette.png`,
     title: 'မဟာကံထူးရှင်ရွေးကြမယ်!',
     subtitle: 'လက်ညှိုးတွေကို ဖုန်းပေါ်တင်လိုက်ပါ',
     desc: 'ကစားသမားတွေက ဖုန်းမျက်နှာပြင်ပေါ်မှာ လက်ညှိုးတွေတင်လိုက်ပါ။ မဟာကံထူးရှင်ကို ရွေးချယ်ပေးပါ့မယ်!',
     color: '#ec4899',
   },
   {
-    image: '/images/OnboardingScreens/TruthOrDare.png',
+    image: `${import.meta.env.BASE_URL}images/OnboardingScreens/TruthOrDare.png`,
     title: 'Truth or Dare',
     subtitle: 'ရွေးချယ်စရာများ',
     desc: 'ရွေးချယ်ခံရတဲ့ကစားသမားက Truth or Dare or Random ကိုရွေးရမယ်!',
     color: '#40A1E9',
   },
   {
-    image: '/images/OnboardingScreens/CardReveal.png',
+    image: `${import.meta.env.BASE_URL}images/OnboardingScreens/CardReveal.png`,
     title: 'ရွေးပါ',
     subtitle: 'ကံစမ်းကြည့်ပါ',
     desc: 'ပေးထားတဲ့ ကတ်၁၀ခုထဲက တစ်ခုကို ရွေးပြီး စိန်ခေါ်မှုကို လက်ခံလိုက်ပါ',
@@ -56,7 +56,6 @@ export default function OnboardingScreen() {
   const handleNext = () => {
     play('tap')
     if (isLast) {
-
       dispatch({ type: 'START_GAME' })
     } else {
       setCurrent((p) => p + 1)
@@ -122,8 +121,12 @@ export default function OnboardingScreen() {
               {'image' in slides[current] && slides[current].image ? (
                 <img
                   src={slides[current].image}
-                  alt={slides[current].title}
+                  alt={slides[current].title || 'Game Onboarding Slide'}
                   className="w-56 h-56 object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  width={224}
+                  height={224}
                   style={{ filter: `drop-shadow(0 0 20px ${slides[current].color}40)` }}
                 />
               ) : (

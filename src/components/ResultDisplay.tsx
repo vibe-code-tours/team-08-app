@@ -9,22 +9,22 @@ import { NeonButton } from './NeonButton.tsx'
 const resultCopy = {
   pass: {
     icon: '✅',
-    title: 'Challenge cleared!',
-    message: 'The group accepts this glorious performance.',
-    points: '+10',
+    title: 'စိန်ခေါ်မှု အောင်မြင်သည်!',
+    message: 'အဖွဲ့ဝင်များက သင့်ရဲ့ ကောင်းမွန်တဲ့လုပ်ဆောင်ချက်ကို လက်ခံလိုက်ပါပြီ။',
+    points: '+၁၀',
     color: '#10b981',
   },
   excellent: {
     icon: '⭐',
-    title: 'Excellent!',
-    message: 'Legendary delivery. Maximum sparkle awarded.',
-    points: '+25',
+    title: 'ထူးချွန်သည်!',
+    message: 'အလွန်ကောင်းမွန်တဲ့ တင်ဆက်မှု ဖြစ်ပါတယ်။ အမှတ်အများဆုံး ရရှိပါမယ်။',
+    points: '+၂၅',
     color: '#facc15',
   },
   fail: {
     icon: '😭',
-    title: 'Beautiful disaster',
-    message: 'A noble attempt. The floor has filed a complaint.',
+    title: 'မအောင်မြင်ပါ!',
+    message: 'ကြိုးစားမှုတော့ ကောင်းပါတယ်။ ဒါပေမယ့် မအောင်မြင်ပါဘူးခင်ဗျာ။',
     color: '#E9243D',
   },
 } as const
@@ -81,7 +81,7 @@ export function ResultDisplay() {
         transition={{ delay: 0.1 }}
         className="text-sm font-semibold uppercase text-white/50"
       >
-        {selectedPlayer?.label ?? 'Player'}
+        {selectedPlayer?.label ?? 'ကစားသမား'}
       </motion.p>
 
       <motion.h1
@@ -115,7 +115,7 @@ export function ResultDisplay() {
             textShadow: `0 0 16px ${copy.color}90`,
           }}
         >
-          {copy.points} pts
+          {copy.points} မှတ်
         </motion.div>
       )}
 

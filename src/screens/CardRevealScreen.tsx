@@ -136,7 +136,7 @@ export default function CardRevealScreen() {
                   textShadow: `0 0 30px ${accentColor}50, 0 2px 4px rgba(0,0,0,0.3)`,
                 }}
               >
-                {chosenType === 'truth' ? '💙 Truth' : '💗 Dare'}
+                {chosenType === 'truth' ? '💡 Truth' : '🔥 Dare'}
               </h1>
               <p className="text-white/40 text-xs tracking-widest uppercase">ကဒ်တစ်ကဒ်ကို နှိပ်ပါ</p>
             </motion.div>
@@ -166,15 +166,19 @@ export default function CardRevealScreen() {
             className="relative z-10 flex flex-col items-center px-5 w-full max-w-sm"
           >
             {settings.timerEnabled && (
-              <div className="flex flex-col items-center gap-2 z-20 mb-4 shrink-0">
+              <div className="flex flex-col items-center gap-3 z-20 mb-5 shrink-0">
                 <TimerDisplay seconds={seconds} total={ROUND_SECONDS} />
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.03 }}
                   onClick={handleStartVoting}
-                  className="px-5 py-1.5 rounded-full text-xs text-white/40
-                    border border-white/10 hover:text-white/70 hover:border-white/20 transition-colors"
+                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-white
+                    bg-gradient-to-r from-purple-600 to-pink-600
+                    shadow-[0_0_24px_rgba(168,85,247,0.4),0_4px_16px_rgba(168,85,247,0.3)]
+                    transition-all"
                 >
                   ✅ ပြီးပြီ
-                </button>
+                </motion.button>
               </div>
             )}
 
@@ -214,7 +218,7 @@ export default function CardRevealScreen() {
                   transition={{ type: 'spring', delay: 0.5, stiffness: 300 }}
                   className="text-3xl mb-2"
                 >
-                  {chosenType === 'truth' ? '💙' : '💗'}
+                  {chosenType === 'truth' ? '💡' : '🔥'}
                 </motion.div>
 
                 {/* Card text */}

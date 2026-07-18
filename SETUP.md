@@ -58,11 +58,10 @@ Now "no direct push, no self-merge" is structural, not a promise.
 > Tip: keep the `ci` check **not required** for the first few days so beginners aren't
 > blocked, then flip it required once the team can reliably pass it.
 
-## 6. Connect a deploy target for PR previews (10 min)
+## 6. Deploy target
 
-Connect **Netlify** or **Cloudflare Pages** to the repo. They build a **preview URL on
-every PR** — click to see the change live. Let the platform deploy; don't hand-write deploy
-jobs. (Avoid Vercel Hobby for team projects — its free tier forbids teams/commercial use.)
+The repo deploys to **GitHub Pages** via `.github/workflows/deploy.yml`, which builds and
+publishes on every push to `main`. No third-party platform connection is needed.
 
 ## 7. Activate the CI checks (as you build)
 

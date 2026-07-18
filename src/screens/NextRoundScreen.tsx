@@ -83,7 +83,7 @@ export default function NextRoundScreen() {
             hover:border-pink-400/50 transition-colors"
         >
           <span className="text-xl">⚙️</span>
-          <span>ဆက်စပ်ဖွင့်မည်</span>
+          <span>ဂိမ်းပြင်ဆင်ချက်များ ပြောင်းမည်</span>
         </motion.button>
 
         {/* Restart */}
