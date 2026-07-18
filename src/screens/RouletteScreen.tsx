@@ -13,7 +13,7 @@ import type { PlayerTouch } from '../types/index.ts'
  * to land on the pre-selected winner.
  */
 export default function RouletteScreen() {
-  const { players, settings, selectedHistory } = useGame()
+  const { players, settings, lastSelectedPlayerId } = useGame()
   const { play } = useSound()
   const dispatch = useGameDispatch()
   const [highlightIndex, setHighlightIndex] = useState(-1)
@@ -43,8 +43,8 @@ export default function RouletteScreen() {
   useEffect(() => {
     if (players.length < 2) return
 
-    // Pre-select winner — exclude previously selected players when noRepeat is on
-    const pool = selectEligiblePlayers(players, selectedHistory, settings.noRepeat)
+    // Pre-select winner — exclude the last selected player when noRepeat is on
+    const pool = selectEligiblePlayers(players, lastSelectedPlayerId, settings.noRepeat)
     const selectedWinner = pool[Math.floor(Math.random() * pool.length)]
     const targetIndex = players.indexOf(selectedWinner)
     const totalSteps = 25 + Math.floor(Math.random() * 8)
@@ -83,7 +83,7 @@ export default function RouletteScreen() {
       clearTimeout(spinTimer)
       if (timerId) clearTimeout(timerId)
     }
-  }, [players, dispatch, settings.noRepeat, selectedHistory, play])
+  }, [players, dispatch, settings.noRepeat, lastSelectedPlayerId, play])
 
   // Post-spin sequence: eliminate non-winners → show result → dispatch
   useEffect(() => {

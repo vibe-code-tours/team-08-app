@@ -8,7 +8,6 @@ export type GamePhase =
   | 'finger-selection'
   | 'roulette'
   | 'player-selected'
-  | 'truth-dare-choice'
   | 'card-reveal'
   | 'voting'
   | 'result'
@@ -65,15 +64,14 @@ export interface GameState {
   chosenType: CardType | null
   voteResult: 'pass' | 'excellent' | 'fail' | null
   settings: GameSettings
-  /** Touch identifiers of players already selected this game — avoids repeats. */
-  selectedHistory: number[]
+  /** Touch identifier of the most recently selected player — prevents consecutive selection. */
+  lastSelectedPlayerId: number | null
 }
 
 export type GameAction =
   | { type: 'START_GAME' }
   | { type: 'SET_FINGERS'; players: PlayerTouch[] }
   | { type: 'SELECT_PLAYER'; player: PlayerTouch }
-  | { type: 'GO_TO_TRUTH_DARE_CHOICE' }
   | { type: 'CHOOSE_TRUTH_OR_DARE'; payload: CardType }
   | { type: 'PICK_CARD'; payload: Card }
   | { type: 'GO_TO_VOTING' }

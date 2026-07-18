@@ -1,10 +1,8 @@
 import { useCallback } from 'react'
-import { Howler } from 'howler'
 import { useGame } from '../state/GameContext.tsx'
 
 // ─── Web Audio API SFX manager ──────────────────────────────────────────────
-// Bypasses howler for sound effects to avoid AudioContext lifecycle issues.
-// Howler is still used for BGM (music tracks) via PhaseMusic.
+// Fully self-contained — no external audio library dependency.
 
 const BASE = import.meta.env.BASE_URL as string
 
@@ -23,15 +21,17 @@ const SFX_FILES: Record<string, string> = {
   fanfare: `${BASE}sounds/fanfare.mp3`,
 }
 
-// Increase howler's HTML5 Audio pool for music tracks (BGM uses html5: true)
-Howler.html5PoolSize = 8
-Howler.autoSuspend = false
-
 let audioCtx: AudioContext | null = null
 const audioBuffers = new Map<string, AudioBuffer>()
 const activeSources = new Set<AudioBufferSourceNode>()
+/** In-flight fetch+decode promises — deduplicates rapid calls for the same sound */
+const inflight = new Map<string, Promise<AudioBuffer | null>>()
 
-function getCtx(): AudioContext | null {
+/**
+ * Returns the shared AudioContext, creating it lazily on first call.
+ * Also exported so PhaseMusic can share the same context.
+ */
+export function getSharedAudioContext(): AudioContext | null {
   if (typeof AudioContext === 'undefined') return null
   if (!audioCtx) {
     audioCtx = new AudioContext()
@@ -41,7 +41,7 @@ function getCtx(): AudioContext | null {
 
 /** Unlock AudioContext on first user gesture — call from any click/touch handler */
 export function unlockSfx() {
-  const ctx = getCtx()
+  const ctx = getSharedAudioContext()
   if (!ctx) return
   if (ctx.state === 'suspended') {
     ctx.resume()
@@ -50,7 +50,7 @@ export function unlockSfx() {
 
 /** Preload and decode all SFX into memory (call once at app startup) */
 export async function preloadSfx(): Promise<void> {
-  const ctx = getCtx()
+  const ctx = getSharedAudioContext()
   if (!ctx) return
   const entries = Object.entries(SFX_FILES)
 
@@ -61,7 +61,6 @@ export async function preloadSfx(): Promise<void> {
         const res = await fetch(src)
         if (!res.ok) return
         const arrayBuf = await res.arrayBuffer()
-        // decodeAudioData works even when context is suspended
         const buf = await ctx.decodeAudioData(arrayBuf)
         audioBuffers.set(id, buf)
       } catch {
@@ -71,18 +70,59 @@ export async function preloadSfx(): Promise<void> {
   )
 }
 
+/** Fetch + decode a single SFX file, with in-flight dedup */
+async function fetchAndDecode(id: string): Promise<AudioBuffer | null> {
+  // Return cached buffer immediately
+  const cached = audioBuffers.get(id)
+  if (cached) return cached
+
+  // Return existing in-flight request (dedup)
+  const existing = inflight.get(id)
+  if (existing) return existing
+
+  const src = SFX_FILES[id]
+  if (!src) return null
+
+  const ctx = getSharedAudioContext()
+  if (!ctx) return null
+
+  const promise = (async (): Promise<AudioBuffer | null> => {
+    try {
+      if (ctx.state === 'suspended') await ctx.resume()
+      const res = await fetch(src)
+      if (!res.ok) return null
+      const arrayBuf = await res.arrayBuffer()
+      const buffer = await ctx.decodeAudioData(arrayBuf)
+      audioBuffers.set(id, buffer)
+      return buffer
+    } catch {
+      return null
+    } finally {
+      inflight.delete(id)
+    }
+  })()
+
+  inflight.set(id, promise)
+  return promise
+}
+
 /** Play a decoded SFX buffer */
 function playBuffer(id: string, volume = 1.0) {
-  const ctx = getCtx()
+  const ctx = getSharedAudioContext()
   if (!ctx) return
   const buffer = audioBuffers.get(id)
   if (!buffer) {
-    // Not preloaded yet — try a quick fetch+decode+play
-    void quickPlay(id, volume)
+    // Not preloaded yet — fetch+decode+play asynchronously
+    void fetchAndDecode(id).then((buf) => {
+      if (buf) playBufferFromBuf(ctx, buf, volume)
+    })
     return
   }
 
-  // Resume context if suspended (must be inside user gesture)
+  playBufferFromBuf(ctx, buffer, volume)
+}
+
+function playBufferFromBuf(ctx: AudioContext, buffer: AudioBuffer, volume: number) {
   if (ctx.state === 'suspended') {
     ctx.resume()
   }
@@ -102,42 +142,6 @@ function playBuffer(id: string, volume = 1.0) {
   source.start()
 }
 
-/** Quick fetch + decode + play for sounds not yet preloaded */
-async function quickPlay(id: string, volume: number) {
-  const src = SFX_FILES[id]
-  if (!src) return
-
-  const ctx = getCtx()
-  if (!ctx) return
-  if (ctx.state === 'suspended') {
-    await ctx.resume()
-  }
-
-  try {
-    const res = await fetch(src)
-    if (!res.ok) return
-    const arrayBuf = await res.arrayBuffer()
-    const buffer = await ctx.decodeAudioData(arrayBuf)
-    audioBuffers.set(id, buffer)
-
-    // Play immediately
-    const source = ctx.createBufferSource()
-    const gain = ctx.createGain()
-    source.buffer = buffer
-    gain.gain.value = volume
-    source.connect(gain).connect(ctx.destination)
-    activeSources.add(source)
-    source.onended = () => {
-      activeSources.delete(source)
-      source.disconnect()
-      gain.disconnect()
-    }
-    source.start()
-  } catch {
-    // Fail silently
-  }
-}
-
 function stopAllSfx() {
   for (const source of activeSources) {
     try { source.stop() } catch { /* already stopped */ }
@@ -146,33 +150,11 @@ function stopAllSfx() {
 }
 
 // ─── Preload on import (runs once when module is first loaded) ──────────────
-// Uses the same AudioContext as howler (via Howler.ctx) if available,
-// otherwise creates its own. This ensures SFX and BGM share a context
-// that gets unlocked together on user gesture.
 
-/** Delay before retrying Howler context share (Howler initializes lazily) */
-const HOWLER_CTX_RETRY_MS = 100
 /** Delay before starting SFX preload (lets AudioContext settle) */
 const PRELOAD_DELAY_MS = 50
 
-;(function initSharedCtx() {
-  // Tap into howler's AudioContext if it exists, so SFX and BGM share the
-  // same context — one unlock resumes both.
-  const tryShareCtx = () => {
-    try {
-      const howlerCtx = Howler.ctx
-      if (howlerCtx && !audioCtx) {
-        audioCtx = howlerCtx as AudioContext
-      }
-    } catch { /* ignore */ }
-  }
-  // Try immediately (howler may not be initialized yet)
-  tryShareCtx()
-  // Also try after a short delay (howler initializes lazily)
-  setTimeout(tryShareCtx, HOWLER_CTX_RETRY_MS)
-  // Kick off preload after a brief delay to let context settle
-  setTimeout(() => { void preloadSfx() }, PRELOAD_DELAY_MS)
-})()
+setTimeout(() => { void preloadSfx() }, PRELOAD_DELAY_MS)
 
 /**
  * Hook for playing game sound effects via Web Audio API.
@@ -192,7 +174,6 @@ export function useSound() {
   const play = useCallback(
     (id: string, volume = 1.0) => {
       if (!soundEnabled) return
-      // Ensure context is running (must be inside user gesture)
       unlockSfx()
       playBuffer(id, volume)
     },
@@ -203,10 +184,5 @@ export function useSound() {
     stopAllSfx()
   }, [])
 
-  const stopAll = useCallback(() => {
-    stopAllSfx()
-    Howler.stop()
-  }, [])
-
-  return { play, stop, stopAll }
+  return { play, stop }
 }

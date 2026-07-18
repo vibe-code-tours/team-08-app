@@ -2,15 +2,16 @@ import type { PlayerTouch } from '../types/index.ts'
 
 /**
  * Selects an eligible player for the roulette, respecting the noRepeat setting.
- * Falls back to the full pool when all players have been selected already.
+ * When noRepeat is on, excludes only the most recently selected player (no consecutive picks).
+ * Falls back to the full pool when only one player remains.
  */
 export function selectEligiblePlayers(
   players: PlayerTouch[],
-  selectedHistory: number[],
+  lastSelectedPlayerId: number | null,
   noRepeat: boolean,
 ): PlayerTouch[] {
-  if (!noRepeat) return players
+  if (!noRepeat || lastSelectedPlayerId === null) return players
 
-  const eligible = players.filter((p) => !selectedHistory.includes(p.identifier))
+  const eligible = players.filter((p) => p.identifier !== lastSelectedPlayerId)
   return eligible.length > 0 ? eligible : players
 }

@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { Howler } from 'howler'
 import { useGame } from '../state/GameContext.tsx'
-import { unlockSfx } from '../hooks/useSound.ts'
+import { getSharedAudioContext, unlockSfx } from '../hooks/useSound.ts'
 import type { GamePhase } from '../types/index.ts'
 
 /**
@@ -24,7 +23,6 @@ const PHASE_TO_TRACK: Record<GamePhase, string> = {
   'finger-selection': 'tension',
   roulette: 'tension',
   'player-selected': 'tension',
-  'truth-dare-choice': 'gameplay',
   'card-reveal': 'gameplay',
   voting: 'gameplay',
   result: 'gameplay',
@@ -169,15 +167,14 @@ function stopAll() {
 
 /**
  * Manages background music based on the current game phase.
- * Uses raw HTML5 Audio elements with manual crossfading — no Howler
- * state machine to fight with.
+ * Uses raw HTML5 Audio elements with manual crossfading.
  *
  * Module-level state persists across remounts so music doesn't stop
  * when PhaseMusic unmounts and remounts (e.g. round restart).
  *
  * Renders nothing — mount inside GameContextProvider.
  */
-export function PhaseMusic() {
+export default function PhaseMusic() {
   const { phase, settings } = useGame()
   const musicEnabled = settings.musicEnabled
 
@@ -209,15 +206,13 @@ export function PhaseMusic() {
   // Global gesture listener — unlocks AudioContext and starts music on first interaction
   useEffect(() => {
     const handleGesture = () => {
-      // Resume Howler's AudioContext (shared with SFX)
-      try {
-        const ctx = Howler.ctx
-        if (ctx && ctx.state === 'suspended') {
-          ctx.resume()
-        }
-      } catch { /* ignore */ }
+      // Resume shared AudioContext
+      const ctx = getSharedAudioContext()
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume()
+      }
 
-      // Also unlock the SFX AudioContext
+      // Also unlock the SFX AudioContext (same context)
       unlockSfx()
 
       ensureCurrentTrackPlaying(musicEnabledRef.current)

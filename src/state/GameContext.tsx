@@ -64,7 +64,7 @@ const initialState: GameState = {
   chosenType: null,
   voteResult: null,
   settings: loadSettings(),
-  selectedHistory: [],
+  lastSelectedPlayerId: null,
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -80,12 +80,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         phase: 'player-selected',
         selectedPlayer: action.player,
-        selectedHistory: state.settings.noRepeat
-          ? [...state.selectedHistory, action.player.identifier]
-          : state.selectedHistory,
+        lastSelectedPlayerId: state.settings.noRepeat
+          ? action.player.identifier
+          : null,
       }
-    case 'GO_TO_TRUTH_DARE_CHOICE':
-      return { ...state, phase: 'truth-dare-choice' }
     case 'CHOOSE_TRUTH_OR_DARE':
       return { ...state, phase: 'card-reveal', chosenType: action.payload }
     case 'PICK_CARD':

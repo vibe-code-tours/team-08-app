@@ -14,6 +14,13 @@ const STABLE_DELAY = 2000
 const FLASH_DURATION = 1500
 
 /**
+ * Module-level counter for desktop click player identifiers.
+ * Persists across component remounts so identifiers never collide
+ * between rounds (the root cause of no-repeat breaking on desktop).
+ */
+let clickIdCounter = 0
+
+/**
  * Screen where all players place their fingers on the screen.
  * Touch devices: auto-starts roulette after countdown.
  * Desktop: click anywhere to add players, then click "Start".
@@ -41,7 +48,6 @@ export default function FingerSelectionScreen() {
   // Desktop click-to-add state
   const isDesktop = !isTouchCapable
   const [clickPlayers, setClickPlayers] = useState<PlayerTouch[]>([])
-  const clickIdCounter = useRef(0)
   const [showDesktopTip, setShowDesktopTip] = useState(!isTouchCapable)
 
   // Use touch players on mobile, click players on desktop
@@ -137,8 +143,8 @@ export default function FingerSelectionScreen() {
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
 
-      clickIdCounter.current++
-      const newId = clickIdCounter.current
+      clickIdCounter++
+      const newId = clickIdCounter
 
       setClickPlayers((prev) => {
         if (prev.length >= maxPlayers) return prev
@@ -367,7 +373,7 @@ export default function FingerSelectionScreen() {
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setShowDesktopTip(false) }}
-                className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-sm leading-none"
+                className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-lg leading-none p-1"
               >
                 ✕
               </button>

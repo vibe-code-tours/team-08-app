@@ -1,37 +1,36 @@
 import { Component } from 'react'
-import type { ErrorInfo, ReactNode } from 'react'
+import type { ErrorInfo, ReactNode, Dispatch } from 'react'
+import type { GameAction } from '../types/index.ts'
 
-type ErrorBoundaryProps = {
+type InnerBoundaryProps = {
   children: ReactNode
-  onRestart?: () => void
+  onError: (error: Error, info: ErrorInfo) => void
+  hasError: boolean
+  onReset: () => void
 }
 
-type ErrorBoundaryState = {
-  hasError: boolean
+type InnerBoundaryState = {
+  DerivedHasError: boolean
 }
 
 /**
- * Catches unrecoverable rendering errors and shows a friendly recovery screen
- * instead of a blank white page.
+ * Internal class component — React requires class components for error
+ * boundaries (componentDidCatch / getDerivedStateFromError).
+ * Not exported; only used by the functional ErrorBoundary wrapper.
  */
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false }
+class InnerBoundary extends Component<InnerBoundaryProps, InnerBoundaryState> {
+  state: InnerBoundaryState = { DerivedHasError: false }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true }
+  static getDerivedStateFromError(): InnerBoundaryState {
+    return { DerivedHasError: true }
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    console.error('[ErrorBoundary]', error, info.componentStack)
-  }
-
-  handleRestart = (): void => {
-    this.setState({ hasError: false })
-    this.props.onRestart?.()
+    this.props.onError(error, info)
   }
 
   render(): ReactNode {
-    if (this.state.hasError) {
+    if (this.state.DerivedHasError || this.props.hasError) {
       return (
         <div className="flex flex-col items-center justify-center h-dvh px-6 text-center">
           <div className="mb-6 text-6xl">💥</div>
@@ -42,7 +41,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             ဂိမ်းမှာ ပြဿနာတစ်ခု ဖြစ်သွားပါတယ်။ ပြန်စကြည့်ပါ။
           </p>
           <button
-            onClick={this.handleRestart}
+            onClick={() => {
+              this.setState({ DerivedHasError: false })
+              this.props.onReset()
+            }}
             className="px-8 py-3 rounded-2xl font-bold text-white cursor-pointer
               bg-gradient-to-br from-[#8B2FE2] to-[#8B2FE2cc]
               shadow-[0_4px_20px_#8B2FE250,0_0_40px_#8B2FE220,inset_0_1px_0_rgba(255,255,255,0.15)]
@@ -56,4 +58,29 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     return this.props.children
   }
+}
+
+type ErrorBoundaryProps = {
+  children: ReactNode
+  dispatch: Dispatch<GameAction>
+}
+
+/**
+ * Catches unrecoverable rendering errors and shows a friendly recovery screen.
+ * On restart, dispatches RESTART to reset game state back to the start screen.
+ */
+export default function ErrorBoundary({ children, dispatch }: ErrorBoundaryProps) {
+  const handleReset = () => {
+    dispatch({ type: 'RESTART' })
+  }
+
+  const handleError = (error: Error, info: ErrorInfo) => {
+    console.error('[ErrorBoundary]', error, info.componentStack)
+  }
+
+  return (
+    <InnerBoundary onError={handleError} hasError={false} onReset={handleReset}>
+      {children}
+    </InnerBoundary>
+  )
 }

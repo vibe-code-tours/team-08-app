@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import ErrorBoundary from './components/ErrorBoundary'
 import { SettingsButton } from './components/SettingsButton'
-import { PhaseMusic } from './components/PhaseMusic'
+import PhaseMusic from './components/PhaseMusic'
 import { useTouchCapability } from './hooks/useTouchCapability'
 import type { GamePhase } from './types/index.ts'
 import StartScreen from './screens/StartScreen'
@@ -34,8 +34,6 @@ function ScreenContent({ phase }: { phase: string }) {
     case 'roulette':
       return <RouletteScreen />
     case 'player-selected':
-      return <PlayerSelectedScreen />
-    case 'truth-dare-choice':
       return <PlayerSelectedScreen />
     case 'card-reveal':
       return <CardRevealScreen />
@@ -78,14 +76,24 @@ export function ActiveScreen() {
   )
 }
 
-function App() {
+function AppShell() {
+  const { dispatch } = useGameContext()
+
   return (
-    <GameContextProvider>
+    <>
       <PhaseMusic />
-      <ErrorBoundary>
+      <ErrorBoundary dispatch={dispatch}>
         <ActiveScreen />
       </ErrorBoundary>
       <SettingsButton />
+    </>
+  )
+}
+
+function App() {
+  return (
+    <GameContextProvider>
+      <AppShell />
     </GameContextProvider>
   )
 }

@@ -1,14 +1,19 @@
 import { render, screen, cleanup } from '@testing-library/react'
 import { describe, it, expect, vi, afterAll, afterEach } from 'vitest'
-import { ErrorBoundary } from './ErrorBoundary'
+import ErrorBoundary from './ErrorBoundary'
+import type { Dispatch } from 'react'
+import type { GameAction } from '../types/index.ts'
 
-// eslint-disable-next-line react-refresh/only-export-components
 function ThrowingComponent(): React.JSX.Element {
   throw new Error('test crash')
 }
 
 function GoodComponent() {
   return <div>all good</div>
+}
+
+function makeDispatch(): Dispatch<GameAction> {
+  return vi.fn() as unknown as Dispatch<GameAction>
 }
 
 describe('ErrorBoundary', () => {
@@ -24,7 +29,7 @@ describe('ErrorBoundary', () => {
 
   it('renders children when there is no error', () => {
     render(
-      <ErrorBoundary>
+      <ErrorBoundary dispatch={makeDispatch()}>
         <GoodComponent />
       </ErrorBoundary>,
     )
@@ -33,7 +38,7 @@ describe('ErrorBoundary', () => {
 
   it('shows fallback UI when a child throws', () => {
     render(
-      <ErrorBoundary>
+      <ErrorBoundary dispatch={makeDispatch()}>
         <ThrowingComponent />
       </ErrorBoundary>,
     )
@@ -41,14 +46,14 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('ပြန်စရန်')).toBeInTheDocument()
   })
 
-  it('calls onRestart when the restart button is clicked', () => {
-    const onRestart = vi.fn()
+  it('dispatches RESTART when the restart button is clicked', () => {
+    const dispatch = makeDispatch()
     render(
-      <ErrorBoundary onRestart={onRestart}>
+      <ErrorBoundary dispatch={dispatch}>
         <ThrowingComponent />
       </ErrorBoundary>,
     )
     screen.getByText('ပြန်စရန်').click()
-    expect(onRestart).toHaveBeenCalledOnce()
+    expect(dispatch).toHaveBeenCalledWith({ type: 'RESTART' })
   })
 })
