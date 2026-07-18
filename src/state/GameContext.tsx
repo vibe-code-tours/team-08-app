@@ -86,7 +86,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     case 'GO_TO_TRUTH_DARE_CHOICE':
       return { ...state, phase: 'truth-dare-choice' }
->>>>>>> pr85-lf
     case 'CHOOSE_TRUTH_OR_DARE':
       return { ...state, phase: 'card-reveal', chosenType: action.payload }
     case 'PICK_CARD':
