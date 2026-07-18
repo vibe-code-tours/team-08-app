@@ -139,8 +139,9 @@ export default function PlayerSelectedScreen() {
                 whileHover={{ scale: 1.02 }}
                 onClick={() => handleChoice('truth')}
                 disabled={isFlipping}
-                className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl text-lg font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl text-lg font-bold text-white transition-all disabled:cursor-not-allowed"
                 style={{
+                  opacity: isFlipping ? 0.4 : 1,
                   background: `linear-gradient(135deg, ${TRUTH_COLOR}, ${TRUTH_COLOR}cc)`,
                   boxShadow: `0 0 24px ${TRUTH_COLOR}60, inset 0 1px 0 rgba(255,255,255,0.2)`,
                 }}
@@ -158,8 +159,9 @@ export default function PlayerSelectedScreen() {
                 whileHover={{ scale: 1.02 }}
                 onClick={() => handleChoice('dare')}
                 disabled={isFlipping}
-                className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl text-lg font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl text-lg font-bold text-white transition-all disabled:cursor-not-allowed"
                 style={{
+                  opacity: isFlipping ? 0.4 : 1,
                   background: `linear-gradient(135deg, ${DARE_COLOR}, ${DARE_COLOR}cc)`,
                   boxShadow: `0 0 24px ${DARE_COLOR}60, inset 0 1px 0 rgba(255,255,255,0.2)`,
                 }}
@@ -177,7 +179,7 @@ export default function PlayerSelectedScreen() {
                 whileHover={{ scale: 1.02 }}
                 onClick={handleRandom}
                 disabled={isFlipping}
-                className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl text-lg font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl text-lg font-bold text-white transition-all disabled:cursor-not-allowed"
                 style={{
                   background: `linear-gradient(135deg, ${RANDOM_COLOR}, ${RANDOM_COLOR}cc)`,
                   boxShadow: `0 0 24px ${RANDOM_COLOR}60, inset 0 1px 0 rgba(255,255,255,0.2)`,
