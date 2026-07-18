@@ -20,6 +20,12 @@ Start → Finger Selection → Roulette → Player Selected → Truth/Dare choic
   next-round) are onClick-driven and work fine with a mouse, so the gate does not
   cover them. It never fires on intro/setup, and offers a session-scoped
   "Continue anyway" escape hatch.
+- PWA navigation requests must use `NetworkFirst` (never cache-first) with
+  `skipWaiting` + `clientsClaim` enabled in the workbox config, paired with a
+  tap-to-reload `UpdateToast` (NOT a silent auto-reload), so a new deploy
+  reaches users promptly on the next fresh navigation without interrupting an
+  in-progress game round. GitHub Pages gives no server-side Cache-Control
+  control, so this fix lives entirely at the service-worker layer.
 
 ## Folder conventions
 - src/screens/       — one file per screen, matches the flow above
