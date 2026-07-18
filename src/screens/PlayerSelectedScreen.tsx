@@ -45,9 +45,14 @@ export default function PlayerSelectedScreen() {
     setFlipResult(null)
 
     const result: CardType = Math.random() < 0.5 ? 'truth' : 'dare'
-    setFlipResult(result)
+
+    // Delay result reveal for dramatic effect (shows mid-animation)
+    const revealTimer = setTimeout(() => {
+      setFlipResult(result)
+    }, 600)
 
     flipTimeoutRef.current = setTimeout(() => {
+      clearTimeout(revealTimer)
       setIsFlipping(false)
       dispatch({ type: 'CHOOSE_TRUTH_OR_DARE', payload: result })
     }, 1200)
@@ -135,7 +140,7 @@ export default function PlayerSelectedScreen() {
                 }}
               >
                 <span className="text-2xl">💡</span>
-                <span>Truth</span>
+                <span>Truth (အမှန်ပြော)</span>
               </motion.button>
 
               {/* Dare button */}
@@ -154,7 +159,7 @@ export default function PlayerSelectedScreen() {
                 }}
               >
                 <span className="text-2xl">🔥</span>
-                <span>Dare</span>
+                <span>Dare (ရဲရဲလုပ်)</span>
               </motion.button>
 
               {/* Random button */}
@@ -179,7 +184,7 @@ export default function PlayerSelectedScreen() {
                 >
                   🎲
                 </motion.span>
-                <span>{isFlipping ? 'Flipping...' : 'Random'}</span>
+                <span>{isFlipping ? 'ခေါင်းပန်းလှည့်နေသည်...' : 'Random (ကျပန်း)'}</span>
               </motion.button>
             </div>
 

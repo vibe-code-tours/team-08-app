@@ -68,7 +68,6 @@ export type GameAction =
   | { type: 'START_GAME' }
   | { type: 'SET_FINGERS'; players: PlayerTouch[] }
   | { type: 'SELECT_PLAYER'; player: PlayerTouch }
-  | { type: 'GO_TO_TRUTH_DARE_CHOICE' }
   | { type: 'CHOOSE_TRUTH_OR_DARE'; payload: CardType }
   | { type: 'PICK_CARD'; payload: Card }
   | { type: 'GO_TO_VOTING' }
