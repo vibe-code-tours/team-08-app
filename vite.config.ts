@@ -3,14 +3,16 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const base = '/team-08-app/'
+
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/team-08-app/',
+  base,
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['images/TheChosenOneLogo.png'],
       manifest: {
         name: 'The Chosen One',
@@ -28,6 +30,28 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
+      },
+      workbox: {
+        clientsClaim: true,
+        navigateFallback: `${base}index.html`,
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pages',
+              networkTimeoutSeconds: 3,
+            },
+          },
+          {
+            urlPattern: ({ request }) =>
+              ['script', 'style', 'image', 'font'].includes(request.destination),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'assets',
+            },
+          },
+        ],
       },
     }),
   ],

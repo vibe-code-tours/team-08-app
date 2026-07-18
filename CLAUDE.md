@@ -20,6 +20,20 @@ Start → Finger Selection → Roulette → Player Selected → Truth/Dare choic
   next-round) are onClick-driven and work fine with a mouse, so the gate does not
   cover them. It never fires on intro/setup, and offers a session-scoped
   "Continue anyway" escape hatch.
+- PWA navigation requests must use `NetworkFirst` (never cache-first), and
+  `VitePWA` must use `registerType: 'prompt'` — NOT `'autoUpdate'`.
+  `'autoUpdate'` bakes an unconditional `window.location.reload()` into
+  vite-plugin-pwa's generated register code and never calls `onNeedRefresh`,
+  silently reloading any open tab and making a tap-to-reload toast
+  unreachable dead code (confirmed via local build+preview testing). Pair
+  `registerType: 'prompt'` with `clientsClaim: true` in the workbox config
+  (no `skipWaiting: true` — that also forces immediate self-activation,
+  skipping the `waiting` state the prompt depends on) and a tap-to-reload
+  `UpdateToast` (via `useRegisterSW` from `virtual:pwa-register/react`), so a
+  new deploy reaches users promptly on the next fresh navigation without
+  silently interrupting an in-progress game round. GitHub Pages gives no
+  server-side Cache-Control control, so this fix lives entirely at the
+  service-worker layer.
 
 ## Folder conventions
 - src/screens/       — one file per screen, matches the flow above

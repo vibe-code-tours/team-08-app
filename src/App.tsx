@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { SettingsButton } from './components/SettingsButton'
+import { UpdateToast } from './components/UpdateToast'
 import PhaseMusic from './components/PhaseMusic'
 import { useTouchCapability } from './hooks/useTouchCapability'
 import type { GamePhase } from './types/index.ts'
@@ -86,6 +87,7 @@ function AppShell() {
         <ActiveScreen />
       </ErrorBoundary>
       <SettingsButton />
+      <UpdateToast />
     </>
   )
 }
