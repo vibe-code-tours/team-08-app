@@ -7,10 +7,12 @@ import type { GamePhase } from '../types/index.ts'
  * Background music tracks mapped to file paths under public/sounds/.
  * Add entries here when adding new BGM files.
  */
+const BASE = import.meta.env.BASE_URL as string
+
 const MUSIC_FILES: Record<string, string> = {
-  menu: '/sounds/bgm-menu.mp3',
-  tension: '/sounds/bgm-tension.mp3',
-  gameplay: '/sounds/bgm-gameplay.mp3',
+  menu: `${BASE}sounds/bgm-menu.mp3`,
+  tension: `${BASE}sounds/bgm-tension.mp3`,
+  gameplay: `${BASE}sounds/bgm-gameplay.mp3`,
 }
 
 /** Maps each game phase to a music track ID */

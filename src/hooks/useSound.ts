@@ -6,19 +6,21 @@ import { useGame } from '../state/GameContext.tsx'
 // Bypasses howler for sound effects to avoid AudioContext lifecycle issues.
 // Howler is still used for BGM (music tracks) via PhaseMusic.
 
+const BASE = import.meta.env.BASE_URL as string
+
 const SFX_FILES: Record<string, string> = {
-  tap: '/sounds/tap.mp3',
-  countdown: '/sounds/countdown.mp3',
-  'roulette-tick': '/sounds/roulette-tick.mp3',
-  winner: '/sounds/winner.mp3',
-  'coin-flip': '/sounds/coin-flip.mp3',
-  'card-flip': '/sounds/card-flip.mp3',
-  'timer-tick': '/sounds/timer-tick.mp3',
-  'time-up': '/sounds/time-up.mp3',
-  vote: '/sounds/vote.mp3',
-  celebrate: '/sounds/celebrate.mp3',
-  fail: '/sounds/fail.mp3',
-  fanfare: '/sounds/fanfare.mp3',
+  tap: `${BASE}sounds/tap.mp3`,
+  countdown: `${BASE}sounds/countdown.mp3`,
+  'roulette-tick': `${BASE}sounds/roulette-tick.mp3`,
+  winner: `${BASE}sounds/winner.mp3`,
+  'coin-flip': `${BASE}sounds/coin-flip.mp3`,
+  'card-flip': `${BASE}sounds/card-flip.mp3`,
+  'timer-tick': `${BASE}sounds/timer-tick.mp3`,
+  'time-up': `${BASE}sounds/time-up.mp3`,
+  vote: `${BASE}sounds/vote.mp3`,
+  celebrate: `${BASE}sounds/celebrate.mp3`,
+  fail: `${BASE}sounds/fail.mp3`,
+  fanfare: `${BASE}sounds/fanfare.mp3`,
 }
 
 // Increase howler's HTML5 Audio pool for music tracks (BGM uses html5: true)
