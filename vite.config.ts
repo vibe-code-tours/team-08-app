@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['images/TheChosenOneLogo.png'],
       manifest: {
         name: 'The Chosen One',
@@ -30,7 +30,6 @@ export default defineConfig({
         enabled: true,
       },
       workbox: {
-        skipWaiting: true,
         clientsClaim: true,
         navigateFallback: '/team-08-app/index.html',
         runtimeCaching: [

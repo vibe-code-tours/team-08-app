@@ -13,6 +13,16 @@ service worker installed after a deploy but sat in the `waiting` state —
 players kept seeing the old build until every open tab was closed, which for
 a share-the-phone party game could mean days.
 
+Note: `registerType: 'autoUpdate'` also has a hidden effect on vite-plugin-pwa's
+generated client registration code — it bakes in an unconditional
+`window.location.reload()` on activation and never invokes `onNeedRefresh`,
+so a tap-to-reload prompt component is unreachable dead code under
+`autoUpdate`. Verified locally (build + preview + simulated deploy): with
+`autoUpdate` + `skipWaiting: true`, an already-open tab reloaded itself
+silently with no toast shown. Switching to `registerType: 'prompt'` (and
+dropping `skipWaiting: true` from the workbox config, keeping
+`clientsClaim: true`) is required for the toast path to actually fire.
+
 In the context of **shipping frequent GitHub Pages deploys with no
 server-side cache control**, facing **stale service workers stuck in
 `waiting` until all tabs close**, we needed a fix that lives entirely at the
@@ -22,8 +32,12 @@ service-worker layer and does not disrupt a live game round mid-play.
 
 We chose:
 
-- `skipWaiting: true` + `clientsClaim: true` in the workbox config, so a new
-  service worker activates immediately instead of sitting in `waiting`.
+- `registerType: 'prompt'` (not `'autoUpdate'`) so vite-plugin-pwa's
+  generated client code takes the `onNeedRefresh` code path instead of
+  silently calling `window.location.reload()` on activation.
+- `clientsClaim: true` in the workbox config (without `skipWaiting: true`),
+  so a new service worker sits in `waiting` until the client sends the
+  skip-waiting message, then takes control immediately once it does.
 - `NetworkFirst` for navigation requests (`request.mode === 'navigate'`)
   with a 3-second network timeout, so a fresh HTML shell is fetched on the
   next navigation when the user is online, falling back to cache only when
