@@ -14,7 +14,7 @@ export default function StartScreen() {
 
       {/* Logo */}
       <motion.img
-        src="/images/TheChosenOneLogo.png"
+        src={`${import.meta.env.BASE_URL}images/TheChosenOneLogo.png`}
         alt="The Chosen One"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

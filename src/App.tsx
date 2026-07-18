@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
 import { SettingsButton } from './components/SettingsButton'
+import { useTouchCapability } from './hooks/useTouchCapability'
+import type { GamePhase } from './types/index.ts'
 import StartScreen from './screens/StartScreen'
 import OnboardingScreen from './screens/OnboardingScreen'
 import SetupScreen from './screens/SetupScreen'
@@ -12,6 +15,10 @@ import CardRevealScreen from './screens/CardRevealScreen'
 import VotingScreen from './screens/VotingScreen'
 import ResultScreen from './screens/ResultScreen'
 import NextRoundScreen from './screens/NextRoundScreen'
+import DesktopGateScreen from './screens/DesktopGateScreen'
+
+/** Phases that require touch input; desktop/non-touch devices are gated here. */
+const TOUCH_REQUIRED_PHASES: GamePhase[] = ['finger-selection', 'roulette']
 
 function ScreenContent({ phase }: { phase: string }) {
   switch (phase) {
@@ -44,18 +51,27 @@ function ScreenContent({ phase }: { phase: string }) {
 
 export function ActiveScreen() {
   const { state } = useGameContext()
+  const { isTouchCapable } = useTouchCapability()
+  const [gateDismissed, setGateDismissed] = useState(false)
+
+  const showGate =
+    TOUCH_REQUIRED_PHASES.includes(state.phase) && !isTouchCapable && !gateDismissed
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={state.phase}
+        key={showGate ? 'desktop-gate' : state.phase}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         className="w-full h-dvh"
       >
-        <ScreenContent phase={state.phase} />
+        {showGate ? (
+          <DesktopGateScreen onContinueAnyway={() => setGateDismissed(true)} />
+        ) : (
+          <ScreenContent phase={state.phase} />
+        )}
       </motion.div>
     </AnimatePresence>
   )

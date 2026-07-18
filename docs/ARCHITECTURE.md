@@ -54,7 +54,8 @@ filtered at read time by pack/difficulty/type from `GameSettings`.
 
 None. No backend, no auth, no analytics — everything runs client-side with
 localStorage for settings persistence only (game state is in-memory). Deploy
-target is Netlify (PR previews on every pull request).
+target is GitHub Pages, auto-deployed on push to `main` via
+`.github/workflows/deploy.yml`.
 
 ## How to run
 
