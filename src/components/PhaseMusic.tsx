@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Howler } from 'howler'
 import { useGame } from '../state/GameContext.tsx'
+import { unlockSfx } from '../hooks/useSound.ts'
 import type { GamePhase } from '../types/index.ts'
 
 /**
@@ -215,6 +216,9 @@ export function PhaseMusic() {
           ctx.resume()
         }
       } catch { /* ignore */ }
+
+      // Also unlock the SFX AudioContext
+      unlockSfx()
 
       ensureCurrentTrackPlaying(musicEnabledRef.current)
     }
