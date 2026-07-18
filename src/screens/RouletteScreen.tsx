@@ -43,7 +43,6 @@ export default function RouletteScreen() {
   useEffect(() => {
     if (players.length < 2) return
 
-    play('roulette-tick')
     // Pre-select winner — exclude previously selected players when noRepeat is on
     const pool = selectEligiblePlayers(players, selectedHistory, settings.noRepeat)
     const selectedWinner = pool[Math.floor(Math.random() * pool.length)]
@@ -61,6 +60,7 @@ export default function RouletteScreen() {
     const tick = () => {
       const currentIndex = step % players.length
       setHighlightIndex(currentIndex)
+      play('roulette-tick')
       step++
 
       if (step >= totalSteps) {
@@ -83,7 +83,7 @@ export default function RouletteScreen() {
       clearTimeout(spinTimer)
       if (timerId) clearTimeout(timerId)
     }
-  }, [players, dispatch, settings.noRepeat, selectedHistory])
+  }, [players, dispatch, settings.noRepeat, selectedHistory, play])
 
   // Post-spin sequence: eliminate non-winners → show result → dispatch
   useEffect(() => {
@@ -92,6 +92,7 @@ export default function RouletteScreen() {
     const eliminateTimer = setTimeout(() => setEliminated(true), 300)
     const resultTimer = setTimeout(() => {
       setShowResult(true)
+      play('winner')
       dispatch({ type: 'SELECT_PLAYER', player: winner })
     }, 2000)
 
