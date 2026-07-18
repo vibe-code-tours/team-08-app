@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { SettingsButton } from './components/SettingsButton'
+import { UpdateToast } from './components/UpdateToast'
 import PhaseMusic from './components/PhaseMusic'
 import { useTouchCapability } from './hooks/useTouchCapability'
 import type { GamePhase } from './types/index.ts'
@@ -12,6 +13,7 @@ import SetupScreen from './screens/SetupScreen'
 import FingerSelectionScreen from './screens/FingerSelectionScreen'
 import RouletteScreen from './screens/RouletteScreen'
 import PlayerSelectedScreen from './screens/PlayerSelectedScreen'
+import TruthDareChoiceScreen from './screens/TruthDareChoiceScreen'
 import CardRevealScreen from './screens/CardRevealScreen'
 import VotingScreen from './screens/VotingScreen'
 import ResultScreen from './screens/ResultScreen'
@@ -35,6 +37,8 @@ function ScreenContent({ phase }: { phase: string }) {
       return <RouletteScreen />
     case 'player-selected':
       return <PlayerSelectedScreen />
+    case 'truth-dare-choice':
+      return <TruthDareChoiceScreen />
     case 'card-reveal':
       return <CardRevealScreen />
     case 'voting':
@@ -86,6 +90,7 @@ function AppShell() {
         <ActiveScreen />
       </ErrorBoundary>
       <SettingsButton />
+      <UpdateToast />
     </>
   )
 }
