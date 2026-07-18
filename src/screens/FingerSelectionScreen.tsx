@@ -11,10 +11,8 @@ const STABLE_DELAY = 2000
 /** How long (ms) to flash the player number when a finger is placed */
 const FLASH_DURATION = 1500
 
-/** Detect touch device */
-function isTouchDevice(): boolean {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0
-}
+/** Detect touch device (computed once at module load) */
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
 /**
  * Screen where all players place their fingers on the screen.
@@ -40,10 +38,10 @@ export default function FingerSelectionScreen() {
   const prevCountRef = useRef(0)
 
   // Desktop click-to-add state
-  const [isDesktop] = useState(() => !isTouchDevice())
+  const [isDesktop] = useState(() => !isTouchDevice)
   const [clickPlayers, setClickPlayers] = useState<PlayerTouch[]>([])
   const clickIdCounter = useRef(0)
-  const [showDesktopTip, setShowDesktopTip] = useState(() => !isTouchDevice())
+  const [showDesktopTip, setShowDesktopTip] = useState(() => !isTouchDevice)
 
   // Use touch players on mobile, click players on desktop
   const players = isDesktop ? clickPlayers : touchPlayers
@@ -220,15 +218,10 @@ export default function FingerSelectionScreen() {
               ? 'ကစားသမား ၂ ယောက်ထက်မနည်း ထည့်ပါ'
               : '"Start" ကိုနှိပ်ပြီး စတင်ပါ'
             : players.length === 0
-              ? 'Waiting for players...'
+              ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
               : counting
-                ? 'Hold still…'
+                ? 'ခနစောင့်ပါ…'
                 : 'ထပ်ထားပါ!'}
-          {players.length === 0
-            ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
-            : counting
-              ? 'ခနစောင့်ပါ…'
-              : `ကစားသမား ${players.length} ယောက် — ထပ်ထည့်မယ်!`}
         </p>
         {isDesktop && (
           <p className="text-xs text-white/40">
@@ -256,7 +249,7 @@ export default function FingerSelectionScreen() {
               shadow-[0_0_30px_rgba(168,85,247,0.5)]
               active:scale-95 transition-transform"
           >
-            ▶ Start
+            ▶ စတင်
           </motion.button>
         </motion.div>
       )}
