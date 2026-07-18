@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { useSound } from '../hooks/useSound.ts'
+import { usePwaInstall } from '../hooks/usePwaInstall.ts'
 
 /** Apple-style toggle switch */
 function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
@@ -32,6 +33,7 @@ export function SettingsButton() {
   const { settings } = useGame()
   const dispatch = useGameDispatch()
   const { play } = useSound()
+  const { install, isInstallable, isInstalled, isIOS } = usePwaInstall()
   const soundOn = settings.soundEnabled
   const musicOn = settings.musicEnabled
 
@@ -99,6 +101,25 @@ export function SettingsButton() {
 
               {/* Divider */}
               <div className="h-px bg-white/5" />
+
+              {/* PWA install button */}
+              {isInstallable && (
+                <button
+                  onClick={() => { play('vote', 0.5); install() }}
+                  className="w-full flex items-center gap-2 px-4 py-3
+                    text-sm text-white/80 hover:bg-white/5 transition-colors"
+                >
+                  <span>📲</span>
+                  <span>App ထည့်ရန်</span>
+                </button>
+              )}
+
+              {/* iOS manual install hint */}
+              {!isInstallable && !isInstalled && isIOS && (
+                <div className="px-4 py-3 text-xs text-white/40">
+                  📲 iOS: Share → Add to Home Screen
+                </div>
+              )}
 
               {/* Home button */}
               <button
