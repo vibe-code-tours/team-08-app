@@ -353,7 +353,7 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 - All 4 phases are complete (Foundation → Core Game Loop → Content & Settings → Premium Polish).
 - `App.tsx` is a phase-based router with AnimatePresence screen transitions, ErrorBoundary, PhaseMusic, and UpdateToast.
 - `src/screens/` has 11 screens: StartScreen, OnboardingScreen, SetupScreen, FingerSelectionScreen, RouletteScreen, PlayerSelectedScreen, CardRevealScreen, VotingScreen, ResultScreen, NextRoundScreen, DesktopGateScreen.
-- `src/components/` has 15 reusable components: NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot, ErrorBoundary, PhaseMusic, UpdateToast, VotingPanel, ResultDisplay, SettingsButton, etc.
+- `src/components/` has 13 reusable components: NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot, ErrorBoundary, PhaseMusic, UpdateToast, VotingPanel, ResultDisplay, SettingsButton.
 - `src/hooks/` has 4 hooks: useMultiTouch, useSound, useTouchCapability, usePwaInstall.
 - `src/data/cards.ts` has 192 cards with filtering helpers.
 - All UI text is in Myanmar (Burmese).

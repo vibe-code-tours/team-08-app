@@ -67,7 +67,7 @@ Start → Onboarding → Setup → Finger Selection → Roulette
 | Path | What |
 |------|------|
 | `src/screens/` | 11 screen components, one per game phase |
-| `src/components/` | 15 reusable components (NeonButton, GlassPanel, ErrorBoundary, PhaseMusic, UpdateToast, etc.) |
+| `src/components/` | 13 reusable components (NeonButton, GlassPanel, ErrorBoundary, PhaseMusic, UpdateToast, etc.) |
 | `src/state/GameContext.tsx` | Game state, reducer (12 actions), settings persistence |
 | `src/hooks/useMultiTouch.ts` | Multi-touch tracking (keyed by `touch.identifier`) |
 | `src/hooks/useSound.ts` | Web Audio API SFX manager with preloading |
