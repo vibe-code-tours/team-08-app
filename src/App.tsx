@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { SettingsButton } from './components/SettingsButton'
 import { PhaseMusic } from './components/PhaseMusic'
 import { useTouchCapability } from './hooks/useTouchCapability'
@@ -82,7 +83,9 @@ function App() {
   return (
     <GameContextProvider>
       <PhaseMusic />
-      <ActiveScreen />
+      <ErrorBoundary>
+        <ActiveScreen />
+      </ErrorBoundary>
       <SettingsButton />
     </GameContextProvider>
   )
