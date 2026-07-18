@@ -3,9 +3,11 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const base = '/team-08-app/'
+
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/team-08-app/',
+  base,
   plugins: [
     react(),
     tailwindcss(),
@@ -31,7 +33,7 @@ export default defineConfig({
       },
       workbox: {
         clientsClaim: true,
-        navigateFallback: '/team-08-app/index.html',
+        navigateFallback: `${base}index.html`,
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.mode === 'navigate',

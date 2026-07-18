@@ -65,5 +65,6 @@ since GitHub Pages offers no server-side Cache-Control**.
   equivalent fallback.
 - Players see a small tap-to-reload prompt instead of a silent reload — a
   deliberate UX tradeoff to avoid disrupting a live game round.
-- `navigateFallback` must be kept in sync with `base` in `vite.config.ts`
-  (`/team-08-app/index.html`) or offline navigation fallback will 404.
+- `navigateFallback` is derived from the same `base` constant used by Vite's
+  `base` option in `vite.config.ts`, so they can't drift apart into a 404
+  on offline navigation.
