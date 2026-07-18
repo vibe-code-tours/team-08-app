@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { GlassPanel } from '../components/GlassPanel.tsx'
 import type { CardType } from '../types/index.ts'
 
@@ -15,12 +16,17 @@ const RANDOM_COLOR = '#eab308'
 export default function PlayerSelectedScreen() {
   const { selectedPlayer } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipResult, setFlipResult] = useState<CardType | null>(null)
   const flipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hasChosenRef = useRef(false)
   const [showChoices, setShowChoices] = useState(false)
+
+  useEffect(() => {
+    play('fanfare')
+  }, [play])
 
   useEffect(() => {
     // Show choices after player name animation
@@ -47,6 +53,7 @@ export default function PlayerSelectedScreen() {
   const handleRandom = useCallback(() => {
     if (isFlipping || hasChosenRef.current) return
     hasChosenRef.current = true
+    play('coin-flip')
     setIsFlipping(true)
     setFlipResult(null)
 
