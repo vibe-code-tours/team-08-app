@@ -78,7 +78,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         phase: 'player-selected',
         selectedPlayer: action.player,
-        selectedHistory: [...state.selectedHistory, action.player.label],
+        selectedHistory: state.settings.noRepeat
+          ? [...state.selectedHistory, action.player.identifier]
+          : state.selectedHistory,
       }
     case 'GO_TO_TRUTH_DARE_CHOICE':
       return { ...state, phase: 'truth-dare-choice' }

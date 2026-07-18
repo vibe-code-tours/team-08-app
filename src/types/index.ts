@@ -63,8 +63,8 @@ export interface GameState {
   chosenType: CardType | null
   voteResult: 'pass' | 'excellent' | 'fail' | null
   settings: GameSettings
-  /** Labels of players already selected this game session (for no-repeat) */
-  selectedHistory: string[]
+  /** Touch identifiers of players already selected this game — avoids repeats. */
+  selectedHistory: number[]
 }
 
 export type GameAction =

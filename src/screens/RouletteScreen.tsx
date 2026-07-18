@@ -42,7 +42,7 @@ export default function RouletteScreen() {
 
     // Pre-select winner — exclude previously selected players when noRepeat is on
     const eligible = settings.noRepeat
-      ? players.filter((p) => !selectedHistory.includes(p.label))
+      ? players.filter((p) => !selectedHistory.includes(p.identifier))
       : players
     const pool = eligible.length > 0 ? eligible : players
     const selectedWinner = pool[Math.floor(Math.random() * pool.length)]

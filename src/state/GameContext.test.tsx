@@ -68,6 +68,28 @@ describe('gameReducer', () => {
     expect(result.selectedPlayer).toEqual(samplePlayer)
   })
 
+  it('SELECT_PLAYER adds player identifier to selectedHistory when noRepeat is true', () => {
+    const state = { ...baseState, settings: { ...defaultSettings, noRepeat: true } }
+    const result = gameReducer(state, { type: 'SELECT_PLAYER', player: samplePlayer })
+    expect(result.selectedHistory).toEqual([0])
+  })
+
+  it('SELECT_PLAYER does not modify selectedHistory when noRepeat is false', () => {
+    const state = { ...baseState, settings: { ...defaultSettings, noRepeat: false } }
+    const result = gameReducer(state, { type: 'SELECT_PLAYER', player: samplePlayer })
+    expect(result.selectedHistory).toEqual([])
+  })
+
+  it('SELECT_PLAYER accumulates identifiers across multiple selections', () => {
+    const player2: PlayerTouch = { ...samplePlayer, identifier: 1, label: 'Player 2' }
+    let state = gameReducer(
+      { ...baseState, settings: { ...defaultSettings, noRepeat: true } },
+      { type: 'SELECT_PLAYER', player: samplePlayer },
+    )
+    state = gameReducer(state, { type: 'SELECT_PLAYER', player: player2 })
+    expect(state.selectedHistory).toEqual([0, 1])
+  })
+
   it('NEXT_ROUND transitions to next-round and clears player/card/state', () => {
     const midRoundState: GameState = {
       ...baseState,
@@ -86,6 +108,16 @@ describe('gameReducer', () => {
     expect(result.selectedPlayer).toBeNull()
     expect(result.selectedCard).toBeNull()
     expect(result.players).toEqual([])
+  })
+
+  it('NEXT_ROUND preserves selectedHistory across rounds', () => {
+    const state: GameState = {
+      ...baseState,
+      phase: 'card-reveal',
+      selectedHistory: [0, 1],
+    }
+    const result = gameReducer(state, { type: 'NEXT_ROUND' })
+    expect(result.selectedHistory).toEqual([0, 1])
   })
 
   it('START_NEXT_ROUND transitions to finger-selection and clears all game state', () => {
@@ -114,6 +146,16 @@ describe('gameReducer', () => {
     expect(result.voteResult).toBeNull()
     expect(result.players).toEqual([])
     expect(result.settings).toEqual(defaultSettings)
+  })
+
+  it('RESTART clears selectedHistory', () => {
+    const state: GameState = {
+      ...baseState,
+      phase: 'next-round',
+      selectedHistory: [0, 1, 2],
+    }
+    const result = gameReducer(state, { type: 'RESTART' })
+    expect(result.selectedHistory).toEqual([])
   })
 
   it('UPDATE_SETTINGS merges a Partial GameSettings payload into state.settings without touching phase', () => {
