@@ -16,7 +16,7 @@ Start → Finger Selection → Roulette → Player Selected → Truth/Dare choic
   (`'ontouchstart' in window` OR `navigator.maxTouchPoints > 0`) — never user-agent sniffing.
 - The desktop gate (`DesktopGateScreen`) fires only on the finger-selection and roulette
   phases — the only screens that require touch input (they drive `useMultiTouch`).
-  Later phases (player-selected, truth-dare-choice, card-reveal, voting, result,
+  Later phases (player-selected, card-reveal, voting, result,
   next-round) are onClick-driven and work fine with a mouse, so the gate does not
   cover them. It never fires on intro/setup, and offers a session-scoped
   "Continue anyway" escape hatch.
