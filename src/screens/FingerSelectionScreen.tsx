@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
+import { useTouchCapability } from '../hooks/useTouchCapability.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 import { PLAYER_COLORS } from '../types/index.ts'
 import type { PlayerTouch } from '../types/index.ts'
@@ -10,9 +11,6 @@ import type { PlayerTouch } from '../types/index.ts'
 const STABLE_DELAY = 2000
 /** How long (ms) to flash the player number when a finger is placed */
 const FLASH_DURATION = 1500
-
-/** Detect touch device (computed once at module load) */
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
 /**
  * Screen where all players place their fingers on the screen.
@@ -23,6 +21,7 @@ export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
   const { settings } = useGame()
   const containerRef = useRef<HTMLDivElement>(null)
+  const { isTouchCapable } = useTouchCapability()
 
   // Cap at 2 players for couple pack, otherwise default to 10
   const maxPlayers = settings.pack === 'couple' ? 2 : 10
@@ -38,10 +37,10 @@ export default function FingerSelectionScreen() {
   const prevCountRef = useRef(0)
 
   // Desktop click-to-add state
-  const [isDesktop] = useState(() => !isTouchDevice)
+  const isDesktop = !isTouchCapable
   const [clickPlayers, setClickPlayers] = useState<PlayerTouch[]>([])
   const clickIdCounter = useRef(0)
-  const [showDesktopTip, setShowDesktopTip] = useState(() => !isTouchDevice)
+  const [showDesktopTip, setShowDesktopTip] = useState(!isTouchCapable)
 
   // Use touch players on mobile, click players on desktop
   const players = isDesktop ? clickPlayers : touchPlayers
@@ -128,7 +127,6 @@ export default function FingerSelectionScreen() {
   const handleContainerClick = useCallback(
     (e: React.MouseEvent) => {
       if (!isDesktop) return
-      if (clickPlayers.length >= maxPlayers) return
 
       const rect = containerRef.current?.getBoundingClientRect()
       if (!rect) return
@@ -137,16 +135,17 @@ export default function FingerSelectionScreen() {
       const y = e.clientY - rect.top
 
       clickIdCounter.current++
-      const newPlayer: PlayerTouch = {
-        identifier: clickIdCounter.current,
-        color: PLAYER_COLORS[clickPlayers.length % PLAYER_COLORS.length],
-        x,
-        y,
-        label: `Player ${clickPlayers.length + 1}`,
-      }
+      const newId = clickIdCounter.current
 
       setClickPlayers((prev) => {
-        const updated = [...prev, newPlayer]
+        if (prev.length >= maxPlayers) return prev
+        const updated = [...prev, {
+          identifier: newId,
+          color: PLAYER_COLORS[prev.length % PLAYER_COLORS.length],
+          x,
+          y,
+          label: '',
+        }]
         // Renumber all players
         return updated.map((p, i) => ({
           ...p,
@@ -155,7 +154,7 @@ export default function FingerSelectionScreen() {
         }))
       })
     },
-    [isDesktop, clickPlayers.length, maxPlayers],
+    [isDesktop, maxPlayers],
   )
 
   // Desktop: handle right-click to remove last player
