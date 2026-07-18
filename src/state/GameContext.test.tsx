@@ -131,6 +131,16 @@ describe('gameReducer', () => {
     expect(result.players).toEqual([])
   })
 
+  it('START_NEXT_ROUND preserves selectedHistory across rounds', () => {
+    const state: GameState = {
+      ...baseState,
+      phase: 'next-round',
+      selectedHistory: [0, 1],
+    }
+    const result = gameReducer(state, { type: 'START_NEXT_ROUND' })
+    expect(result.selectedHistory).toEqual([0, 1])
+  })
+
   it('GO_TO_SETUP transitions to setup phase', () => {
     const result = gameReducer(baseState, { type: 'GO_TO_SETUP' })
     expect(result.phase).toBe('setup')

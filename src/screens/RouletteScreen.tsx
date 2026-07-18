@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { PlayerDot } from '../components/PlayerDot.tsx'
+import { selectEligiblePlayers } from '../utils/selectPlayer.ts'
 import type { PlayerTouch } from '../types/index.ts'
 
 /**
@@ -41,10 +42,7 @@ export default function RouletteScreen() {
     if (players.length < 2) return
 
     // Pre-select winner — exclude previously selected players when noRepeat is on
-    const eligible = settings.noRepeat
-      ? players.filter((p) => !selectedHistory.includes(p.identifier))
-      : players
-    const pool = eligible.length > 0 ? eligible : players
+    const pool = selectEligiblePlayers(players, selectedHistory, settings.noRepeat)
     const selectedWinner = pool[Math.floor(Math.random() * pool.length)]
     const targetIndex = players.indexOf(selectedWinner)
     const totalSteps = 25 + Math.floor(Math.random() * 8)
