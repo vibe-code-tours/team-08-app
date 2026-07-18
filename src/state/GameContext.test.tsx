@@ -15,6 +15,7 @@ const baseState: GameState = {
   chosenType: null,
   voteResult: null,
   settings: defaultSettings,
+  selectedHistory: [],
 }
 
 const samplePlayer: PlayerTouch = {
@@ -146,6 +147,7 @@ describe('saveSettings + loadSettings', () => {
       difficulty: 'hard',
       pack: 'couple',
       timerEnabled: false,
+      noRepeat: true,
     }
     saveSettings(settings)
     expect(loadSettings()).toEqual(settings)

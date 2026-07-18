@@ -16,6 +16,7 @@ export const defaultSettings: GameSettings = {
   difficulty: 'all',
   pack: 'classic',
   timerEnabled: true,
+  noRepeat: true,
 }
 
 export function loadSettings(): GameSettings {
@@ -61,6 +62,7 @@ const initialState: GameState = {
   chosenType: null,
   voteResult: null,
   settings: loadSettings(),
+  selectedHistory: [],
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -72,7 +74,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'SET_FINGERS':
       return { ...state, phase: 'roulette', players: action.players }
     case 'SELECT_PLAYER':
-      return { ...state, phase: 'player-selected', selectedPlayer: action.player }
+      return {
+        ...state,
+        phase: 'player-selected',
+        selectedPlayer: action.player,
+        selectedHistory: [...state.selectedHistory, action.player.label],
+      }
     case 'GO_TO_TRUTH_DARE_CHOICE':
       return { ...state, phase: 'truth-dare-choice' }
     case 'CHOOSE_TRUTH_OR_DARE':

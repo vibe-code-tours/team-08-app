@@ -52,6 +52,7 @@ export interface GameSettings {
   difficulty: Difficulty
   pack: CardPack
   timerEnabled: boolean
+  noRepeat: boolean
 }
 
 export interface GameState {
@@ -62,6 +63,8 @@ export interface GameState {
   chosenType: CardType | null
   voteResult: 'pass' | 'excellent' | 'fail' | null
   settings: GameSettings
+  /** Labels of players already selected this game session (for no-repeat) */
+  selectedHistory: string[]
 }
 
 export type GameAction =
