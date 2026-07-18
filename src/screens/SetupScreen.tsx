@@ -28,6 +28,7 @@ export default function SetupScreen() {
   const dispatch = useGameDispatch()
   const { play } = useSound()
   const [showTimerTooltip, setShowTimerTooltip] = useState(false)
+  const [showNoRepeatTooltip, setShowNoRepeatTooltip] = useState(false)
 
   return (
     <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center justify-center">
@@ -139,6 +140,49 @@ export default function SetupScreen() {
             <motion.div
               className="absolute top-0.5 w-5 h-5 rounded-full bg-white"
               animate={{ left: settings.timerEnabled ? 26 : 2 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            />
+          </motion.button>
+        </div>
+
+        {/* No-repeat toggle */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-white/70">ထပ်မရွေးနဲ့</span>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowNoRepeatTooltip(!showNoRepeatTooltip)}
+                className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-white/10 text-white/50 text-xs active:bg-white/20 active:text-white/70 transition-colors"
+              >
+                ?
+              </button>
+              <AnimatePresence>
+                {showNoRepeatTooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 4 }}
+                    className="absolute bottom-full mb-2 w-64 p-3 rounded-xl bg-slate-800 border border-white/10 text-xs text-white/70 leading-relaxed z-50 -translate-x-1/2 left-1/2"
+                  >
+                    ဖွင့်ထားရင် ရွေးပြီးသား player ကို နောက်တစ်ခေါက် ထပ်မရွေးတော့ပါဘူး။
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => dispatch({ type: 'UPDATE_SETTINGS', payload: { noRepeat: !settings.noRepeat } })}
+            className="relative w-12 h-6 rounded-full transition-colors"
+            style={{
+              backgroundColor: settings.noRepeat ? '#8B2FE2' : 'rgba(255,255,255,0.15)',
+              boxShadow: settings.noRepeat ? '0 0 12px rgba(139,47,226,0.5)' : 'none',
+            }}
+          >
+            <motion.div
+              className="absolute top-0.5 w-5 h-5 rounded-full bg-white"
+              animate={{ left: settings.noRepeat ? 26 : 2 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           </motion.button>
