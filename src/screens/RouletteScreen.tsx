@@ -110,7 +110,7 @@ export default function RouletteScreen() {
           className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          {spinning ? 'Spinning...' : eliminated && winner ? 'The chosen one!' : winner ? 'Selected!' : 'Ready...'}
+          {spinning ? 'ရွေးနေပါပြီ..' : eliminated && winner ? 'The chosen one!' : winner ? 'Selected!' : 'Ready...'}
         </h1>
       </div>
 

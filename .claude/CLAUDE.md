@@ -128,9 +128,9 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 
 ## Deployment
 
-- **Target:** Netlify (per README)
-- **PR previews:** enabled on every pull request
-- **No Netlify config file** (`netlify.toml`) present in repo -- likely configured via Netlify dashboard or planned
+- **Target:** GitHub Pages, via `.github/workflows/deploy.yml`
+- **Trigger:** auto-deploys on every push to `main`
+- **Vite base path:** set for the GitHub Pages subpath deploy (see `vite.config.ts`)
 
 ## Package Manager
 

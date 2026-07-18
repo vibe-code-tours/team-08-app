@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { useGameDispatch } from '../state/GameContext.tsx'
+import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 
@@ -16,13 +16,18 @@ const FLASH_DURATION = 1500
  */
 export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
+  const { settings } = useGame()
   const containerRef = useRef<HTMLDivElement>(null)
-  const { players } = useMultiTouch(containerRef, 10)
+  
+  // Cap at 2 players for couple pack, otherwise default to 10
+  const maxPlayers = settings.pack === 'couple' ? 2 : 10
+  const { players } = useMultiTouch(containerRef, maxPlayers)
 
   const [counting, setCounting] = useState(false)
   const [countdown, setCountdown] = useState(0)
   const [flashingIds, setFlashingIds] = useState<Set<number>>(new Set())
   const countdownRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const tickIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const rafRef = useRef(0)
   const playersRef = useRef(players)
   const prevCountRef = useRef(0)
@@ -55,6 +60,10 @@ export default function FingerSelectionScreen() {
       clearTimeout(countdownRef.current)
       countdownRef.current = null
     }
+    if (tickIdRef.current) {
+      clearInterval(tickIdRef.current)
+      tickIdRef.current = null
+    }
 
     if (players.length >= 2) {
       rafRef.current = requestAnimationFrame(() => {
@@ -62,17 +71,23 @@ export default function FingerSelectionScreen() {
         setCountdown(Math.ceil(STABLE_DELAY / 1000))
       })
       // Tick countdown every second
-      const tickId = setInterval(() => {
+      tickIdRef.current = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            clearInterval(tickId)
+            if (tickIdRef.current) {
+              clearInterval(tickIdRef.current)
+              tickIdRef.current = null
+            }
             return 0
           }
           return prev - 1
         })
       }, 1000)
       countdownRef.current = setTimeout(() => {
-        clearInterval(tickId)
+        if (tickIdRef.current) {
+          clearInterval(tickIdRef.current)
+          tickIdRef.current = null
+        }
         setCounting(false)
         dispatch({ type: 'SET_FINGERS', players: playersRef.current })
       }, STABLE_DELAY)
@@ -86,6 +101,10 @@ export default function FingerSelectionScreen() {
     return () => {
       cancelAnimationFrame(rafRef.current)
       if (countdownRef.current) clearTimeout(countdownRef.current)
+      if (tickIdRef.current) {
+        clearInterval(tickIdRef.current)
+        tickIdRef.current = null
+      }
     }
   }, [players.length, dispatch])
 
@@ -99,11 +118,11 @@ export default function FingerSelectionScreen() {
       <div className="absolute inset-0 bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900" />
 
       {/* Instruction text */}
-      <div className="absolute inset-x-0 top-12 flex flex-col items-center gap-2 z-10 pointer-events-none">
+      <div className="absolute left-0 right-0 top-24 px-6 flex flex-col items-center gap-2 z-10 pointer-events-none">
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          Place your fingers!
+          ဖုန်းစခရင်ပေါ်ကို လက်ချောင်းလေးတွေတင်လိုက်ကြပါ။
         </h1>
         {/* Player count badge */}
         {players.length > 0 && (
@@ -114,15 +133,15 @@ export default function FingerSelectionScreen() {
               bg-white/10 border border-white/20"
             style={{ boxShadow: '0 0 12px rgba(168,85,247,0.3)' }}
           >
-            {players.length} ကစားသမား
+            ကစားသမား {players.length} ယောက်
           </motion.div>
         )}
         <p className="text-sm text-white/50">
           {players.length === 0
-            ? 'Waiting for players...'
+            ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
             : counting
-              ? 'Hold still…'
-              : 'ထပ်ထားပါ!'}
+              ? 'ခနစောင့်ပါ…'
+              : `ကစားသမား ${players.length} ယောက် — ထပ်ထည့်မယ်!`}
         </p>
       </div>
 

@@ -22,7 +22,7 @@ npm install && npm run dev
 - **PWA:** `vite-plugin-pwa` (installable, offline-capable)
 - **Testing:** Vitest
 - **Lint:** ESLint
-- **Deploy:** Netlify (PR previews on every pull request)
+- **Deploy:** GitHub Pages (auto-deploy on push to `main` via `.github/workflows/deploy.yml`)
 
 ## Project structure
 
