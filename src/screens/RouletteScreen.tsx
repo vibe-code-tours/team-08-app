@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 import type { PlayerTouch } from '../types/index.ts'
 
@@ -13,6 +14,7 @@ import type { PlayerTouch } from '../types/index.ts'
 export default function RouletteScreen() {
   const { players } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
   const [highlightIndex, setHighlightIndex] = useState(-1)
   const [spinning, setSpinning] = useState(false)
   const [winner, setWinner] = useState<PlayerTouch | null>(null)
@@ -56,6 +58,7 @@ export default function RouletteScreen() {
     const tick = () => {
       const currentIndex = step % players.length
       setHighlightIndex(currentIndex)
+      play('roulette-tick')
       step++
 
       if (step >= totalSteps) {
@@ -78,7 +81,7 @@ export default function RouletteScreen() {
       clearTimeout(spinTimer)
       if (timerId) clearTimeout(timerId)
     }
-  }, [players, dispatch])
+  }, [players, dispatch, play])
 
   // Post-spin sequence: eliminate non-winners → show result → dispatch
   useEffect(() => {
@@ -87,6 +90,7 @@ export default function RouletteScreen() {
     const eliminateTimer = setTimeout(() => setEliminated(true), 300)
     const resultTimer = setTimeout(() => {
       setShowResult(true)
+      play('winner')
       dispatch({ type: 'SELECT_PLAYER', player: winner })
     }, 2000)
 
@@ -94,7 +98,7 @@ export default function RouletteScreen() {
       clearTimeout(eliminateTimer)
       clearTimeout(resultTimer)
     }
-  }, [winner, spinning, dispatch])
+  }, [winner, spinning, dispatch, play])
 
   return (
     <div

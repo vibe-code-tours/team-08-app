@@ -52,6 +52,8 @@ export interface GameSettings {
   difficulty: Difficulty
   pack: CardPack
   timerEnabled: boolean
+  soundEnabled: boolean
+  musicEnabled: boolean
 }
 
 export interface GameState {

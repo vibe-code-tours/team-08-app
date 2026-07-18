@@ -146,6 +146,8 @@ describe('saveSettings + loadSettings', () => {
       difficulty: 'hard',
       pack: 'couple',
       timerEnabled: false,
+      soundEnabled: false,
+      musicEnabled: false,
     }
     saveSettings(settings)
     expect(loadSettings()).toEqual(settings)

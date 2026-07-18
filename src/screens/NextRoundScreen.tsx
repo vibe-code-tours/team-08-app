@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { GlassPanel } from '../components/GlassPanel.tsx'
 
 /**
@@ -9,6 +10,7 @@ import { GlassPanel } from '../components/GlassPanel.tsx'
 export default function NextRoundScreen() {
   const { voteResult, selectedPlayer } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
 
   return (
     <div className="relative w-full h-dvh overflow-hidden flex flex-col items-center justify-center">
@@ -58,7 +60,7 @@ export default function NextRoundScreen() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => dispatch({ type: 'START_NEXT_ROUND' })}
+          onClick={() => { play('vote'); dispatch({ type: 'START_NEXT_ROUND' }) }}
           className="w-full flex items-center gap-3 p-4 rounded-xl
             bg-gradient-to-r from-purple-600/20 to-purple-600/10
             border border-purple-500/30 text-white font-semibold
@@ -74,7 +76,7 @@ export default function NextRoundScreen() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => dispatch({ type: 'GO_TO_SETUP' })}
+          onClick={() => { play('vote'); dispatch({ type: 'GO_TO_SETUP' }) }}
           className="w-full flex items-center gap-3 p-4 rounded-xl
             bg-gradient-to-r from-pink-600/20 to-pink-600/10
             border border-pink-500/30 text-white font-semibold
@@ -90,7 +92,7 @@ export default function NextRoundScreen() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => dispatch({ type: 'RESTART' })}
+          onClick={() => { play('vote'); dispatch({ type: 'RESTART' }) }}
           className="w-full flex items-center gap-3 p-4 rounded-xl
             bg-gradient-to-r from-red-600/20 to-red-600/10
             border border-red-500/30 text-white font-semibold

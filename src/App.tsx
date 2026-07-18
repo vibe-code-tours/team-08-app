@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { GameContextProvider, useGameContext } from './state/GameContext'
 import { SettingsButton } from './components/SettingsButton'
+import { PhaseMusic } from './components/PhaseMusic'
 import { useTouchCapability } from './hooks/useTouchCapability'
 import type { GamePhase } from './types/index.ts'
 import StartScreen from './screens/StartScreen'
@@ -80,6 +81,7 @@ export function ActiveScreen() {
 function App() {
   return (
     <GameContextProvider>
+      <PhaseMusic />
       <ActiveScreen />
       <SettingsButton />
     </GameContextProvider>

@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
+import { useSound } from '../hooks/useSound.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 
 /** How long to wait (ms) after fingers stabilize before auto-starting */
@@ -18,7 +19,8 @@ export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
   const { settings } = useGame()
   const containerRef = useRef<HTMLDivElement>(null)
-  
+  const { play } = useSound()
+
   // Cap at 2 players for couple pack, otherwise default to 10
   const maxPlayers = settings.pack === 'couple' ? 2 : 10
   const { players } = useMultiTouch(containerRef, maxPlayers)
@@ -41,6 +43,7 @@ export default function FingerSelectionScreen() {
   useEffect(() => {
     if (players.length > prevCountRef.current) {
       // New player added — flash their number
+      play('tap')
       const newPlayer = players[players.length - 1]
       setFlashingIds((prev) => new Set(prev).add(newPlayer.identifier))
       setTimeout(() => {
@@ -52,7 +55,7 @@ export default function FingerSelectionScreen() {
       }, FLASH_DURATION)
     }
     prevCountRef.current = players.length
-  }, [players])
+  }, [players, play])
 
   // Auto-start countdown when finger count changes
   useEffect(() => {

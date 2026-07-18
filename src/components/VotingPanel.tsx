@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { GlassPanel } from './GlassPanel.tsx'
 import type { GameState } from '../types/index.ts'
 
@@ -23,6 +24,7 @@ type VotingPanelProps = {
 
 export function VotingPanel({ className = '' }: VotingPanelProps) {
   const dispatch = useGameDispatch()
+  const { play } = useSound()
 
   return (
     <GlassPanel className={`w-full max-w-sm p-5 ${className}`}>
@@ -40,7 +42,10 @@ export function VotingPanel({ className = '' }: VotingPanelProps) {
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 + index * 0.1 }}
             whileTap={{ scale: 0.97 }}
             whileHover={{ scale: 1.02 }}
-            onClick={() => dispatch({ type: 'VOTE', payload: option.result })}
+            onClick={() => {
+              play('vote')
+              dispatch({ type: 'VOTE', payload: option.result })
+            }}
             className="relative flex items-center gap-4 w-full p-4 rounded-2xl text-left transition-all overflow-hidden"
             style={{
               background: `linear-gradient(135deg, ${option.color}20 0%, ${option.color}10 100%)`,

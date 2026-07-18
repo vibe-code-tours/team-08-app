@@ -16,6 +16,8 @@ export const defaultSettings: GameSettings = {
   difficulty: 'all',
   pack: 'classic',
   timerEnabled: true,
+  soundEnabled: true,
+  musicEnabled: true,
 }
 
 export function loadSettings(): GameSettings {

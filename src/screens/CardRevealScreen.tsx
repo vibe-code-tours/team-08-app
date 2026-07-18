@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { CardBack } from '../components/CardBack.tsx'
 import { DifficultyBadge } from '../components/DifficultyBadge.tsx'
 import { PackBadge } from '../components/PackBadge.tsx'
@@ -21,6 +22,7 @@ const ROUND_SECONDS = 30
 export default function CardRevealScreen() {
   const { chosenType, settings, selectedCard } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
   const [flippedId, setFlippedId] = useState<string | null>(null)
   const [isRevealing, setIsRevealing] = useState(false)
   const [seconds, setSeconds] = useState(ROUND_SECONDS)
@@ -44,8 +46,13 @@ export default function CardRevealScreen() {
     if (!revealedCard || !settings.timerEnabled) return
 
     if (seconds <= 0) {
+      play('time-up')
       dispatch({ type: 'GO_TO_VOTING' })
       return
+    }
+
+    if (seconds <= 5) {
+      play('timer-tick')
     }
 
     const timerId = window.setTimeout(() => {
@@ -53,7 +60,7 @@ export default function CardRevealScreen() {
     }, 1000)
 
     return () => clearTimeout(timerId)
-  }, [dispatch, revealedCard, seconds, settings.timerEnabled])
+  }, [dispatch, revealedCard, seconds, settings.timerEnabled, play])
 
   const cards = useMemo(
     () =>
@@ -69,17 +76,19 @@ export default function CardRevealScreen() {
     (card: Card) => {
       if (flippedId) return
       setFlippedId(card.id)
+      play('card-flip')
       setSeconds(ROUND_SECONDS)
       pickTimeoutRef.current = setTimeout(() => {
         dispatch({ type: 'PICK_CARD', payload: card })
       }, 800)
     },
-    [flippedId, dispatch],
+    [flippedId, dispatch, play],
   )
 
   const handleStartVoting = useCallback(() => {
+    play('tap')
     dispatch({ type: 'GO_TO_VOTING' })
-  }, [dispatch])
+  }, [dispatch, play])
 
   const accentColor = chosenType === 'truth' ? TRUTH_COLOR : DARE_COLOR
 

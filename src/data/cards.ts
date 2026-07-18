@@ -1,4 +1,4 @@
-import type { Card, CardPack, Difficulty, CardType } from '../types/index.ts'
+import type { Card, CardPack, Difficulty, CardType } from '../types'
 
 /**
  * Card library — Truth or Dare challenges across 4 packs × 3 difficulties.
