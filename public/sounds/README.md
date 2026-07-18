@@ -29,8 +29,9 @@ Place your audio files here. MP3 format recommended for browser compatibility.
 
 ## Notes
 
-- SFX files are loaded on demand by Howler.js
-- BGM files are preloaded as HTML5 audio streams (looped, crossfaded over 1.5s)
-- Missing files fail gracefully (no crash, just a console warning)
+- SFX files are preloaded and decoded via Web Audio API (`src/hooks/useSound.ts`)
+- Inflight dedup prevents redundant fetches for rapid sounds (e.g., roulette tick)
+- BGM files use HTML5 Audio elements with RAF-based crossfading (`src/components/PhaseMusic.tsx`)
+- Missing files fail gracefully (no crash, silent no-op)
 - Keep SFX under 100KB each; BGM can be larger (streamed)
 - 44.1kHz sample rate, mono or stereo

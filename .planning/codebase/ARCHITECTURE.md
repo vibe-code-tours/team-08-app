@@ -25,23 +25,28 @@ current game phase, not via a URL router.
 |  +--------------------------------------------------+|
 |  |          <GameContextProvider>                    ||
 |  |                                                  ||
-|  |   +------------------------------------------+  ||
-|  |   |        Screen (by gamePhase)             |  ||
-|  |   |                                          |  ||
-|  |   |  StartScreen                             |  ||
-|  |   |  SetupScreen                             |  ||
-|  |   |  TouchSelectionScreen                    |  ||
-|  |   |  SelectedPlayerScreen                    |  ||
-|  |   |  TruthDareChoiceScreen                   |  ||
-|  |   |  CardRevealScreen                        |  ||
-|  |   |  NextRoundScreen                         |  ||
-|  |   +------------------------------------------+  ||
-|  |                    |                            ||
-|  |                    v                            ||
-|  |   useMultiTouch()  <-- touch events             ||
-|  |                    |                            ||
-|  |                    v                            ||
-|  |   GameContext (state + dispatch)                ||
+|  |   <PhaseMusic />          // BGM controller      ||
+|  |   <ErrorBoundary>         // crash recovery      ||
+|  |     <ActiveScreen />      // by gamePhase        ||
+|  |   </ErrorBoundary>                               ||
+|  |   <SettingsButton />     // sound/music toggles  ||
+|  |                                                  ||
+|  |   Screen (by gamePhase):                         ||
+|  |     StartScreen                                  ||
+|  |     OnboardingScreen                             ||
+|  |     SetupScreen                                  ||
+|  |     FingerSelectionScreen                        ||
+|  |     RouletteScreen                               ||
+|  |     PlayerSelectedScreen  (Truth/Dare/Random)    ||
+|  |     CardRevealScreen                             ||
+|  |     VotingScreen                                 ||
+|  |     ResultScreen                                 ||
+|  |     NextRoundScreen                              ||
+|  |                                                  ||
+|  |   useMultiTouch()  <-- touch events              ||
+|  |   useSound()       <-- Web Audio API SFX         ||
+|  |                                                  ||
+|  |   GameContext (state + dispatch)                  ||
 |  +--------------------------------------------------+|
 +------------------------------------------------------+
 ```
@@ -52,17 +57,22 @@ current game phase, not via a URL router.
 <StrictMode>
   <App>
     <GameContextProvider>          // src/state/GameContext.tsx
-      <ActiveScreen />            // One of src/screens/*.tsx, selected by gamePhase
+      <PhaseMusic />              // src/components/PhaseMusic.tsx
+      <ErrorBoundary>             // src/components/ErrorBoundary.tsx
+        <ActiveScreen />          // One of src/screens/*.tsx, selected by gamePhase
+      </ErrorBoundary>
+      <SettingsButton />          // src/components/SettingsButton.tsx
     </GameContextProvider>
   </App>
 </StrictMode>
 ```
 
-- **App** (`src/App.tsx`) — Root component. Currently scaffolded as the default
-  Vite template; will be replaced by the GameContextProvider wrapper and screen
-  router.
+- **App** (`src/App.tsx`) — Root component. Wraps everything in GameContextProvider.
 - **GameContextProvider** — Wraps the entire app tree, providing game state and
   dispatch to all descendants.
+- **PhaseMusic** — Renders nothing; manages background music based on game phase.
+- **ErrorBoundary** — Catches render crashes and shows a recovery screen with restart.
+- **SettingsButton** — Floating button with sound/music toggle overlay.
 - **Screen components** (`src/screens/*.tsx`) — One file per screen. Only the
   screen matching the current `gamePhase` renders at any given time.
 
@@ -79,32 +89,35 @@ context exposes:
 
 ### GameState shape (`src/types/index.ts`)
 
-Key types (planned, not yet implemented):
+Key types:
 
-- **GamePhase** — Union type of screen identifiers: `"start"` | `"setup"` |
-  `"touchSelection"` | `"selectedPlayer"` | `"truthDareChoice"` | `"cardReveal"` |
-  `"nextRound"`.
+- **GamePhase** — Union type of screen identifiers: `"start"` | `"onboarding"` |
+  `"setup"` | `"finger-selection"` | `"roulette"` | `"player-selected"` |
+  `"card-reveal"` | `"voting"` | `"result"` | `"next-round"`.
 - **PlayerTouch** — Tracks a player's identity (assigned at touch-down) keyed by
-  `touch.identifier`.
+  `touch.identifier`. Includes `color`, `x`, `y`, `label`.
 - **Card** — A truth or dare card with `type` ("truth" | "dare"), `difficulty`,
-  `text`, and optional `pack`.
-- **GameSettings** — Configurable game parameters (difficulty, pack selection,
-  number of rounds).
+  `pack`, and `text`.
+- **GameSettings** — Configurable game parameters: `difficulty`, `pack`,
+  `timerEnabled`, `soundEnabled`, `musicEnabled`, `noRepeat`.
 - **GameState** — The composite state object holding `phase`, `players`,
-  `activePlayer`, `selectedCard`, `settings`, and round tracking fields.
+  `selectedPlayer`, `selectedCard`, `chosenType`, `voteResult`, `settings`,
+  and `lastSelectedPlayerId`.
+- **GameAction** — Union of 12 reducer actions for state transitions.
 
 ## Data flow patterns
 
 ### Touch event flow
 
-1. A screen component (primarily TouchSelectionScreen) attaches touch event
-   listeners to a full-screen container.
+1. FingerSelectionScreen attaches touch event listeners to a full-screen container.
 2. The **useMultiTouch hook** (`src/hooks/useMultiTouch.ts`) handles
    `touchstart`, `touchmove`, and `touchend` events.
 3. Touches are tracked by `touch.identifier` (never by array index) to correctly
    handle finger add/remove/reassign across the screen.
-4. When a selection moment occurs (e.g., all fingers lift), the hook determines
-   the "winner" (randomly or by position) and dispatches to GameContext.
+4. When 2+ fingers stabilize, a countdown starts and then dispatches `SET_FINGERS`.
+5. On desktop (non-touch), click-to-add players with module-level ID counter.
+6. RouletteScreen pre-selects a winner (respecting noRepeat), spins the animation,
+   then dispatches `SELECT_PLAYER`.
 
 ### State transition flow
 
@@ -131,12 +144,15 @@ The app uses a **phase-based navigation model** (not URL routing). The current
 | Phase | Screen Component | Purpose |
 |---|---|---|
 | `start` | `StartScreen` | Landing page with game title and start button |
-| `setup` | `SetupScreen` | Configure game settings (difficulty, pack, players) |
-| `touchSelection` | `TouchSelectionScreen` | All players touch the screen; random selection occurs |
-| `selectedPlayer` | `SelectedPlayerScreen` | Announce the selected player |
-| `truthDareChoice` | `TruthDareChoiceScreen` | Selected player chooses truth or dare |
-| `cardReveal` | `CardRevealScreen` | Display the chosen card |
-| `nextRound` | `NextRoundScreen` | Transition between rounds, update scores, continue or end |
+| `onboarding` | `OnboardingScreen` | 5-slide walkthrough for first-time players |
+| `setup` | `SetupScreen` | Configure game settings (difficulty, pack, timer, sound) |
+| `finger-selection` | `FingerSelectionScreen` | All players place fingers; auto-starts roulette after countdown |
+| `roulette` | `RouletteScreen` | Spinning highlight animation, selects one player |
+| `player-selected` | `PlayerSelectedScreen` | Announce winner + Truth/Dare/Random choice (merged screen) |
+| `card-reveal` | `CardRevealScreen` | Display the chosen card with 3D flip animation |
+| `voting` | `VotingScreen` | Self-voting: Fail / Pass / Excellent |
+| `result` | `ResultScreen` | Show vote result with confetti or failure effects |
+| `next-round` | `NextRoundScreen` | Continue, change settings, or restart |
 
 Navigation is unidirectional: forward through the phases, with the option to
 restart from `start` at the end of a round or game.
@@ -150,6 +166,8 @@ game state and dispatch without prop drilling.
 ### Custom Hook pattern
 Device-specific and reusable logic is extracted into custom hooks:
 - `useMultiTouch` — encapsulates multi-touch tracking and finger selection.
+- `useSound` — Web Audio API SFX manager with preloading, dedup, and autoplay unlock.
+- `useTouchCapability` — feature-detects touch support (no UA sniffing).
 
 ### Single-responsibility screens
 Each screen is one file in `src/screens/` and owns its own presentation logic.
@@ -177,12 +195,16 @@ it suitable as a party game on mobile devices without requiring an app store.
 **All 4 phases are complete.** The game is fully playable end-to-end.
 
 Implemented:
-- 11 screen components (Start, Onboarding, Setup, FingerSelection, Roulette, PlayerSelected, TruthDareChoice, CardReveal, Voting, Result, NextRound)
-- 11 reusable components (NeonButton, GlassPanel, PhaseMusic, etc.)
-- 2 custom hooks (useMultiTouch, useSound)
+- 11 screen components (Start, Onboarding, Setup, FingerSelection, Roulette, PlayerSelected, CardReveal, Voting, Result, NextRound, DesktopGate)
+- 12 reusable components (NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot, SettingsButton, ErrorBoundary, PhaseMusic, ResultDisplay, VotingPanel)
+- 3 custom hooks (useMultiTouch, useSound, useTouchCapability)
+- Utility: selectPlayer (no-repeat logic)
 - 192 cards across 4 packs × 3 difficulties
-- Sound effects (12 SFX via Web Audio API)
-- Background music (3 tracks via HTML Audio with crossfade)
-- Settings with localStorage persistence
+- Sound effects (12 SFX via Web Audio API with inflight dedup)
+- Background music (3 tracks via HTML Audio with RAF crossfade)
+- Error boundary with restart (dispatches RESTART to reset game state)
+- No-repeat player selection (excludes last picked player)
+- Desktop click-to-add players (module-level ID counter)
+- Settings with localStorage persistence (sound, music, difficulty, pack, timer, noRepeat)
 - PWA with manifest, service worker, and icons
-- 16 passing tests
+- 35 passing tests across 4 test files

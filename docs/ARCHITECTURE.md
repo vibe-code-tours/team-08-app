@@ -19,12 +19,17 @@ phase (no URL router).
 ```
 <App>
   <GameContextProvider>          // src/state/GameContext.tsx
-    <ActiveScreen />             // src/screens/*.tsx, chosen by gamePhase
+    <PhaseMusic />               // src/components/PhaseMusic.tsx (BGM controller)
+    <ErrorBoundary>              // src/components/ErrorBoundary.tsx
+      <ActiveScreen />           // src/screens/*.tsx, chosen by gamePhase
+    </ErrorBoundary>
+    <SettingsButton />           // src/components/SettingsButton.tsx
   </GameContextProvider>
 </App>
 
 Screen (by gamePhase): Start → Onboarding → Setup → FingerSelection → Roulette
-  → PlayerSelected → TruthDareChoice → CardReveal → Voting → Result → NextRound
+  → PlayerSelected (includes Truth/Dare/Random choice) → CardReveal
+  → Voting → Result → NextRound
 
 FingerSelectionScreen → useMultiTouch() → dispatch() → GameContext reducer
                                                     ↓
@@ -35,15 +40,20 @@ Touches are tracked by `touch.identifier`, never array index (see
 `docs/spikes/multitouch-spike-2026-07.md`). Card data (`src/data/cards.ts`) is static,
 filtered at read time by pack/difficulty/type from `GameSettings`.
 
+Sound: `useSound` hook (Web Audio API) provides SFX; `PhaseMusic` manages BGM via
+HTML5 Audio with crossfading. No-repeat player selection via `src/utils/selectPlayer.ts`.
+
 ## Where things live
 
 | Path | What |
 |---|---|
-| `src/screens/` | 12 screen files, one per game phase |
-| `src/components/` | 10 reusable components (NeonButton, GlassPanel, etc.) |
-| `src/state/GameContext.tsx` | GameState + reducer (13 actions), settings persistence, wraps the whole app |
+| `src/screens/` | 11 screen files, one per game phase |
+| `src/components/` | 12 reusable components (NeonButton, GlassPanel, ErrorBoundary, PhaseMusic, etc.) |
+| `src/state/GameContext.tsx` | GameState + reducer (12 actions), settings persistence, wraps the whole app |
 | `src/hooks/useMultiTouch.ts` | Multi-touch tracking hook (keyed by `touch.identifier`) |
+| `src/hooks/useSound.ts` | Web Audio API SFX manager with preloading and dedup |
 | `src/hooks/useTouchCapability.ts` | Non-touch device detection (feature detection only, no UA sniffing) |
+| `src/utils/selectPlayer.ts` | No-repeat player selection logic |
 | `src/data/cards.ts` | 192 static `Card[]` data with filtering helpers |
 | `src/types/` | `Card`, `GameState`, `PlayerTouch`, `GameSettings`, `Difficulty`, `CardPack`, `CardType`, `PLAYER_COLORS` |
 | `src/*.test.tsx`, `src/**/*.test.tsx` | Vitest + Testing Library (co-located with source) |

@@ -34,28 +34,35 @@ npm install && npm run dev
 - **Card selection** — grid of face-down cards with 3D flip animation revealing challenges
 - **192 cards** across 4 packs (Friends, Couple, Family, Classic) × 3 difficulties (Easy, Medium, Hard)
 - **Voting** — Fail / Pass / Excellent with confetti celebration effects
-- **Settings** — difficulty, card pack, timer toggle
+- **Sound effects & music** — 12 SFX (Web Audio API) + 3 BGM tracks with crossfading
+- **No-repeat selection** — same player can't be picked twice in a row
+- **Settings** — difficulty, card pack, timer toggle, sound & music toggles
 - **Onboarding** — 5-slide swipeable walkthrough for first-time players
-- **Desktop gate** — detects non-touch devices, shows QR code for mobile handoff
+- **Desktop support** — click-to-add players on non-touch devices, QR code for mobile handoff
+- **Error boundary** — catches render crashes with a friendly recovery screen
+- **Smooth transitions** — animated screen transitions via AnimatePresence
 - **Myanmar (Burmese)** — all UI text localized
 - **PWA** — installable on Android and iOS, works offline
 
 ## Game Flow
 
 ```
-Start → Onboarding → Setup → Finger Selection → Roulette → Player Selected
-    → Truth/Dare Choice → Card Reveal → Voting → Result → Next Round ↩
+Start → Onboarding → Setup → Finger Selection → Roulette
+    → Player Selected (Truth/Dare/Random choice) → Card Reveal
+    → Voting → Result → Next Round ↩
 ```
 
 ## Project Structure
 
 | Path | What |
 |------|------|
-| `src/screens/` | 12 screen components, one per game phase |
-| `src/components/` | 10 reusable components (NeonButton, GlassPanel, etc.) |
-| `src/state/GameContext.tsx` | Game state, reducer (13 actions), settings persistence |
+| `src/screens/` | 11 screen components, one per game phase |
+| `src/components/` | 12 reusable components (NeonButton, GlassPanel, ErrorBoundary, PhaseMusic, etc.) |
+| `src/state/GameContext.tsx` | Game state, reducer (12 actions), settings persistence |
 | `src/hooks/useMultiTouch.ts` | Multi-touch tracking (keyed by `touch.identifier`) |
+| `src/hooks/useSound.ts` | Web Audio API SFX manager with preloading |
 | `src/hooks/useTouchCapability.ts` | Non-touch device detection (feature detection only) |
+| `src/utils/selectPlayer.ts` | No-repeat player selection logic |
 | `src/data/cards.ts` | 192 static Truth/Dare cards with filtering helpers |
 | `src/types/` | TypeScript types (Card, GameState, PlayerTouch, etc.) |
 | `docs/` | Architecture, ADRs, spike results |

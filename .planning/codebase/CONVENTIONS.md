@@ -3,7 +3,7 @@
 ## Component Patterns
 
 - **Functional components only** — all components use the `function` declaration syntax (not arrow functions).
-- **No class components** — React 19.x with hooks throughout.
+- **No class components** — React 19.x with hooks throughout. Exception: `InnerBoundary` in `ErrorBoundary.tsx` is a class component because React requires `componentDidCatch`/`getDerivedStateFromError` for error boundaries.
 - **One component per file** — each screen and component lives in its own file.
 - **Default exports** for components (`export default App`); named exports for utilities and configs.
 - **Props** will be defined via `type` or `interface` in the `src/types/` directory (not inline prop destructuring). The project follows a pattern of co-locating type definitions.
@@ -28,8 +28,10 @@ export default ComponentName
 ## State Management
 
 - **React Context** via `src/state/GameContext.tsx` holds global game state.
-- The project uses `useReducer` for complex state transitions (game flow: Start, Setup, Touch Selection, Selected Player, Truth/Dare choice, Card Reveal, Next Round).
-- State is not persisted — purely in-memory for the session.
+- The project uses `useReducer` for complex state transitions (12 actions covering the full game flow).
+- **Settings persist** in localStorage (`soundEnabled`, `musicEnabled`, `difficulty`, `pack`, `timerEnabled`, `noRepeat`).
+- **Phase persists** in localStorage for safe restore on reload (only safe phases: start, onboarding, setup, finger-selection, next-round).
+- Game state (players, selectedPlayer, cards) is in-memory only — not persisted.
 - No external state management library (no Redux, Zustand, Jotai).
 
 ## TypeScript Usage
@@ -94,10 +96,11 @@ Explicit `.tsx` extension is used when importing TypeScript files directly (e.g.
 
 ## Error Handling
 
-- Currently minimal — the codebase is in early scaffolding.
-- No error boundary components are defined yet.
+- **ErrorBoundary** (`src/components/ErrorBoundary.tsx`) wraps the active screen tree.
+  Uses an internal class component (`InnerBoundary`) for `componentDidCatch` / `getDerivedStateFromError`,
+  wrapped in a functional component that dispatches `RESTART` to reset game state.
 - The `!` non-null assertion is used in `main.tsx` (`document.getElementById('root')!`) — acceptable for the root DOM element.
-- Future pattern: expect error boundaries wrapping screen components as the app grows.
+- Audio system (useSound, PhaseMusic) fails silently — missing files or unavailable AudioContext produce no crash.
 
 ## Code Organization Within Files
 
