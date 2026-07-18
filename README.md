@@ -4,7 +4,7 @@
 
 <div align="center">
 
-### [Play Now](https://vibe-code.tours/team-08-app/)
+### [Play Now](https://vibecode.tours/team-08-app/)
 
 </div>
 
