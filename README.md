@@ -2,11 +2,13 @@
 
 > A mobile-first PWA party game: everyone places a finger on the screen, the app randomly picks a player, and they choose Truth or Dare.
 
-<div align="center">
+<p align="center">
+  <a href="https://vibecode.tours/team-08-app/">
+    <img src="https://img.shields.io/badge/🎮_Play_Now-vibecode.tours-blue?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Play Now" />
+  </a>
+</p>
 
-### [Play Now](https://vibe-code.tours/team-08-app/)
-
-</div>
+> **🔗 Live:** https://vibecode.tours/team-08-app/
 
 ![ci](../../actions/workflows/ci.yml/badge.svg) ![security](../../actions/workflows/security.yml/badge.svg)
 
