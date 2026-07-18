@@ -32,7 +32,7 @@ FingerSelectionScreen → useMultiTouch() → dispatch() → GameContext reducer
 ```
 
 Touches are tracked by `touch.identifier`, never array index (see
-`docs/multitouch-spike-result.md`). Card data (`src/data/cards.ts`) is static,
+`docs/spikes/multitouch-spike-2026-07.md`). Card data (`src/data/cards.ts`) is static,
 filtered at read time by pack/difficulty/type from `GameSettings`.
 
 ## Where things live
