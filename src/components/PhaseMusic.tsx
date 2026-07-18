@@ -31,9 +31,6 @@ const PHASE_TO_TRACK: Record<GamePhase, string> = {
 const FADE_DURATION_MS = 1500
 const MAX_VOLUME = 0.35
 
-// Prevent howler (used by SFX) from auto-suspending the shared AudioContext
-Howler.autoSuspend = false
-
 /**
  * Crossfade an Audio element from its current volume to `targetVol`
  * over FADE_DURATION_MS using requestAnimationFrame.
@@ -185,6 +182,7 @@ export function PhaseMusic() {
   const phaseRef = useRef(phase)
   const musicEnabledRef = useRef(musicEnabled)
 
+  // No deps: must run every render to keep refs current for the gesture listener
   useEffect(() => {
     phaseRef.current = phase
     musicEnabledRef.current = musicEnabled

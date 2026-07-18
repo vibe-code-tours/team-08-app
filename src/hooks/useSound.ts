@@ -147,6 +147,12 @@ function stopAllSfx() {
 // Uses the same AudioContext as howler (via Howler.ctx) if available,
 // otherwise creates its own. This ensures SFX and BGM share a context
 // that gets unlocked together on user gesture.
+
+/** Delay before retrying Howler context share (Howler initializes lazily) */
+const HOWLER_CTX_RETRY_MS = 100
+/** Delay before starting SFX preload (lets AudioContext settle) */
+const PRELOAD_DELAY_MS = 50
+
 ;(function initSharedCtx() {
   // Tap into howler's AudioContext if it exists, so SFX and BGM share the
   // same context — one unlock resumes both.
@@ -161,9 +167,9 @@ function stopAllSfx() {
   // Try immediately (howler may not be initialized yet)
   tryShareCtx()
   // Also try after a short delay (howler initializes lazily)
-  setTimeout(tryShareCtx, 100)
+  setTimeout(tryShareCtx, HOWLER_CTX_RETRY_MS)
   // Kick off preload after a brief delay to let context settle
-  setTimeout(() => { void preloadSfx() }, 50)
+  setTimeout(() => { void preloadSfx() }, PRELOAD_DELAY_MS)
 })()
 
 /**
