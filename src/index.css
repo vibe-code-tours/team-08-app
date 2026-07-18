@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html, body {
+  background-color: var(--color-background);
+}
+
 @theme {
   /* Color tokens — color-picked from public/images/Screens.png per D-01 */
   --color-background: oklch(0.13 0.04 301);   /* #0A0414 */

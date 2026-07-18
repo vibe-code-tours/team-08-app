@@ -73,9 +73,9 @@ The project uses a **project references** setup with two configs:
 
 | Tool | Version (range) | Role |
 |---|---|---|
-| Vitest | `^3.2.7` | Test runner |
-| @vitest/ui | `^3.2.7` | Visual test UI |
-| jsdom | `^27.0.1` | Browser environment simulation |
+| Vitest | `^4.1.10` | Test runner |
+| @vitest/ui | `^4.1.10` | Visual test UI |
+| jsdom | `^29.1.1` | Browser environment simulation |
 | @testing-library/react | `^16.3.2` | React component testing utilities |
 | @testing-library/jest-dom | `^6.9.1` | Custom DOM matchers |
 
@@ -113,7 +113,7 @@ The project uses a **project references** setup with two configs:
 ## PWA Configuration
 
 - **Plugin:** `vite-plugin-pwa ^1.3.0`
-- **Status:** Plugin is listed as a devDependency but is **not currently wired** into `vite.config.ts`. The Vite config only loads `react()`. PWA features (manifest, service worker, icons) are not yet configured.
+- **Status:** Plugin is wired into `vite.config.ts` with manifest, service worker, and icons configured. PWA is installable and offline-capable.
 - **Target behavior** (per README): installable, offline-capable PWA
 
 ---
@@ -139,9 +139,9 @@ The project uses a **project references** setup with two configs:
 
 ## Deployment
 
-- **Target:** Netlify (per README)
-- **PR previews:** enabled on every pull request
-- **No Netlify config file** (`netlify.toml`) present in repo -- likely configured via Netlify dashboard or planned
+- **Target:** GitHub Pages (auto-deploy on push to `main` via `.github/workflows/deploy.yml`)
+- **Secondary:** Netlify (`netlify.toml` present for Netlify-style deploys if needed)
+- **Vite base path:** configured for GitHub Pages subpath deploy
 
 ---
 

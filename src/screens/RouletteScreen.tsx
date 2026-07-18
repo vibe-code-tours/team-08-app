@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
+import { selectEligiblePlayers } from '../utils/selectPlayer.ts'
 import type { PlayerTouch } from '../types/index.ts'
 
 /**
@@ -11,7 +13,8 @@ import type { PlayerTouch } from '../types/index.ts'
  * to land on the pre-selected winner.
  */
 export default function RouletteScreen() {
-  const { players } = useGame()
+  const { players, settings, lastSelectedPlayerId } = useGame()
+  const { play } = useSound()
   const dispatch = useGameDispatch()
   const [highlightIndex, setHighlightIndex] = useState(-1)
   const [spinning, setSpinning] = useState(false)
@@ -40,8 +43,9 @@ export default function RouletteScreen() {
   useEffect(() => {
     if (players.length < 2) return
 
-    // Pre-select winner and animation params (impure — OK inside effect)
-    const selectedWinner = players[Math.floor(Math.random() * players.length)]
+    // Pre-select winner — exclude the last selected player when noRepeat is on
+    const pool = selectEligiblePlayers(players, lastSelectedPlayerId, settings.noRepeat)
+    const selectedWinner = pool[Math.floor(Math.random() * pool.length)]
     const targetIndex = players.indexOf(selectedWinner)
     const totalSteps = 25 + Math.floor(Math.random() * 8)
     const slowDownStart = totalSteps - 7
@@ -56,6 +60,7 @@ export default function RouletteScreen() {
     const tick = () => {
       const currentIndex = step % players.length
       setHighlightIndex(currentIndex)
+      play('roulette-tick')
       step++
 
       if (step >= totalSteps) {
@@ -78,7 +83,7 @@ export default function RouletteScreen() {
       clearTimeout(spinTimer)
       if (timerId) clearTimeout(timerId)
     }
-  }, [players, dispatch])
+  }, [players, dispatch, settings.noRepeat, lastSelectedPlayerId, play])
 
   // Post-spin sequence: eliminate non-winners → show result → dispatch
   useEffect(() => {
@@ -87,6 +92,7 @@ export default function RouletteScreen() {
     const eliminateTimer = setTimeout(() => setEliminated(true), 300)
     const resultTimer = setTimeout(() => {
       setShowResult(true)
+      play('winner')
       dispatch({ type: 'SELECT_PLAYER', player: winner })
     }, 2000)
 

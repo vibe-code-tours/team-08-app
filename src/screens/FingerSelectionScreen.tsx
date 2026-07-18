@@ -1,8 +1,12 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
 import { useMultiTouch } from '../hooks/useMultiTouch.ts'
+import { useSound } from '../hooks/useSound.ts'
+import { useTouchCapability } from '../hooks/useTouchCapability.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
+import { PLAYER_COLORS } from '../types/index.ts'
+import type { PlayerTouch } from '../types/index.ts'
 
 /** How long to wait (ms) after fingers stabilize before auto-starting */
 const STABLE_DELAY = 2000
@@ -10,18 +14,27 @@ const STABLE_DELAY = 2000
 const FLASH_DURATION = 1500
 
 /**
+ * Module-level counter for desktop click player identifiers.
+ * Persists across component remounts so identifiers never collide
+ * between rounds (the root cause of no-repeat breaking on desktop).
+ */
+let clickIdCounter = 0
+
+/**
  * Screen where all players place their fingers on the screen.
- * After 2+ fingers are placed and held steady for a short countdown,
- * the roulette starts automatically — no button needed.
+ * Touch devices: auto-starts roulette after countdown.
+ * Desktop: click anywhere to add players, then click "Start".
  */
 export default function FingerSelectionScreen() {
   const dispatch = useGameDispatch()
   const { settings } = useGame()
   const containerRef = useRef<HTMLDivElement>(null)
-  
+  const { play } = useSound()
+  const { isTouchCapable } = useTouchCapability()
+
   // Cap at 2 players for couple pack, otherwise default to 10
   const maxPlayers = settings.pack === 'couple' ? 2 : 10
-  const { players } = useMultiTouch(containerRef, maxPlayers)
+  const { players: touchPlayers } = useMultiTouch(containerRef, maxPlayers)
 
   const [counting, setCounting] = useState(false)
   const [countdown, setCountdown] = useState(0)
@@ -29,8 +42,16 @@ export default function FingerSelectionScreen() {
   const countdownRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const tickIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const rafRef = useRef(0)
-  const playersRef = useRef(players)
+  const playersRef = useRef(touchPlayers)
   const prevCountRef = useRef(0)
+
+  // Desktop click-to-add state
+  const isDesktop = !isTouchCapable
+  const [clickPlayers, setClickPlayers] = useState<PlayerTouch[]>([])
+  const [showDesktopTip, setShowDesktopTip] = useState(!isTouchCapable)
+
+  // Use touch players on mobile, click players on desktop
+  const players = isDesktop ? clickPlayers : touchPlayers
 
   // Keep playersRef in sync (read by setTimeout callback)
   useEffect(() => {
@@ -41,6 +62,7 @@ export default function FingerSelectionScreen() {
   useEffect(() => {
     if (players.length > prevCountRef.current) {
       // New player added — flash their number
+      play('tap')
       const newPlayer = players[players.length - 1]
       setFlashingIds((prev) => new Set(prev).add(newPlayer.identifier))
       setTimeout(() => {
@@ -52,10 +74,12 @@ export default function FingerSelectionScreen() {
       }, FLASH_DURATION)
     }
     prevCountRef.current = players.length
-  }, [players])
+  }, [players, play])
 
-  // Auto-start countdown when finger count changes
+  // Auto-start countdown when finger count changes (touch only)
   useEffect(() => {
+    if (isDesktop) return
+
     if (countdownRef.current) {
       clearTimeout(countdownRef.current)
       countdownRef.current = null
@@ -106,13 +130,73 @@ export default function FingerSelectionScreen() {
         tickIdRef.current = null
       }
     }
-  }, [players.length, dispatch])
+  }, [players.length, dispatch, isDesktop])
+
+  // Desktop: handle click to add player
+  const handleContainerClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDesktop) return
+
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (!rect) return
+
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      clickIdCounter++
+      const newId = clickIdCounter
+
+      setClickPlayers((prev) => {
+        if (prev.length >= maxPlayers) return prev
+        const updated = [...prev, {
+          identifier: newId,
+          color: PLAYER_COLORS[prev.length % PLAYER_COLORS.length],
+          x,
+          y,
+          label: '',
+        }]
+        // Renumber all players
+        return updated.map((p, i) => ({
+          ...p,
+          label: `Player ${i + 1}`,
+          color: PLAYER_COLORS[i % PLAYER_COLORS.length],
+        }))
+      })
+    },
+    [isDesktop, maxPlayers],
+  )
+
+  // Desktop: handle right-click to remove last player
+  const handleContainerContextMenu = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDesktop) return
+      e.preventDefault()
+      setClickPlayers((prev) => {
+        if (prev.length === 0) return prev
+        const updated = prev.slice(0, -1)
+        return updated.map((p, i) => ({
+          ...p,
+          label: `Player ${i + 1}`,
+          color: PLAYER_COLORS[i % PLAYER_COLORS.length],
+        }))
+      })
+    },
+    [isDesktop],
+  )
+
+  // Desktop: handle start game
+  const handleStart = useCallback(() => {
+    if (players.length < 2) return
+    dispatch({ type: 'SET_FINGERS', players: playersRef.current })
+  }, [dispatch, players.length])
 
   return (
     <div
       ref={containerRef}
       className="relative w-full h-dvh overflow-hidden select-none"
       style={{ touchAction: 'none' }}
+      onClick={isDesktop ? handleContainerClick : undefined}
+      onContextMenu={isDesktop ? handleContainerContextMenu : undefined}
     >
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-950 via-slate-950 to-slate-900" />
@@ -122,7 +206,7 @@ export default function FingerSelectionScreen() {
         <h1 className="text-2xl font-bold text-white/90"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          ဖုန်းစခရင်ပေါ်ကို လက်ချောင်းလေးတွေတင်လိုက်ကြပါ။
+          {isDesktop ? 'ကစားသမားတွေထပ်ထည့်ဖို့ ကြိုက်ရနေရာမှာ click လုပ်လိုက်ပါ' : 'ဖုန်းစခရင်ပေါ်ကို လက်ချောင်းလေးတွေတင်လိုက်ကြပါ။'}
         </h1>
         {/* Player count badge */}
         {players.length > 0 && (
@@ -137,15 +221,48 @@ export default function FingerSelectionScreen() {
           </motion.div>
         )}
         <p className="text-sm text-white/50">
-          {players.length === 0
-            ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
-            : counting
-              ? 'ခနစောင့်ပါ…'
-              : `ကစားသမား ${players.length} ယောက် — ထပ်ထည့်မယ်!`}
+          {isDesktop
+            ? players.length < 2
+              ? 'ကစားသမား ၂ ယောက်ထက်မနည်း ထည့်ပါ'
+              : '"Start" ကိုနှိပ်ပြီး စတင်ပါ'
+            : players.length === 0
+              ? 'ကစားသမားတွေကို စောင့်နေပါတယ်...'
+              : counting
+                ? 'ခနစောင့်ပါ…'
+                : 'ထပ်ထားပါ!'}
         </p>
+        {isDesktop && (
+          <p className="text-xs text-white/40">
+            ပြန်ဖြုတ်ဖို့အတွက် right click ကိုသုံးပါ
+          </p>
+        )}
       </div>
 
-      {/* Countdown ring — pulsing circle in the center */}
+      {/* Desktop: Start button */}
+      {isDesktop && players.length >= 2 && (
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="absolute bottom-20 inset-x-0 flex justify-center z-20"
+        >
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleStart()
+            }}
+            className="px-10 py-4 rounded-full text-xl font-bold text-white
+              bg-gradient-to-r from-purple-600 to-pink-600
+              shadow-[0_0_30px_rgba(168,85,247,0.5)]
+              active:scale-95 transition-transform"
+          >
+            ▶ စတင်
+          </motion.button>
+        </motion.div>
+      )}
+
+      {/* Countdown ring — pulsing circle in the center (touch only) */}
       <AnimatePresence>
         {counting && (
           <motion.div
@@ -231,6 +348,38 @@ export default function FingerSelectionScreen() {
             </AnimatePresence>
           </div>
         ))}
+      </AnimatePresence>
+
+      {/* Desktop floating tip — dismissable suggestion to play on mobile */}
+      <AnimatePresence>
+        {showDesktopTip && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[85%] max-w-xs p-3 rounded-xl"
+            style={{
+              background: 'linear-gradient(165deg, #1a0a2e 0%, #0d0521 100%)',
+              border: '1.5px solid rgba(168,85,247,0.4)',
+              boxShadow: '0 0 30px rgba(168,85,247,0.25), 0 10px 40px rgba(0,0,0,0.4)',
+            }}
+          >
+            <div className="flex items-start gap-2">
+              <span className="text-base shrink-0 mt-0.5">💡</span>
+              <p className="text-white/70 text-[11px] leading-relaxed flex-1">
+                ပိုမိုကောင်းမွန်သော အတွေ့အကြုံအတွက် ဤဂိမ်းကို Mobile Phone ဖြင့် ဆော့ကစားရန် အကြံပြုပါသည်။ Desktop တွင် Multi-touch အသုံးပြု၍ မရသောကြောင့် ဤအဆင့်ကို Click ဖြင့် Player များထည့်သွင်းနိုင်သည့် ပုံစံသို့ ပြောင်းလဲထားပါသည်။
+              </p>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setShowDesktopTip(false) }}
+                className="shrink-0 text-white/40 hover:text-white/70 transition-colors text-lg leading-none p-1"
+              >
+                ✕
+              </button>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   )

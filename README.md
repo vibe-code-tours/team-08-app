@@ -4,8 +4,6 @@
 
 ![ci](../../actions/workflows/ci.yml/badge.svg) ![security](../../actions/workflows/security.yml/badge.svg)
 
-<!-- A screenshot or GIF of the app goes here — it's the best README section. -->
-
 ---
 
 ## Quickstart
@@ -18,53 +16,75 @@ npm install && npm run dev
 
 ## Stack
 
-- **Frontend:** Vite + React + TypeScript
-- **PWA:** `vite-plugin-pwa` (installable, offline-capable)
-- **Testing:** Vitest
-- **Lint:** ESLint
-- **Deploy:** GitHub Pages (auto-deploy on push to `main` via `.github/workflows/deploy.yml`)
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | React 19 + TypeScript |
+| **Build** | Vite 8 |
+| **Styling** | Tailwind CSS v4 (neon cyber theme) |
+| **Animation** | Motion (Framer Motion) |
+| **PWA** | vite-plugin-pwa (installable, offline-capable) |
+| **Testing** | Vitest + Testing Library |
+| **Lint** | ESLint (TS + React hooks + refresh) |
+| **Deploy** | GitHub Pages (auto-deploy on push to `main`) |
 
-## Project structure
+## Features
 
-| Path                         | What                                                                                                             |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `src/screens/`               | one file per game screen — Start → Setup → Touch Selection → Selected Player → Truth/Dare → Card Reveal → Result |
-| `src/state/`                 | `GameContext.tsx` — game state, settings, active touches                                                         |
-| `src/data/cards.ts`          | static Truth/Dare card data, filtered by pack/difficulty                                                         |
-| `src/hooks/useMultiTouch.ts` | multi-touch tracking (keyed by `touch.identifier`)                                                               |
-| `src/types/`                 | `Card`, `GameState`, `GameSettings`, `PlayerTouch`                                                               |
-| `docs/`                      | `multitouch-spike-result.md`, `ARCHITECTURE.md`, decision records                                                |
-| `.github/`                   | CI, security, PR/issue templates                                                                                 |
+- **Multi-touch roulette** — 2–10 players place fingers on screen, a spinning light selects one winner
+- **Truth or Dare** — selected player chooses Truth, Dare, or Random (with coin-flip animation)
+- **Card selection** — grid of face-down cards with 3D flip animation revealing challenges
+- **192 cards** across 4 packs (Friends, Couple, Family, Classic) × 3 difficulties (Easy, Medium, Hard)
+- **Voting** — Fail / Pass / Excellent with confetti celebration effects
+- **Sound effects & music** — 12 SFX (Web Audio API) + 3 BGM tracks with crossfading
+- **No-repeat selection** — same player can't be picked twice in a row
+- **Settings** — difficulty, card pack, timer toggle, sound & music toggles
+- **Onboarding** — 5-slide swipeable walkthrough for first-time players
+- **Desktop support** — click-to-add players on non-touch devices, QR code for mobile handoff
+- **Error boundary** — catches render crashes with a friendly recovery screen
+- **Smooth transitions** — animated screen transitions via AnimatePresence
+- **Myanmar (Burmese)** — all UI text localized
+- **PWA** — installable on Android and iOS, works offline
 
-## Team
+## Game Flow
 
-| Name      | Role this week |
-| --------- | -------------- |
-| _fill in_ | Anchor         |
-| _fill in_ | Reviewer       |
+```
+Start → Onboarding → Setup → Finger Selection → Roulette
+    → Player Selected (Truth/Dare/Random choice) → Card Reveal
+    → Voting → Result → Next Round ↩
+```
 
-Board: _link your GitHub Project here_
+## Project Structure
+
+| Path | What |
+|------|------|
+| `src/screens/` | 11 screen components, one per game phase |
+| `src/components/` | 12 reusable components (NeonButton, GlassPanel, ErrorBoundary, PhaseMusic, etc.) |
+| `src/state/GameContext.tsx` | Game state, reducer (12 actions), settings persistence |
+| `src/hooks/useMultiTouch.ts` | Multi-touch tracking (keyed by `touch.identifier`) |
+| `src/hooks/useSound.ts` | Web Audio API SFX manager with preloading |
+| `src/hooks/useTouchCapability.ts` | Non-touch device detection (feature detection only) |
+| `src/utils/selectPlayer.ts` | No-repeat player selection logic |
+| `src/data/cards.ts` | 192 static Truth/Dare cards with filtering helpers |
+| `src/types/` | TypeScript types (Card, GameState, PlayerTouch, etc.) |
+| `docs/` | Architecture, ADRs, spike results |
+| `.planning/` | Roadmap, requirements, GSD planning docs |
+
+## How to Run
+
+```bash
+npm run dev        # Start dev server (http://localhost:5173)
+npm run build      # Production build to dist/
+npm run preview    # Preview production build locally
+npm run lint       # Run ESLint
+npm run test       # Run Vitest
+```
+
+## Git Rules
+
+- Branch → PR → 1 teammate review → merge
+- No push to `main` directly — branch protection requires PR + review
+- Run `npm run lint && npm run test && npm run build` before opening a PR
+- CI must be green before merging
 
 ---
 
-## What's already set up for you
-
-This repo was created from the **Vibe Code Tours project starter**. It ships with:
-
-| File                                                                  | Gives you                                                                           |
-| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `.github/workflows/ci.yml`                                            | lint · typecheck · test · build on every PR (stays green until you add each script) |
-| `.github/workflows/security.yml`                                      | gitleaks (leaked keys) + semgrep (SAST) — advisory, report-only                     |
-| `.github/dependabot.yml`                                              | weekly PRs for vulnerable / outdated dependencies                                   |
-| `.env.example`                                                        | secret hygiene — copy to `.env`, never commit real keys                             |
-| `.github/pull_request_template.md` · `ISSUE_TEMPLATE/` · `CODEOWNERS` | small reviewed PRs, one-owner issues                                                |
-| `docs/ARCHITECTURE.md` · `docs/decisions/`                            | a 1-page overview + lightweight ADRs                                                |
-| `working-agreement.md`                                                | how your team works (GitHub Flow + rotating roles)                                  |
-
-**First thing to do:** follow [`SETUP.md`](./SETUP.md) — a ~1-hour checklist to turn it all on.
-
-**Git rule:** branch → PR → 1 teammate review → merge. No push to `main`, no self-merge.
-
-> A green pipeline ≠ secure. Scanners catch leaked keys, known-CVE deps, and injection
-> patterns. They do **not** catch prompt-injection, over-scoped tokens, or hallucinated
-> packages — a human still reviews for those.
+*Built with [Vibe Code Tours](https://vibe-code-tours.com/) — AI-assisted collaborative development.*

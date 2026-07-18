@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import { motion } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { GlassPanel } from './GlassPanel.tsx'
 import { NeonButton } from './NeonButton.tsx'
 
@@ -31,20 +32,24 @@ const resultCopy = {
 export function ResultDisplay() {
   const { voteResult, selectedPlayer } = useGame()
   const dispatch = useGameDispatch()
+  const { play } = useSound()
 
   useEffect(() => {
-    if (voteResult !== 'pass' && voteResult !== 'excellent') return
-
-    confetti({
-      particleCount: voteResult === 'excellent' ? 140 : 90,
-      spread: voteResult === 'excellent' ? 90 : 70,
-      origin: { y: 0.65 },
-      colors:
-        voteResult === 'excellent'
-          ? ['#facc15', '#ec4899', '#a855f7', '#ffffff']
-          : ['#10b981', '#06b6d4', '#a855f7', '#ffffff'],
-    })
-  }, [voteResult])
+    if (voteResult === 'pass' || voteResult === 'excellent') {
+      play('celebrate')
+      confetti({
+        particleCount: voteResult === 'excellent' ? 140 : 90,
+        spread: voteResult === 'excellent' ? 90 : 70,
+        origin: { y: 0.65 },
+        colors:
+          voteResult === 'excellent'
+            ? ['#facc15', '#ec4899', '#a855f7', '#ffffff']
+            : ['#10b981', '#06b6d4', '#a855f7', '#ffffff'],
+      })
+    } else if (voteResult === 'fail') {
+      play('fail')
+    }
+  }, [voteResult, play])
 
   if (!voteResult) return null
 
@@ -118,7 +123,7 @@ export function ResultDisplay() {
         color={isFail ? '#8B2FE2' : copy.color}
         size="md"
         className="mt-8"
-        onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+        onClick={() => { play('tap'); dispatch({ type: 'NEXT_ROUND' }) }}
       >
         ဆက်သွားမယ်
       </NeonButton>

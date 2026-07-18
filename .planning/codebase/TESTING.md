@@ -6,11 +6,11 @@
 
 | Tool | Version | Purpose |
 |---|---|---|
-| **Vitest** | ^3.2.7 | Test runner (Vite-native) |
-| **jsdom** | ^27.0.1 | Browser environment simulation |
+| **Vitest** | ^4.1.10 | Test runner (Vite-native) |
+| **jsdom** | ^29.1.1 | Browser environment simulation |
 | **@testing-library/react** | ^16.3.2 | Component rendering and querying |
 | **@testing-library/jest-dom** | ^6.9.1 | Custom DOM matchers (toBeInTheDocument, etc.) |
-| **@vitest/ui** | ^3.2.7 | Visual test UI (dev dependency) |
+| **@vitest/ui** | ^4.1.10 | Visual test UI (dev dependency) |
 
 ### Vitest Configuration (`vitest.config.ts`)
 
@@ -55,66 +55,68 @@ Test files sit **next to the source file** they test, using the `.test.tsx` / `.
 ```
 src/
   App.tsx
-  App.test.tsx     <-- co-located
+  App.test.tsx
+  components/
+    ErrorBoundary.tsx
+    ErrorBoundary.test.tsx
   hooks/
     useMultiTouch.ts
-    useMultiTouch.test.ts   <-- expected pattern (not yet created)
   state/
     GameContext.tsx
-    GameContext.test.tsx     <-- expected pattern (not yet created)
+    GameContext.test.tsx
+  utils/
+    selectPlayer.ts
+    selectPlayer.test.ts
 ```
 
 There is **no separate `__tests__/` directory** or `tests/` folder. The architecture doc mentions a `tests/` folder, but the actual convention is co-location.
 
 ## What Is Currently Tested
 
-### Coverage: Smoke Test Only
+### Coverage: 35 Tests Across 4 Files
 
-The single existing test file (`src/App.test.tsx`):
+Test files:
 
-```tsx
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
-import App from './App'
+- `src/App.test.tsx` — App component rendering
+- `src/state/GameContext.test.tsx` — GameContext reducer (state transitions, settings persistence, noRepeat, RESTART)
+- `src/components/ErrorBoundary.test.tsx` — Error boundary crash recovery and restart dispatch
+- `src/utils/selectPlayer.test.ts` — No-repeat player selection logic (5 tests)
 
-describe('App', () => {
-  it('renders without crashing', () => {
-    render(<App />)
-    expect(screen.getByText('Get started')).toBeInTheDocument()
-  })
-})
-```
+All 35 tests pass. Lint and build are clean.
 
 **What this covers:**
-- The `App` component renders to the DOM without throwing.
-- A specific text element ("Get started") is present in the output.
+- App renders to the DOM without throwing.
+- GameContext reducer handles all 12 actions correctly.
+- Settings persist in localStorage and survive page reload.
+- NoRepeat excludes last selected player, falls back when only one remains.
+- ErrorBoundary catches crashes and dispatches RESTART on button click.
+- selectEligiblePlayers filters correctly with edge cases (empty array, single player).
 
 **What this does NOT cover:**
-- Interactive behavior (button clicks, state changes)
-- CSS/layout
-- Accessibility
-- Edge cases
+- Screen component rendering and interaction
+- Touch event handling (useMultiTouch hook)
+- Sound playback (useSound hook)
+- CSS/layout and accessibility
+- End-to-end game flow integration
 
 ## What Is NOT Tested Yet (Gaps)
 
-The project has stub files and planned features with zero test coverage:
-
 | Area | File | Status |
 |---|---|---|
-| **Screen components** | `src/screens/*.tsx` | Directory does not exist yet |
-| **Game state management** | `src/state/GameContext.tsx` | Empty stub file |
-| **Card data and filtering** | `src/data/cards.ts` | Empty stub file |
-| **Multi-touch hook** | `src/hooks/useMultiTouch.ts` | Empty stub file |
-| **Type definitions** | `src/types/index.ts` | Empty stub file |
+| **Screen components** | `src/screens/*.tsx` | 11 screens, no unit tests |
+| **Multi-touch hook** | `src/hooks/useMultiTouch.ts` | Implemented, no tests (critical path) |
+| **Sound hook** | `src/hooks/useSound.ts` | Implemented, no tests |
+| **PhaseMusic** | `src/components/PhaseMusic.tsx` | Implemented, no tests |
+| **Card data filtering** | `src/data/cards.ts` | 192 cards, no filter tests |
 | **PWA service worker** | (vite-plugin-pwa) | Not tested |
-| **Game flow integration** | Start -> Setup -> Touch -> Truth/Dare -> Reveal | No integration tests |
+| **Game flow integration** | Start → Setup → Touch → Roulette → Reveal | No integration tests |
 
-### Priority Gaps (as the app develops)
+### Priority Gaps
 
-1. **GameContext** — state transitions, reducer logic, context provider behavior
-2. **useMultiTouch hook** — touch event handling, identifier tracking (critical path per CLAUDE.md)
+1. **useMultiTouch hook** — touch event handling, identifier tracking (critical path per CLAUDE.md)
+2. **Screen components** — each screen's render and interaction
 3. **Card data** — filtering by pack/difficulty/type, data integrity
-4. **Screen components** — each screen's render and interaction
+4. **useSound hook** — SFX preload, play, dedup (requires AudioContext mock)
 5. **Game flow** — end-to-end flow through all screens
 6. **Accessibility** — ARIA attributes, keyboard navigation, screen reader support
 
@@ -159,7 +161,9 @@ describe('ComponentUnderTest', () => {
 
 ### Current State
 
-No mocks are in use yet. Expected patterns as the app grows:
+Tests for GameContext and selectPlayer use pure function testing (no mocks needed).
+ErrorBoundary tests wrap the component in a mock GameContextProvider.
+Screen component tests will need to mock useSound and useMultiTouch.
 
 ### Component Mocking
 

@@ -19,36 +19,47 @@ phase (no URL router).
 ```
 <App>
   <GameContextProvider>          // src/state/GameContext.tsx
-    <ActiveScreen />             // src/screens/*.tsx, chosen by gamePhase
+    <PhaseMusic />               // src/components/PhaseMusic.tsx (BGM controller)
+    <ErrorBoundary>              // src/components/ErrorBoundary.tsx
+      <ActiveScreen />           // src/screens/*.tsx, chosen by gamePhase
+    </ErrorBoundary>
+    <SettingsButton />           // src/components/SettingsButton.tsx
   </GameContextProvider>
 </App>
 
-Screen (by gamePhase): Start -> Setup -> FingerSelection -> Roulette -> PlayerSelected
-                        -> TruthDareChoice -> CardReveal -> NextRound
+Screen (by gamePhase): Start → Onboarding → Setup → FingerSelection → Roulette
+  → PlayerSelected (includes Truth/Dare/Random choice) → CardReveal
+  → Voting → Result → NextRound
 
-FingerSelectionScreen --> useMultiTouch() --> dispatch() --> GameContext reducer
-                                                                   |
-                                                                   v
-                                                     gamePhase changes, screen swaps
+FingerSelectionScreen → useMultiTouch() → dispatch() → GameContext reducer
+                                                    ↓
+                                          gamePhase changes, screen swaps
 ```
 
 Touches are tracked by `touch.identifier`, never array index (see
-`docs/multitouch-spike-result.md`). Card data (`src/data/cards.ts`) is static,
+`docs/spikes/multitouch-spike-2026-07.md`). Card data (`src/data/cards.ts`) is static,
 filtered at read time by pack/difficulty/type from `GameSettings`.
+
+Sound: `useSound` hook (Web Audio API) provides SFX; `PhaseMusic` manages BGM via
+HTML5 Audio with crossfading. No-repeat player selection via `src/utils/selectPlayer.ts`.
 
 ## Where things live
 
 | Path | What |
 |---|---|
-| `src/screens/` | one file per screen, matches the phase flow above |
-| `src/state/GameContext.tsx` | GameState + reducer, wraps the whole app |
-| `src/hooks/useMultiTouch.ts` | multi-touch tracking hook |
-| `src/data/cards.ts` | static `Card[]` data |
+| `src/screens/` | 11 screen files, one per game phase |
+| `src/components/` | 12 reusable components (NeonButton, GlassPanel, ErrorBoundary, PhaseMusic, etc.) |
+| `src/state/GameContext.tsx` | GameState + reducer (12 actions), settings persistence, wraps the whole app |
+| `src/hooks/useMultiTouch.ts` | Multi-touch tracking hook (keyed by `touch.identifier`) |
+| `src/hooks/useSound.ts` | Web Audio API SFX manager with preloading and dedup |
+| `src/hooks/useTouchCapability.ts` | Non-touch device detection (feature detection only, no UA sniffing) |
+| `src/utils/selectPlayer.ts` | No-repeat player selection logic |
+| `src/data/cards.ts` | 192 static `Card[]` data with filtering helpers |
 | `src/types/` | `Card`, `GameState`, `PlayerTouch`, `GameSettings`, `Difficulty`, `CardPack`, `CardType`, `PLAYER_COLORS` |
 | `src/*.test.tsx`, `src/**/*.test.tsx` | Vitest + Testing Library (co-located with source) |
-| `.github/workflows/` | CI + security |
-| `docs/` | this file, decisions, demo/spike notes |
-| `.planning/` | GSD planning docs (roadmap, phases, generated codebase inventory) |
+| `.github/workflows/` | CI + security + deploy (GitHub Pages) |
+| `docs/` | this file, decisions, spike notes |
+| `.planning/` | GSD planning docs (roadmap, phases, codebase inventory) |
 
 ## External services
 

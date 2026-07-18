@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence, type PanInfo } from 'motion/react'
 import { useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 
 const slides = [
   {
@@ -46,12 +47,14 @@ const slides = [
  */
 export default function OnboardingScreen() {
   const dispatch = useGameDispatch()
+  const { play } = useSound()
   const [current, setCurrent] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const isLast = current === slides.length - 1
 
   const handleNext = () => {
+    play('tap')
     if (isLast) {
       dispatch({ type: 'START_GAME' })
     } else {
@@ -60,6 +63,7 @@ export default function OnboardingScreen() {
   }
 
   const handlePrev = () => {
+    play('vote')
     setCurrent((p) => Math.max(0, p - 1))
   }
 
@@ -85,7 +89,7 @@ export default function OnboardingScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        onClick={() => dispatch({ type: 'START_GAME' })}
+        onClick={() => { play('tap'); dispatch({ type: 'START_GAME' }) }}
         className="absolute top-4 left-4 z-20 px-4 py-1.5 rounded-full text-sm text-white/50
           border border-white/10 hover:text-white/80 hover:border-white/20 transition-colors"
       >

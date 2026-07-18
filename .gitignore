@@ -28,3 +28,6 @@ dev-dist
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code personal config
+.claude/settings.local.json

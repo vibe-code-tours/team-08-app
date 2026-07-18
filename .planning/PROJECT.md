@@ -51,25 +51,29 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 - ✓ Codebase architecture documented — existing
 - ✓ Local storage persistence for settings and preferences — Validated in Phase 1: Foundation & Design System
 - ✓ Fully client-side, no backend required — Validated in Phase 1: Foundation & Design System
+- ✓ Multi-touch finger selection (2–10 players, auto-detect, colored indicators) — Validated in Phase 2
+- ✓ Spinning light roulette selection with dramatic slowdown — Validated in Phase 2
+- ✓ Truth / Dare / Random choice with coin-flip animation — Validated in Phase 2
+- ✓ Card selection grid with 3D flip animation — Validated in Phase 2
+- ✓ Challenge display with difficulty badge and pack badge — Validated in Phase 2
+- ✓ Player self-voting (Fail / Pass / Excellent) — Validated in Phase 2
+- ✓ Result screens (celebration for pass, funny failure for fail) — Validated in Phase 2
+- ✓ Next round flow (Next Round / Change Settings / Restart) — Validated in Phase 2
+- ✓ Game settings: difficulty level, card pack, timer toggle — Validated in Phase 3
+- ✓ Starter card set: 192 cards across 4 packs × 3 difficulties — Validated in Phase 3
+- ✓ Light pack differentiation (color accent per pack) — Validated in Phase 3
+- ✓ Onboarding walkthrough (5 slides for first-time users) — Validated in Phase 4
+- ✓ Sound effects (12 SFX via Web Audio API) — Validated in Phase 4
+- ✓ Background music (3 tracks with crossfade) — Validated in Phase 4
+- ✓ Countdown timer with pressure effects — Validated in Phase 4
+- ✓ No-repeat player selection — Validated in v1 consolidation
+- ✓ Desktop click-to-add players — Validated in v1 consolidation
+- ✓ Error boundary with restart — Validated in v1 consolidation
+- ✓ Merged PlayerSelected + TruthDareChoice screen — Validated in v1 consolidation
 
 ### Active
 
-- [ ] Multi-touch finger selection (2–10 players, auto-detect, colored indicators)
-- [ ] Spinning light roulette selection with dramatic slowdown
-- [ ] Truth / Dare / Random choice with coin-flip animation
-- [ ] Card selection grid (~10 cards face-down, player picks one)
-- [ ] Premium 3D card flip reveal animation
-- [ ] Challenge display with difficulty badge and pack badge
-- [ ] Game settings: difficulty level, card pack, timer toggle
-- [ ] Starter card set (50–100+ cards across packs and difficulties)
-- [ ] Light pack differentiation (subtle color accent per pack)
-- [ ] Simple onboarding walkthrough (2–3 slides for first-time users)
-- [ ] Splash screen with neon TRUTH or DARE title
-- [ ] Player self-voting (Fail / Pass / Excellent)
-- [ ] Result screens (celebration for pass, funny failure for fail)
-- [ ] Sound effects (roulette, card flip, timer, celebrations)
-- [ ] Optional countdown timer with pressure effects
-- [ ] Next round flow (Next Round / Change Settings / Restart)
+- [ ] Works on Android and iOS Safari (mobile-first testing)
 
 ### Out of Scope
 
@@ -82,7 +86,7 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 
 ## Context
 
-**Existing State:** Phase 1 (Foundation & Design System) complete — Tailwind v4 neon `@theme` design tokens, the full TypeScript type barrel (`src/types/index.ts`), and `GameContext` (reducer + localStorage-backed `GameSettings`) are implemented and tested. `App.tsx` is a phase-based router with AnimatePresence screen transitions over 8 screens (`src/screens/`), and the app is an installable PWA (manifest + service worker). 7 reusable components in `src/components/` (NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot). `src/hooks/useMultiTouch.ts` is fully implemented (116 lines). `src/data/cards.ts` has 192 cards across 4 packs × 3 difficulties with filtering helpers. All UI text is in Myanmar (Burmese). 4 screens are fully implemented (StartScreen, FingerSelectionScreen, RouletteScreen, PlayerSelectedScreen); 4 are stubs (SetupScreen, TruthDareChoiceScreen, CardRevealScreen, NextRoundScreen).
+**Existing State:** All 4 phases complete + v1 consolidation merged. 11 screens, 12 components, 3 hooks (useMultiTouch, useSound, useTouchCapability). Web Audio API SFX (12 sounds with inflight dedup) + HTML5 Audio BGM (3 tracks with RAF crossfade). Error boundary with restart. No-repeat player selection. Desktop click-to-add. 192 cards across 4 packs × 3 difficulties. Settings + phase persist in localStorage. 35 tests passing across 4 test files. PWA installable with manifest, service worker, and icons. All UI text in Myanmar (Burmese).
 
 **Design Reference:** A 24-screen UI kit (`public/images/Screens.png`) provides the complete visual target — from splash screen through onboarding, gameplay, and settings. The design is in Myanmar/Burmese language but the visual language (neon dark theme, glow effects, card animations, roulette) is clear.
 
@@ -103,13 +107,17 @@ The roulette selection moment — fingers on screen, spinning light, dramatic sl
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Tailwind CSS over styled-components | Utility-first scales better for custom neon design system | — Validated (Phase 1) |
-| Framer Motion over CSS-only | Complex sequences (roulette, card flip, particles) need spring physics and orchestration | — Validated (Phase 1) |
-| Static TypeScript cards over JSON | Type safety, IDE autocomplete, compile-time validation | — Validated (Phase 1, 192 cards) |
-| React Context over Redux | MVP state is simple (game phase + settings); Context + useReducer sufficient | — Validated (Phase 1) |
-| Self-vote only | Simplifies UX — selected player judges own challenge | — Pending |
-| PWA (no native) | Cross-platform reach, no app store friction, share-the-phone model | — Validated (Phase 1) |
-| Starter cards in codebase | 50–100+ cards across 4 packs × 3 difficulties built into the project | — Validated (Phase 1, 192 cards) |
+| Tailwind CSS over styled-components | Utility-first scales better for custom neon design system | Confirmed in Phase 1 |
+| Framer Motion over CSS-only | Complex sequences (roulette, card flip, particles) need spring physics and orchestration | Confirmed in Phase 2 |
+| Static TypeScript cards over JSON | Type safety, IDE autocomplete, compile-time validation | Confirmed in Phase 3 |
+| React Context over Redux | MVP state is simple (game phase + settings); Context + useReducer sufficient | Confirmed in Phase 1 |
+| Self-vote only | Simplifies UX — selected player judges own challenge | Confirmed in Phase 2 |
+| PWA (no native) | Cross-platform reach, no app store friction, share-the-phone model | Confirmed in Phase 1 |
+| 192 starter cards in codebase | 4 packs × 3 difficulties × 16 cards each | Confirmed in Phase 3 |
+| Web Audio API for SFX | Low-latency, preloaded, inflight dedup for rapid sounds like roulette tick | Confirmed in v1 |
+| HTML5 Audio for BGM | Avoids Howler.js state machine race conditions; RAF crossfade | Confirmed in v1 |
+| Error boundary via class component | React requirement — class component for componentDidCatch, wrapped in functional component | Confirmed in v1 |
+| Module-level click ID counter | Desktop click IDs must persist across remounts to avoid no-repeat collisions between rounds | Confirmed in v1 |
 
 ## Evolution
 
@@ -129,4 +137,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-10 after Phase 1: Foundation & Design System*
+*Last updated: 2026-07-18 after v1 consolidation (PR #86)*

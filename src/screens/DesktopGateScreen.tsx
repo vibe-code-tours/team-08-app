@@ -48,9 +48,9 @@ export default function DesktopGateScreen({ onContinueAnyway }: DesktopGateScree
           className="text-2xl font-bold text-white/90 max-w-sm"
           style={{ textShadow: '0 0 20px rgba(168,85,247,0.5)' }}
         >
-          TheChosenOne က mobile phone မှာပဲ ဆော့လို့ရပါတယ်။
+          TheChosenOne ဟာ mobile phone မှာ ဆော့ဖိုအတွက် အဓိကရည်ရွယ်ပြီး develop လုပ်ထားတာဖြစ်ပါတယ်ခင်ဗျာ။
           <br />
-          အောက်က QR ကို phone နဲ့ scan ပြီး ဆက်ဆော့ပါ။
+          အကောင်းမွန်ဆုံး အတွေ့အကြုံတွေရရှိဖို့အတွက် အောက်က QR ကို phone နဲ့ scan ပြီး ဆက်ဆော့ဖို့အကြံပြုလို့ပါတယ်ခင်ဗျာ။
         </h1>
 
         <div

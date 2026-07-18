@@ -15,6 +15,7 @@ const baseState: GameState = {
   chosenType: null,
   voteResult: null,
   settings: defaultSettings,
+  lastSelectedPlayerId: null,
 }
 
 const samplePlayer: PlayerTouch = {
@@ -67,6 +68,28 @@ describe('gameReducer', () => {
     expect(result.selectedPlayer).toEqual(samplePlayer)
   })
 
+  it('SELECT_PLAYER sets lastSelectedPlayerId when noRepeat is true', () => {
+    const state = { ...baseState, settings: { ...defaultSettings, noRepeat: true } }
+    const result = gameReducer(state, { type: 'SELECT_PLAYER', player: samplePlayer })
+    expect(result.lastSelectedPlayerId).toBe(0)
+  })
+
+  it('SELECT_PLAYER does not set lastSelectedPlayerId when noRepeat is false', () => {
+    const state = { ...baseState, settings: { ...defaultSettings, noRepeat: false } }
+    const result = gameReducer(state, { type: 'SELECT_PLAYER', player: samplePlayer })
+    expect(result.lastSelectedPlayerId).toBeNull()
+  })
+
+  it('SELECT_PLAYER updates lastSelectedPlayerId to the latest player', () => {
+    const player2: PlayerTouch = { ...samplePlayer, identifier: 1, label: 'Player 2' }
+    let state = gameReducer(
+      { ...baseState, settings: { ...defaultSettings, noRepeat: true } },
+      { type: 'SELECT_PLAYER', player: samplePlayer },
+    )
+    state = gameReducer(state, { type: 'SELECT_PLAYER', player: player2 })
+    expect(state.lastSelectedPlayerId).toBe(1)
+  })
+
   it('NEXT_ROUND transitions to next-round and clears player/card/state', () => {
     const midRoundState: GameState = {
       ...baseState,
@@ -87,6 +110,16 @@ describe('gameReducer', () => {
     expect(result.players).toEqual([])
   })
 
+  it('NEXT_ROUND preserves lastSelectedPlayerId', () => {
+    const state: GameState = {
+      ...baseState,
+      phase: 'card-reveal',
+      lastSelectedPlayerId: 0,
+    }
+    const result = gameReducer(state, { type: 'NEXT_ROUND' })
+    expect(result.lastSelectedPlayerId).toBe(0)
+  })
+
   it('START_NEXT_ROUND transitions to finger-selection and clears all game state', () => {
     const result = gameReducer(
       { ...baseState, phase: 'next-round', selectedPlayer: samplePlayer, voteResult: 'pass' },
@@ -96,6 +129,16 @@ describe('gameReducer', () => {
     expect(result.selectedPlayer).toBeNull()
     expect(result.voteResult).toBeNull()
     expect(result.players).toEqual([])
+  })
+
+  it('START_NEXT_ROUND preserves lastSelectedPlayerId', () => {
+    const state: GameState = {
+      ...baseState,
+      phase: 'next-round',
+      lastSelectedPlayerId: 0,
+    }
+    const result = gameReducer(state, { type: 'START_NEXT_ROUND' })
+    expect(result.lastSelectedPlayerId).toBe(0)
   })
 
   it('GO_TO_SETUP transitions to setup phase', () => {
@@ -113,6 +156,16 @@ describe('gameReducer', () => {
     expect(result.voteResult).toBeNull()
     expect(result.players).toEqual([])
     expect(result.settings).toEqual(defaultSettings)
+  })
+
+  it('RESTART clears lastSelectedPlayerId', () => {
+    const state: GameState = {
+      ...baseState,
+      phase: 'next-round',
+      lastSelectedPlayerId: 2,
+    }
+    const result = gameReducer(state, { type: 'RESTART' })
+    expect(result.lastSelectedPlayerId).toBeNull()
   })
 
   it('UPDATE_SETTINGS merges a Partial GameSettings payload into state.settings without touching phase', () => {
@@ -146,6 +199,9 @@ describe('saveSettings + loadSettings', () => {
       difficulty: 'hard',
       pack: 'couple',
       timerEnabled: false,
+      soundEnabled: false,
+      musicEnabled: false,
+      noRepeat: true,
     }
     saveSettings(settings)
     expect(loadSettings()).toEqual(settings)
