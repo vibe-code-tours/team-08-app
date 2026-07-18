@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useGame, useGameDispatch } from '../state/GameContext.tsx'
+import { useSound } from '../hooks/useSound.ts'
 import { PlayerDot } from '../components/PlayerDot.tsx'
 import { selectEligiblePlayers } from '../utils/selectPlayer.ts'
 import type { PlayerTouch } from '../types/index.ts'
