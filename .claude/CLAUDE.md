@@ -261,7 +261,6 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 |  |   |  FingerSelectionScreen                   |  ||
 |  |   |  RouletteScreen                          |  ||
 |  |   |  PlayerSelectedScreen                    |  ||
-|  |   |  TruthDareChoiceScreen                   |  ||
 |  |   |  CardRevealScreen                        |  ||
 |  |   |  NextRoundScreen                         |  ||
 |  |   +------------------------------------------+  ||
@@ -323,9 +322,8 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 | `setup` | `SetupScreen` | Configure game settings (difficulty, pack, players) |
 | `finger-selection` | `FingerSelectionScreen` | All players place fingers; auto-starts roulette after countdown |
 | `roulette` | `RouletteScreen` | Spinning highlight animation, selects one player |
-| `player-selected` | `PlayerSelectedScreen` | Announce the selected player |
-| `truthDareChoice` | `TruthDareChoiceScreen` | Selected player chooses truth or dare |
-| `cardReveal` | `CardRevealScreen` | Display the chosen card |
+| `player-selected` | `PlayerSelectedScreen` | Announce the selected player + Truth/Dare/Random choice |
+| `card-reveal` | `CardRevealScreen` | Display the chosen card |
 | `nextRound` | `NextRoundScreen` | Transition between rounds, update scores, continue or end |
 
 ## Key design patterns
@@ -352,11 +350,11 @@ A premium multiplayer party game PWA where 2–10 players place their fingers on
 
 ## Current project state
 
-- Phase 1 (Foundation & Design System) is complete.
-- `App.tsx` is a phase-based router with AnimatePresence screen transitions, wrapped in `GameContextProvider`.
-- `src/screens/` has 8 screens: StartScreen, SetupScreen, FingerSelectionScreen, RouletteScreen, PlayerSelectedScreen, TruthDareChoiceScreen, CardRevealScreen, NextRoundScreen.
-- `src/components/` has 7 reusable components: NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot.
-- `src/hooks/useMultiTouch.ts` is fully implemented (116 lines).
+- All 4 phases are complete (Foundation → Core Game Loop → Content & Settings → Premium Polish).
+- `App.tsx` is a phase-based router with AnimatePresence screen transitions, ErrorBoundary, PhaseMusic, and UpdateToast.
+- `src/screens/` has 11 screens: StartScreen, OnboardingScreen, SetupScreen, FingerSelectionScreen, RouletteScreen, PlayerSelectedScreen, CardRevealScreen, VotingScreen, ResultScreen, NextRoundScreen, DesktopGateScreen.
+- `src/components/` has 15 reusable components: NeonButton, GlassPanel, CardBack, DifficultyBadge, PackBadge, TimerDisplay, PlayerDot, ErrorBoundary, PhaseMusic, UpdateToast, VotingPanel, ResultDisplay, SettingsButton, etc.
+- `src/hooks/` has 4 hooks: useMultiTouch, useSound, useTouchCapability, usePwaInstall.
 - `src/data/cards.ts` has 192 cards with filtering helpers.
 - All UI text is in Myanmar (Burmese).
 
