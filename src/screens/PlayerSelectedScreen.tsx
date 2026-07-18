@@ -18,6 +18,8 @@ export default function PlayerSelectedScreen() {
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipResult, setFlipResult] = useState<CardType | null>(null)
   const flipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hasChosenRef = useRef(false)
   const [showChoices, setShowChoices] = useState(false)
 
   useEffect(() => {
@@ -29,30 +31,34 @@ export default function PlayerSelectedScreen() {
   useEffect(() => {
     return () => {
       if (flipTimeoutRef.current) clearTimeout(flipTimeoutRef.current)
+      if (revealTimerRef.current) clearTimeout(revealTimerRef.current)
     }
   }, [])
 
   const handleChoice = useCallback(
     (type: CardType) => {
+      if (hasChosenRef.current) return
+      hasChosenRef.current = true
       dispatch({ type: 'CHOOSE_TRUTH_OR_DARE', payload: type })
     },
     [dispatch],
   )
 
   const handleRandom = useCallback(() => {
-    if (isFlipping) return
+    if (isFlipping || hasChosenRef.current) return
+    hasChosenRef.current = true
     setIsFlipping(true)
     setFlipResult(null)
 
     const result: CardType = Math.random() < 0.5 ? 'truth' : 'dare'
 
     // Delay result reveal for dramatic effect (shows mid-animation)
-    const revealTimer = setTimeout(() => {
+    revealTimerRef.current = setTimeout(() => {
       setFlipResult(result)
     }, 600)
 
     flipTimeoutRef.current = setTimeout(() => {
-      clearTimeout(revealTimer)
+      if (revealTimerRef.current) clearTimeout(revealTimerRef.current)
       setIsFlipping(false)
       dispatch({ type: 'CHOOSE_TRUTH_OR_DARE', payload: result })
     }, 1200)
