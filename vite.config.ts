@@ -29,6 +29,29 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
+      workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+        navigateFallback: '/team-08-app/index.html',
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pages',
+              networkTimeoutSeconds: 3,
+            },
+          },
+          {
+            urlPattern: ({ request }) =>
+              ['script', 'style', 'image', 'font'].includes(request.destination),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'assets',
+            },
+          },
+        ],
+      },
     }),
   ],
 })
