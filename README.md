@@ -135,8 +135,14 @@ Start → Onboarding → Setup → Finger Selection → Roulette
 
 ## Contributing
 
+**Start here:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the system diagram, [`docs/decisions/`](docs/decisions) for ADRs, and [`.planning/PROJECT.md`](.planning/PROJECT.md) + [`.planning/ROADMAP.md`](.planning/ROADMAP.md) for project context and phase status.
+
 - Branch → PR → 1 teammate review → merge
+- Branch naming: `feat/...` or `fix/...` off `main`
 - No push to `main` directly — branch protection requires PR + review
+- Commit messages: conventional style (`feat:`, `fix:`, `docs:`, `ci:`, ...)
+- Keep PRs under ~300 lines where possible
+- Code style: functional components (`function`, not arrow), one component per file, `import type` for type-only imports — see [`CLAUDE.md`](CLAUDE.md) for the full conventions
 - Run `npm run lint && npm run test && npm run build` before opening a PR
 - CI must be green before merging
 
