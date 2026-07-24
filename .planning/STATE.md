@@ -86,7 +86,7 @@ None yet.
 | 260718-6dk | derive QR target URL dynamically instead of hardcoding production domain | 2026-07-18 | f1c246c | [260718-6dk-fix-hardcoded-production-url-in-desktopg](./quick/260718-6dk-fix-hardcoded-production-url-in-desktopg/) |
 | 260718-vh0 | Fix PWA update/cache staleness so new deploys reach users on next visit instead of after closing all tabs | 2026-07-18 | 34b492c | [260718-vh0-fix-pwa-update-cache-staleness-so-new-de](./quick/260718-vh0-fix-pwa-update-cache-staleness-so-new-de/) |
 | 260725-31x | Polish README.md to doomemacs/core-style layout and rename title to "The Chosen One" | 2026-07-25 | 9a90dcc | [260725-31x-polish-readme-md-to-match-doomemacs-core](./quick/260725-31x-polish-readme-md-to-match-doomemacs-core/) |
-| 260725-39j | Register chrome-devtools-mcp server for project | 2026-07-25 | 9e14913 | [260725-39j-register-chrome-devtools-mcp-server-for-](./quick/260725-39j-register-chrome-devtools-mcp-server-for-/) |
+| 260725-39j | Register chrome-devtools-mcp server for project (later reverted to local-only, gitignored — see SUMMARY.md Outcome Update) | 2026-07-25 | 9e14913 | [260725-39j-register-chrome-devtools-mcp-server-for-](./quick/260725-39j-register-chrome-devtools-mcp-server-for-/) |
 
 ## Deferred Items
 
