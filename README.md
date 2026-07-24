@@ -10,7 +10,7 @@
   </a>
 </p>
 
-![ci](../../actions/workflows/ci.yml/badge.svg) ![security](../../actions/workflows/security.yml/badge.svg)
+![ci](../../actions/workflows/ci.yml/badge.svg) ![security](../../actions/workflows/security.yml/badge.svg) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 **🔗 Live:** https://vibecode.tours/team-08-app/
 
@@ -29,6 +29,7 @@
 - [Stack](#stack)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -145,6 +146,10 @@ Start → Onboarding → Setup → Finger Selection → Roulette
 - Code style: functional components (`function`, not arrow), one component per file, `import type` for type-only imports — see [`CLAUDE.md`](CLAUDE.md) for the full conventions
 - Run `npm run lint && npm run test && npm run build` before opening a PR
 - CI must be green before merging
+
+## License
+
+[MIT](LICENSE) © 2026 Vibe Code Tours
 
 ---
 
