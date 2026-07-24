@@ -39,10 +39,21 @@ The Chosen One is a fully client-side, share-the-phone party game. 2–10 player
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/01-start.png" width="200" alt="Start screen" />
-  <img src="docs/screenshots/02-onboarding.png" width="200" alt="Onboarding walkthrough" />
-  <img src="docs/screenshots/03-setup.png" width="200" alt="Game setup screen" />
-  <img src="docs/screenshots/04-finger-selection.png" width="200" alt="Finger selection screen" />
+  <img src="docs/screenshots/01-start-portrait.png" width="180" alt="Start screen" />
+  <img src="docs/screenshots/02-onboarding-portrait.png" width="180" alt="Onboarding walkthrough" />
+  <img src="docs/screenshots/03-setup-portrait.png" width="180" alt="Game setup screen" />
+  <img src="docs/screenshots/04-finger-selection-portrait.png" width="180" alt="Finger selection screen" />
+  <img src="docs/screenshots/05-random-finger-selection-portrait.png" width="180" alt="Random player selection roulette" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/06-truth-or-dare-selection-portrait.png" width="180" alt="Truth or Dare choice screen" />
+  <img src="docs/screenshots/07-card-selection-portrait.png" width="180" alt="Card selection grid" />
+  <img src="docs/screenshots/08-card-reveal-portrait.png" width="180" alt="Card reveal screen" />
+  <img src="docs/screenshots/09-voting-result-portrait.png" width="180" alt="Voting screen" />
+  <img src="docs/screenshots/10-result-screen-portrait.png" width="180" alt="Round result screen" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/11-menu-portrait.png" width="180" alt="Settings menu" />
 </p>
 
 ## Features
