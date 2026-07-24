@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-09)
 Phase: 4 — Premium Polish (Complete)
 Plan: All plans complete
 Status: All phases complete — project shipped
-Last activity: 2026-07-25 - Completed quick task 260725-39j: Register chrome-devtools-mcp server for project
+Last activity: 2026-07-25 - Completed quick task 260725-3f3: Take screenshots of the app using chrome-devtools MCP and add them to README
 
 Progress: [██████████] 100%
 
@@ -77,6 +77,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260718-51q | issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen | 2026-07-18 | 8cba1e1 | [260718-51q-issue-81-gate-desktop-non-touch-devices-](./quick/260718-51q-issue-81-gate-desktop-non-touch-devices-/) |
+| 260725-3f3 | Take screenshots of the app using chrome-devtools MCP and add them to README | 2026-07-25 | (pending) | [260725-3f3-take-screenshots-of-the-app-using-chrome](./quick/260725-3f3-take-screenshots-of-the-app-using-chrome/) |
 | 2 | rename desktop-gate handoff text from Finger Roulette to TheChosenOne | 2026-07-17 | 6578166 | — |
 | 3 | point desktop-gate QR at production GitHub Pages URL instead of window.location.href | 2026-07-17 | 8bcb135 | — |
 | 260718-5t8 | narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |

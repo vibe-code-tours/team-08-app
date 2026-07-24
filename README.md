@@ -21,6 +21,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Quickstart](#quickstart)
 - [Usage](#usage)
@@ -34,6 +35,15 @@
 ## Overview
 
 The Chosen One is a fully client-side, share-the-phone party game. 2–10 players place their fingers on the screen, a roulette spins across them, and one finger is chosen. That player then picks Truth or Dare, reveals a card, and performs the challenge — no backend, no accounts, just the phone and the group.
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/01-start.png" width="200" alt="Start screen" />
+  <img src="docs/screenshots/02-onboarding.png" width="200" alt="Onboarding walkthrough" />
+  <img src="docs/screenshots/03-setup.png" width="200" alt="Game setup screen" />
+  <img src="docs/screenshots/04-finger-selection.png" width="200" alt="Finger selection screen" />
+</p>
 
 ## Features
 
