@@ -1,40 +1,39 @@
-# Finger Roulette — Truth or Dare
+<div align="center">
 
-> A mobile-first PWA party game: everyone places a finger on the screen, the app randomly picks a player, and they choose Truth or Dare.
+# The Chosen One
 
-<p align="center">
+**A mobile-first PWA party game: everyone places a finger on the screen, the app randomly picks a player, and they choose Truth or Dare.**
+
+<p>
   <a href="https://vibecode.tours/team-08-app/">
     <img src="https://img.shields.io/badge/🎮_Play_Now-vibecode.tours-blue?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Play Now" />
   </a>
 </p>
 
-> **🔗 Live:** https://vibecode.tours/team-08-app/
-
 ![ci](../../actions/workflows/ci.yml/badge.svg) ![security](../../actions/workflows/security.yml/badge.svg)
+
+**🔗 Live:** https://vibecode.tours/team-08-app/
+
+</div>
 
 ---
 
-## Quickstart
+## Table of Contents
 
-```bash
-git clone https://github.com/vibe-code-tours/team-08-app.git && cd team-08-app
-cp .env.example .env        # fill in real values LOCALLY — never commit .env
-npm install && npm run dev
-```
+- [Overview](#overview)
+- [Features](#features)
+- [Quickstart](#quickstart)
+- [Usage](#usage)
+- [Game Flow](#game-flow)
+- [Stack](#stack)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
 
-## Stack
+---
 
-| Layer | Technology |
-|-------|-----------|
-| **Framework** | React 19 + TypeScript |
-| **Build** | Vite 8 |
-| **Styling** | Tailwind CSS v4 (neon cyber theme) |
-| **Animation** | Motion (Framer Motion) |
-| **Audio** | Web Audio API (SFX) + HTML5 Audio (BGM) |
-| **PWA** | vite-plugin-pwa (installable, offline-capable) |
-| **Testing** | Vitest + Testing Library |
-| **Lint** | ESLint (TS + React hooks + refresh) |
-| **Deploy** | GitHub Pages (auto-deploy on push to `main`) |
+## Overview
+
+The Chosen One is a fully client-side, share-the-phone party game. 2–10 players place their fingers on the screen, a roulette spins across them, and one finger is chosen. That player then picks Truth or Dare, reveals a card, and performs the challenge — no backend, no accounts, just the phone and the group.
 
 ## Features
 
@@ -54,6 +53,24 @@ npm install && npm run dev
 - **Smooth transitions** — animated screen transitions via AnimatePresence
 - **Myanmar (Burmese)** — all UI text localized
 
+## Quickstart
+
+```bash
+git clone https://github.com/vibe-code-tours/team-08-app.git && cd team-08-app
+cp .env.example .env        # fill in real values LOCALLY — never commit .env
+npm install && npm run dev
+```
+
+## Usage
+
+```bash
+npm run dev        # Start dev server (http://localhost:5173)
+npm run build      # Production build to dist/
+npm run preview    # Preview production build locally
+npm run lint       # Run ESLint
+npm run test       # Run Vitest
+```
+
 ## Game Flow
 
 ```
@@ -63,6 +80,20 @@ Start → Onboarding → Setup → Finger Selection → Roulette
 ```
 
 > **Note:** Player Selected and Truth/Dare choice are combined into a single screen for a smoother flow.
+
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | React 19 + TypeScript |
+| **Build** | Vite 8 |
+| **Styling** | Tailwind CSS v4 (neon cyber theme) |
+| **Animation** | Motion (Framer Motion) |
+| **Audio** | Web Audio API (SFX) + HTML5 Audio (BGM) |
+| **PWA** | vite-plugin-pwa (installable, offline-capable) |
+| **Testing** | Vitest + Testing Library |
+| **Lint** | ESLint (TS + React hooks + refresh) |
+| **Deploy** | GitHub Pages (auto-deploy on push to `main`) |
 
 ## Project Structure
 
@@ -81,17 +112,7 @@ Start → Onboarding → Setup → Finger Selection → Roulette
 | `docs/` | Architecture, ADRs, spike results |
 | `.planning/` | Roadmap, requirements, GSD planning docs |
 
-## How to Run
-
-```bash
-npm run dev        # Start dev server (http://localhost:5173)
-npm run build      # Production build to dist/
-npm run preview    # Preview production build locally
-npm run lint       # Run ESLint
-npm run test       # Run Vitest
-```
-
-## Git Rules
+## Contributing
 
 - Branch → PR → 1 teammate review → merge
 - No push to `main` directly — branch protection requires PR + review
@@ -100,4 +121,8 @@ npm run test       # Run Vitest
 
 ---
 
+<div align="center">
+
 *Built with [Vibe Code Tours](https://vibe-code-tours.com/) — AI-assisted collaborative development.*
+
+</div>
