@@ -31,3 +31,4 @@ dev-dist
 
 # Claude Code personal config
 .claude/settings.local.json
+.mcp.json

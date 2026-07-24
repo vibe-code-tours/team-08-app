@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 4
 current_phase_name: Premium Polish
-status: "All phases complete — project shipped"
+status: All phases complete — project shipped
 stopped_at: Completed Phase 4
-last_updated: "2026-07-18T20:36:00.000Z"
-last_activity: 2026-07-18
-last_activity_desc: "Completed quick task 260718-vh0: Fix PWA update/cache staleness so new deploys reach users on next visit instead of after closing all tabs"
+last_updated: "2026-07-24T18:24:24.167Z"
+last_activity: 2026-07-25
+last_activity_desc: "Completed quick task 260725-39j: Register chrome-devtools-mcp server for project"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-07-09)
 Phase: 4 — Premium Polish (Complete)
 Plan: All plans complete
 Status: All phases complete — project shipped
-Last activity: 2026-07-18 - Completed quick task 260718-vh0: Fix PWA update/cache staleness so new deploys reach users on next visit instead of after closing all tabs
+Last activity: 2026-07-25 - Completed quick task 260725-3f3: Take screenshots of the app using chrome-devtools MCP and add them to README
 
 Progress: [██████████] 100%
 
@@ -78,12 +78,15 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260718-51q | issue #81 — gate desktop / non-touch devices with QR-to-mobile handoff screen | 2026-07-18 | 8cba1e1 | [260718-51q-issue-81-gate-desktop-non-touch-devices-](./quick/260718-51q-issue-81-gate-desktop-non-touch-devices-/) |
+| 260725-3f3 | Take screenshots of the app using chrome-devtools MCP and add them to README | 2026-07-25 | 124d515 | [260725-3f3-take-screenshots-of-the-app-using-chrome](./quick/260725-3f3-take-screenshots-of-the-app-using-chrome/) |
 | 2 | rename desktop-gate handoff text from Finger Roulette to TheChosenOne | 2026-07-17 | 6578166 | — |
 | 3 | point desktop-gate QR at production GitHub Pages URL instead of window.location.href | 2026-07-17 | 8bcb135 | — |
 | 260718-5t8 | narrow TOUCH_REQUIRED_PHASES to finger-selection and roulette only | 2026-07-18 | 838d8ef | [260718-5t8-fix-touch-required-phases-in-app-tsx-to-](./quick/260718-5t8-fix-touch-required-phases-in-app-tsx-to-/) |
 | 260718-60d | fix stale desktop-gate coverage range in CLAUDE.md | 2026-07-18 | 14815d7 | [260718-60d-fix-stale-claude-md-documentation-of-des](./quick/260718-60d-fix-stale-claude-md-documentation-of-des/) |
 | 260718-6dk | derive QR target URL dynamically instead of hardcoding production domain | 2026-07-18 | f1c246c | [260718-6dk-fix-hardcoded-production-url-in-desktopg](./quick/260718-6dk-fix-hardcoded-production-url-in-desktopg/) |
 | 260718-vh0 | Fix PWA update/cache staleness so new deploys reach users on next visit instead of after closing all tabs | 2026-07-18 | 34b492c | [260718-vh0-fix-pwa-update-cache-staleness-so-new-de](./quick/260718-vh0-fix-pwa-update-cache-staleness-so-new-de/) |
+| 260725-31x | Polish README.md to doomemacs/core-style layout and rename title to "The Chosen One" | 2026-07-25 | 9a90dcc | [260725-31x-polish-readme-md-to-match-doomemacs-core](./quick/260725-31x-polish-readme-md-to-match-doomemacs-core/) |
+| 260725-39j | Register chrome-devtools-mcp server for project (later reverted to local-only, gitignored — see SUMMARY.md Outcome Update) | 2026-07-25 | 9e14913 | [260725-39j-register-chrome-devtools-mcp-server-for-](./quick/260725-39j-register-chrome-devtools-mcp-server-for-/) |
 
 ## Deferred Items
 
@@ -95,6 +98,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-18
-Stopped at: Completed quick task 260718-vh0
+Last session: 2026-07-25
+Stopped at: Completed quick task 260725-39j
 Resume file: None
